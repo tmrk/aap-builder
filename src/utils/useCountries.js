@@ -21,7 +21,7 @@ export default function useCountries() {
     }
 
     if (navigator.onLine) {
-      const countriesUrl = import.meta.env.VITE_COUNTRIES_URL;
+      const countriesUrl = "https://gist.githubusercontent.com/tmrk/3ba1cc679e9f655143593524a203b7e2/raw/countries.json";
       fetch(countriesUrl)
         .then((res) => res.json())
         .then((data) => {

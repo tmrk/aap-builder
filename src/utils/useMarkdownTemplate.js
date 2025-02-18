@@ -1,6 +1,6 @@
 import { useState, useEffect } from "react";
 
-const GIST_URL = import.meta.env.VITE_AAP_TEMPLATE_URL;
+const GIST_URL = "https://gist.githubusercontent.com/tmrk/27d1348f855547079dc8d00ab5454c06/raw/AAP-template.md";
 const TEMPLATE_STORAGE_KEY = "AAP_MD_TEMPLATE";
 
 function canFetchRemote() {
