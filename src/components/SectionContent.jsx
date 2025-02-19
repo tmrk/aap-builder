@@ -16,6 +16,7 @@ import {
 import { AAPContext } from "../context/AAPContext";
 import useCountries from "../utils/useCountries";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
+import ExpandableTextField from "./ExpandableTextField";
 
 /* Renders an input field for a "subsection" object. */
 function SubsectionInput({ stepId, subsection }) {
@@ -25,8 +26,7 @@ function SubsectionInput({ stepId, subsection }) {
 
   const subsectionId = subsection.id;
   const questionId = subsectionId;
-  const storedValue =
-    aapData?.[stepId]?.[subsectionId]?.[questionId] || "";
+  const storedValue = aapData?.[stepId]?.[subsectionId]?.[questionId] || "";
   const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
   const requiredStar = subsection.required ? (
     <span style={{ color: "red", marginLeft: 4 }}>*</span>
@@ -51,7 +51,6 @@ function SubsectionInput({ stepId, subsection }) {
               {...params}
               variant="outlined"
               placeholder={subsection.placeholder}
-              label={subsection.title}
             />
           )}
         />
@@ -70,7 +69,6 @@ function SubsectionInput({ stepId, subsection }) {
               {...params}
               variant="outlined"
               placeholder={subsection.placeholder}
-              label={subsection.title}
             />
           )}
         />
@@ -137,15 +135,15 @@ function SubsectionInput({ stepId, subsection }) {
     );
   } else if (type === "textarea") {
     inputElem = (
-      <TextField
+      <ExpandableTextField
+        storageKey={`expand-${stepId}-${subsectionId}-${questionId}`}
         placeholder={subsection.placeholder}
-        fullWidth
-        multiline
-        rows={4}
         value={value}
         onChange={(e) =>
           updateField(stepId, subsectionId, questionId, e.target.value)
         }
+        rows={4}
+        characterLimit={subsection.characterLimit || 0}
       />
     );
   } else if (type === "text") {
@@ -210,7 +208,8 @@ function SubsectionInput({ stepId, subsection }) {
         </Collapse>
       )}
       {inputElem}
-      {characterLimit > 0 && (
+      {/* Only render the character counter if not a textarea (the ExpandableTextField handles its own) */}
+      {characterLimit > 0 && type !== "textarea" && (
         <Typography
           variant="body2"
           sx={{
@@ -229,11 +228,9 @@ function SubsectionInput({ stepId, subsection }) {
 /* Renders a step-level input for steps without subsections. */
 function StepInput({ step }) {
   const { aapData, updateField } = useContext(AAPContext);
-
   const [hintOpen, setHintOpen] = useState(false);
   const [exampleOpen, setExampleOpen] = useState(false);
 
-  // We'll store the data under aapData[step.id][step.id][step.id]
   const storedValue = aapData?.[step.id]?.[step.id]?.[step.id] || "";
   const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
 
@@ -325,13 +322,13 @@ function StepInput({ step }) {
     );
   } else if (type === "textarea") {
     inputElem = (
-      <TextField
+      <ExpandableTextField
+        storageKey={`expand-${step.id}-${step.id}-${step.id}`}
         placeholder={step.placeholder}
-        fullWidth
-        multiline
-        rows={4}
         value={value}
         onChange={(e) => updateField(step.id, step.id, step.id, e.target.value)}
+        rows={4}
+        characterLimit={step.characterLimit || 0}
       />
     );
   } else if (type === "text") {
@@ -390,7 +387,7 @@ function StepInput({ step }) {
         </Collapse>
       )}
       {inputElem}
-      {characterLimit > 0 && (
+      {characterLimit > 0 && type !== "textarea" && (
         <Typography
           variant="body2"
           sx={{

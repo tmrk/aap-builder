@@ -1,6 +1,7 @@
 import React, { useState, useContext, useEffect } from "react";
 import { Box, Typography, TextField, Button } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
+import ExpandableTextField from "./ExpandableTextField";
 
 export default function TriggerMechanismDesigner({ sectionId, subsectionId, questionId }) {
   // Use default keys if none are provided so that the trigger statement is saved/retrieved under:
@@ -121,6 +122,7 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
           />
           <Button
             variant="contained"
+            fullWidth
             onClick={generateTrigger}
             sx={{ mb: 2 }}
             disabled={!isGenerateEnabled()}
@@ -133,13 +135,12 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
           Hazard not selected. Please set a hazard in the Summary (step 1) to enable the generator.
         </Typography>
       )}
-      <TextField
-        label="Trigger statement"
-        multiline
-        rows={4}
-        fullWidth
+      <ExpandableTextField
+        storageKey={`expand-${effectiveSectionId}-${effectiveSubsectionId}-${effectiveQuestionId}-trigger`}
+        placeholder="Trigger statement"
         value={triggerOutput}
         onChange={(e) => handleTriggerOutputChange(e.target.value)}
+        rows={4}
       />
     </Box>
   );

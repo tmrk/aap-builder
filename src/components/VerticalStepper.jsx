@@ -36,7 +36,7 @@ function TriStateStepIcon({ stepIndex, status, active }) {
         fontSize: "0.8rem",
       }}
     >
-      {stepIndex + 1}
+      {stepIndex /* removed +1 to align with chapter numbers*/ }
     </Box>
   );
 }
@@ -145,8 +145,8 @@ export default function VerticalStepper() {
               key={step.id || idx}
               onClick={() => handleStepClick(idx)}
               sx={{
-                minWidth: 32,
-                height: 32,
+                minWidth: 34,
+                height: 34,
                 borderRadius: "50%",
                 display: "flex",
                 alignItems: "center",
@@ -166,9 +166,9 @@ export default function VerticalStepper() {
       <SectionContent step={steps[activeStep]} />
       <MobileStepper
         variant="text"
-        steps={totalSteps}
+        steps={totalSteps - 1} // added -1 to align with chapter numbers
         position="static"
-        activeStep={activeStep}
+        activeStep={activeStep - 1} // added -1 to align with chapter numbers
         nextButton={
           <Button
             size="small"
@@ -192,7 +192,7 @@ export default function VerticalStepper() {
       {mobileTopStepper}
       {desktopStepper}
       <Box sx={{ mt: 2 }}>
-        <Button variant="outlined" size="large" fullWidth color="primary" onClick={handleExport}>
+        <Button variant="contained" size="large" fullWidth color="primary" onClick={handleExport}>
           Export to docx
         </Button>
       </Box>
