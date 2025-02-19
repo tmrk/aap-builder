@@ -19,4 +19,4 @@ https://tmrk.github.io/aap-builder/
 
 ## License
 
-MITw
+MIT
