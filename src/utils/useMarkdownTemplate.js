@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 
-const GIST_URL = "https://gist.githubusercontent.com/tmrk/27d1348f855547079dc8d00ab5454c06/raw/AAP-template.md";
+const GIST_URL =
+  "https://gist.githubusercontent.com/tmrk/27d1348f855547079dc8d00ab5454c06/raw/AAP-template.md";
 const TEMPLATE_STORAGE_KEY = "AAP_MD_TEMPLATE";
 
 function canFetchRemote() {
@@ -13,20 +14,38 @@ function parseMarkdown(mdText) {
 
   let currentStep = null;
   let currentSubsection = null;
+  let currentSubsubsection = null;
 
   const makeIdFromTitle = (title) =>
     title.toLowerCase().replace(/\s+/g, "-");
 
+  // Push any pending sub‑sub‑section into the current subsection
+  const pushSubsubsection = () => {
+    if (currentSubsection && currentSubsubsection) {
+      if (!currentSubsection.subsubsections) {
+        currentSubsection.subsubsections = [];
+      }
+      currentSubsection.subsubsections.push(currentSubsubsection);
+      currentSubsubsection = null;
+    }
+  };
+
+  // Push the current subsection (including any pending sub‑sub‑section) into the current step
   const pushSubsection = () => {
+    pushSubsubsection();
     if (currentStep && currentSubsection) {
+      if (!currentStep.subsections) {
+        currentStep.subsections = [];
+      }
       currentStep.subsections.push(currentSubsection);
       currentSubsection = null;
     }
   };
 
+  // Push the current step (including any pending subsection) into the steps array
   const pushStep = () => {
+    pushSubsection();
     if (currentStep) {
-      pushSubsection();
       steps.push(currentStep);
       currentStep = null;
     }
@@ -34,7 +53,6 @@ function parseMarkdown(mdText) {
 
   for (let rawLine of lines) {
     const line = rawLine.trim();
-
     if (line.startsWith("# ")) {
       pushStep();
       const title = line.replace("# ", "");
@@ -56,56 +74,84 @@ function parseMarkdown(mdText) {
         required: false,
         hint: "",
         example: "",
+        subsubsections: [],
+      };
+    } else if (line.startsWith("### ")) {
+      pushSubsubsection();
+      const title = line.replace("### ", "");
+      currentSubsubsection = {
+        id: makeIdFromTitle(title),
+        title,
+        type: null,
+        placeholder: "",
+        options: [],
+        characterLimit: 0,
+        required: false,
+        hint: "",
+        example: "",
       };
     } else if (line.startsWith("Type:")) {
       const val = line.replace("Type:", "").trim();
-      if (currentSubsection) {
+      if (currentSubsubsection) {
+        currentSubsubsection.type = val;
+      } else if (currentSubsection) {
         currentSubsection.type = val;
       } else if (currentStep) {
         currentStep.type = val;
       }
     } else if (line.startsWith("Placeholder:")) {
       const val = line.replace("Placeholder:", "").trim();
-      if (currentSubsection) {
+      if (currentSubsubsection) {
+        currentSubsubsection.placeholder = val;
+      } else if (currentSubsection) {
         currentSubsection.placeholder = val;
       } else if (currentStep) {
         currentStep.placeholder = val;
       }
     } else if (line.startsWith("Options:")) {
       const val = line.replace("Options:", "").trim();
-      if (currentSubsection) {
-        const arr = val.split(",").map((opt) => opt.trim());
+      const arr = val.split(",").map((opt) => opt.trim());
+      if (currentSubsubsection) {
+        currentSubsubsection.options = arr;
+      } else if (currentSubsection) {
         currentSubsection.options = arr;
       } else if (currentStep) {
-        const arr = val.split(",").map((opt) => opt.trim());
         currentStep.options = arr;
       }
     } else if (line.startsWith("Character limit:")) {
       const val = line.replace("Character limit:", "").trim();
-      if (currentSubsection) {
-        const num = parseInt(val, 10);
+      const num = parseInt(val, 10);
+      if (currentSubsubsection) {
+        currentSubsubsection.characterLimit = Number.isNaN(num) ? 0 : num;
+      } else if (currentSubsection) {
         currentSubsection.characterLimit = Number.isNaN(num) ? 0 : num;
       } else if (currentStep) {
-        const num = parseInt(val, 10);
         currentStep.characterLimit = Number.isNaN(num) ? 0 : num;
       }
     } else if (line.startsWith("Required:")) {
       const val = line.replace("Required:", "").trim().toLowerCase();
-      if (currentSubsection) {
-        currentSubsection.required = ["true", "yes", "1"].includes(val);
+      const req = ["true", "yes", "1"].includes(val);
+      if (currentSubsubsection) {
+        currentSubsubsection.required = req;
+      } else if (currentSubsection) {
+        currentSubsection.required = req;
       } else if (currentStep) {
-        currentStep.required = ["true", "yes", "1"].includes(val);
+        currentStep.required = req;
       }
     } else if (line.startsWith("Hint:")) {
       const val = line.replace("Hint:", "").trim();
-      if (currentSubsection) {
+      if (currentSubsubsection) {
+        currentSubsubsection.hint = val;
+      } else if (currentSubsection) {
         currentSubsection.hint = val;
       } else if (currentStep) {
         currentStep.hint = val;
       }
     } else if (line.startsWith("Example:")) {
       const val = line.replace("Example:", "").trim();
-      if (currentSubsection) {
+      if (currentSubsubsection) {
+        currentSubsubsection.example = val;
+      } else if (currentSubsection) {
         currentSubsection.example = val;
       } else if (currentStep) {
         currentStep.example = val;

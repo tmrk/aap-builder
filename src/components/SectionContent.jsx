@@ -11,14 +11,184 @@ import {
   Checkbox,
   Autocomplete,
   Collapse,
-  Button
+  Button,
 } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
 import useCountries from "../utils/useCountries";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
 
-/* Renders an input field for a "subsection" object. */
+// Component for rendering third-level (sub‑sub‑section) inputs
+function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
+  const { aapData, updateField } = useContext(AAPContext);
+  const [hintOpen, setHintOpen] = useState(false);
+  const [exampleOpen, setExampleOpen] = useState(false);
+  const subsubId = subsubsection.id;
+  const storedValue = aapData?.[stepId]?.[parentSubsectionId]?.[subsubId] || "";
+  const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
+  const requiredStar = subsubsection.required ? (
+    <span style={{ color: "red", marginLeft: 4 }}>*</span>
+  ) : null;
+  const characterLimit = subsubsection.characterLimit || 0;
+  const exceedLimit = characterLimit > 0 && value.length > characterLimit;
+  const type = (subsubsection.type || "").toLowerCase();
+  let inputElem = null;
+
+  if (type === "dropdown") {
+    const opts = Array.isArray(subsubsection.options) ? subsubsection.options : [];
+    inputElem = (
+      <Autocomplete
+        options={opts}
+        value={value || ""}
+        onChange={(e, newVal) =>
+          updateField(stepId, parentSubsectionId, subsubId, newVal || "")
+        }
+        renderInput={(params) => (
+          <TextField {...params} variant="outlined" placeholder={subsubsection.placeholder} />
+        )}
+      />
+    );
+  } else if (type === "radio") {
+    const opts = Array.isArray(subsubsection.options) ? subsubsection.options : [];
+    inputElem = (
+      <FormControl component="fieldset">
+        <RadioGroup
+          row
+          value={value}
+          onChange={(e) =>
+            updateField(stepId, parentSubsectionId, subsubId, e.target.value)
+          }
+        >
+          {opts.map((opt) => (
+            <FormControlLabel key={opt} value={opt} control={<Radio />} label={opt} />
+          ))}
+        </RadioGroup>
+      </FormControl>
+    );
+  } else if (type === "checkbox") {
+    const opts = Array.isArray(subsubsection.options) ? subsubsection.options : [];
+    const arrVal = Array.isArray(value) ? value : [];
+    const handleCheck = (opt) => {
+      if (arrVal.includes(opt)) {
+        updateField(stepId, parentSubsectionId, subsubId, arrVal.filter((x) => x !== opt));
+      } else {
+        updateField(stepId, parentSubsectionId, subsubId, [...arrVal, opt]);
+      }
+    };
+    inputElem = (
+      <Box>
+        <FormLabel>{subsubsection.title}</FormLabel>
+        <Box sx={{ display: "flex", gap: 2, flexWrap: "wrap" }}>
+          {opts.map((opt) => (
+            <FormControlLabel
+              key={opt}
+              control={<Checkbox checked={arrVal.includes(opt)} onChange={() => handleCheck(opt)} />}
+              label={opt}
+            />
+          ))}
+        </Box>
+      </Box>
+    );
+  } else if (type === "textarea") {
+    inputElem = (
+      <ExpandableTextField
+        storageKey={`expand-${stepId}-${parentSubsectionId}-${subsubId}`}
+        placeholder={subsubsection.placeholder}
+        value={value}
+        onChange={(e) =>
+          updateField(stepId, parentSubsectionId, subsubId, e.target.value)
+        }
+        rows={4}
+        characterLimit={subsubsection.characterLimit || 0}
+      />
+    );
+  } else if (type === "text") {
+    inputElem = (
+      <TextField
+        placeholder={subsubsection.placeholder}
+        fullWidth
+        value={value}
+        onChange={(e) =>
+          updateField(stepId, parentSubsectionId, subsubId, e.target.value)
+        }
+      />
+    );
+  } else if (type === "triggerdesigner") {
+    inputElem = (
+      <TriggerMechanismDesigner
+        sectionId={stepId}
+        subsectionId={parentSubsectionId}
+        questionId={subsubId}
+      />
+    );
+  } else {
+    return null;
+  }
+
+  return (
+    <Box sx={{ mb: 3 }}>
+      <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
+        <Typography variant="subtitle1" sx={{ fontWeight: "bold" }}>
+          {subsubsection.title}
+          {requiredStar}
+        </Typography>
+        {subsubsection.hint && (
+          <Button
+            variant="text"
+            size="small"
+            sx={{ ml: 1 }}
+            onClick={() => setHintOpen(!hintOpen)}
+          >
+            Hint
+          </Button>
+        )}
+        {subsubsection.example && (
+          <Button
+            variant="text"
+            size="small"
+            sx={{ ml: 1 }}
+            onClick={() => setExampleOpen(!exampleOpen)}
+          >
+            Example
+          </Button>
+        )}
+      </Box>
+      {subsubsection.hint && (
+        <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
+          <Box sx={{ px: 0.5, mb: 1 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              {subsubsection.hint}
+            </Typography>
+          </Box>
+        </Collapse>
+      )}
+      {subsubsection.example && (
+        <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
+          <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
+            <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
+              {subsubsection.example}
+            </Typography>
+          </Box>
+        </Collapse>
+      )}
+      {inputElem}
+      {characterLimit > 0 && type !== "textarea" && (
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 0.5,
+            textAlign: "right",
+            color: exceedLimit ? "red" : "text.secondary",
+          }}
+        >
+          {value.length} / {characterLimit}
+        </Typography>
+      )}
+    </Box>
+  );
+}
+
+// Component for rendering second-level (subsection) inputs
 function SubsectionInput({ stepId, subsection }) {
   const { aapData, updateField } = useContext(AAPContext);
   const [hintOpen, setHintOpen] = useState(false);
@@ -43,15 +213,11 @@ function SubsectionInput({ stepId, subsection }) {
         <Autocomplete
           options={Array.isArray(countries) ? countries : []}
           value={value || ""}
-          onChange={(e, newVal) => {
-            updateField(stepId, subsectionId, questionId, newVal || "");
-          }}
+          onChange={(e, newVal) =>
+            updateField(stepId, subsectionId, questionId, newVal || "")
+          }
           renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder={subsection.placeholder}
-            />
+            <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
           )}
         />
       );
@@ -61,15 +227,11 @@ function SubsectionInput({ stepId, subsection }) {
         <Autocomplete
           options={opts}
           value={value || ""}
-          onChange={(e, newVal) => {
-            updateField(stepId, subsectionId, questionId, newVal || "");
-          }}
+          onChange={(e, newVal) =>
+            updateField(stepId, subsectionId, questionId, newVal || "")
+          }
           renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder={subsection.placeholder}
-            />
+            <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
           )}
         />
       );
@@ -81,9 +243,7 @@ function SubsectionInput({ stepId, subsection }) {
         <RadioGroup
           row
           value={value}
-          onChange={(e) => {
-            updateField(stepId, subsectionId, questionId, e.target.value);
-          }}
+          onChange={(e) => updateField(stepId, subsectionId, questionId, e.target.value)}
         >
           {opts.map((opt) => (
             <FormControlLabel key={opt} value={opt} control={<Radio />} label={opt} />
@@ -96,12 +256,7 @@ function SubsectionInput({ stepId, subsection }) {
     const arrVal = Array.isArray(value) ? value : [];
     const handleCheck = (opt) => {
       if (arrVal.includes(opt)) {
-        updateField(
-          stepId,
-          subsectionId,
-          questionId,
-          arrVal.filter((x) => x !== opt)
-        );
+        updateField(stepId, subsectionId, questionId, arrVal.filter((x) => x !== opt));
       } else {
         updateField(stepId, subsectionId, questionId, [...arrVal, opt]);
       }
@@ -113,12 +268,7 @@ function SubsectionInput({ stepId, subsection }) {
           {opts.map((opt) => (
             <FormControlLabel
               key={opt}
-              control={
-                <Checkbox
-                  checked={arrVal.includes(opt)}
-                  onChange={() => handleCheck(opt)}
-                />
-              }
+              control={<Checkbox checked={arrVal.includes(opt)} onChange={() => handleCheck(opt)} />}
               label={opt}
             />
           ))}
@@ -139,9 +289,7 @@ function SubsectionInput({ stepId, subsection }) {
         storageKey={`expand-${stepId}-${subsectionId}-${questionId}`}
         placeholder={subsection.placeholder}
         value={value}
-        onChange={(e) =>
-          updateField(stepId, subsectionId, questionId, e.target.value)
-        }
+        onChange={(e) => updateField(stepId, subsectionId, questionId, e.target.value)}
         rows={4}
         characterLimit={subsection.characterLimit || 0}
       />
@@ -152,12 +300,15 @@ function SubsectionInput({ stepId, subsection }) {
         placeholder={subsection.placeholder}
         fullWidth
         value={value}
-        onChange={(e) =>
-          updateField(stepId, subsectionId, questionId, e.target.value)
-        }
+        onChange={(e) => updateField(stepId, subsectionId, questionId, e.target.value)}
       />
     );
   } else {
+    inputElem = null;
+  }
+
+  // If there's no input element but there are sub‑sub‑sections, continue to render this subsection.
+  if (!inputElem && (!subsection.subsubsections || subsection.subsubsections.length === 0)) {
     return null;
   }
 
@@ -173,7 +324,7 @@ function SubsectionInput({ stepId, subsection }) {
             variant="text"
             size="small"
             sx={{ ml: 1 }}
-            onClick={() => setHintOpen((p) => !p)}
+            onClick={() => setHintOpen(!hintOpen)}
           >
             Hint
           </Button>
@@ -183,7 +334,7 @@ function SubsectionInput({ stepId, subsection }) {
             variant="text"
             size="small"
             sx={{ ml: 1 }}
-            onClick={() => setExampleOpen((p) => !p)}
+            onClick={() => setExampleOpen(!exampleOpen)}
           >
             Example
           </Button>
@@ -208,24 +359,32 @@ function SubsectionInput({ stepId, subsection }) {
         </Collapse>
       )}
       {inputElem}
-      {/* Only render the character counter if not a textarea (the ExpandableTextField handles its own) */}
       {characterLimit > 0 && type !== "textarea" && (
         <Typography
           variant="body2"
-          sx={{
-            mt: 0.5,
-            textAlign: "right",
-            color: exceedLimit ? "red" : "text.secondary",
-          }}
+          sx={{ mt: 0.5, textAlign: "right", color: exceedLimit ? "red" : "text.secondary" }}
         >
           {value.length} / {characterLimit}
         </Typography>
+      )}
+      {/* Render any sub‑sub‑sections */}
+      {subsection.subsubsections && subsection.subsubsections.length > 0 && (
+        <Box sx={{ ml: 3, mt: 2 }}>
+          {subsection.subsubsections.map((subsub) => (
+            <SubSubsectionInput
+              key={subsub.id}
+              stepId={stepId}
+              parentSubsectionId={subsectionId}
+              subsubsection={subsub}
+            />
+          ))}
+        </Box>
       )}
     </Box>
   );
 }
 
-/* Renders a step-level input for steps without subsections. */
+// Component for rendering a step-level input (for steps without subsections)
 function StepInput({ step }) {
   const { aapData, updateField } = useContext(AAPContext);
   const [hintOpen, setHintOpen] = useState(false);
@@ -233,12 +392,11 @@ function StepInput({ step }) {
 
   const storedValue = aapData?.[step.id]?.[step.id]?.[step.id] || "";
   const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
-
   const characterLimit = step.characterLimit || 0;
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (step.type || "").toLowerCase();
-
   let inputElem = null;
+
   if (type === "dropdown") {
     const countries = useCountries();
     const opts = Array.isArray(step.options) ? step.options : [];
@@ -247,9 +405,7 @@ function StepInput({ step }) {
         <Autocomplete
           options={Array.isArray(countries) ? countries : []}
           value={value || ""}
-          onChange={(e, newVal) => {
-            updateField(step.id, step.id, step.id, newVal || "");
-          }}
+          onChange={(e, newVal) => updateField(step.id, step.id, step.id, newVal || "")}
           renderInput={(params) => (
             <TextField {...params} variant="outlined" placeholder={step.placeholder} />
           )}
@@ -260,9 +416,7 @@ function StepInput({ step }) {
         <Autocomplete
           options={opts}
           value={value || ""}
-          onChange={(e, newVal) => {
-            updateField(step.id, step.id, step.id, newVal || "");
-          }}
+          onChange={(e, newVal) => updateField(step.id, step.id, step.id, newVal || "")}
           renderInput={(params) => (
             <TextField {...params} variant="outlined" placeholder={step.placeholder} />
           )}
@@ -276,9 +430,7 @@ function StepInput({ step }) {
         <RadioGroup
           row
           value={value}
-          onChange={(e) => {
-            updateField(step.id, step.id, step.id, e.target.value);
-          }}
+          onChange={(e) => updateField(step.id, step.id, step.id, e.target.value)}
         >
           {opts.map((opt) => (
             <FormControlLabel key={opt} value={opt} control={<Radio />} label={opt} />
@@ -301,12 +453,7 @@ function StepInput({ step }) {
         {opts.map((opt) => (
           <FormControlLabel
             key={opt}
-            control={
-              <Checkbox
-                checked={arrVal.includes(opt)}
-                onChange={() => handleCheck(opt)}
-              />
-            }
+            control={<Checkbox checked={arrVal.includes(opt)} onChange={() => handleCheck(opt)} />}
             label={opt}
           />
         ))}
@@ -314,11 +461,7 @@ function StepInput({ step }) {
     );
   } else if (type === "triggerdesigner") {
     inputElem = (
-      <TriggerMechanismDesigner
-        sectionId={step.id}
-        subsectionId={step.id}
-        questionId={step.id}
-      />
+      <TriggerMechanismDesigner sectionId={step.id} subsectionId={step.id} questionId={step.id} />
     );
   } else if (type === "textarea") {
     inputElem = (
@@ -348,22 +491,12 @@ function StepInput({ step }) {
     <Box sx={{ mb: 3 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
         {step.hint && (
-          <Button
-            variant="text"
-            size="small"
-            sx={{ ml: 1 }}
-            onClick={() => setHintOpen((p) => !p)}
-          >
+          <Button variant="text" size="small" sx={{ ml: 1 }} onClick={() => setHintOpen(!hintOpen)}>
             Hint
           </Button>
         )}
         {step.example && (
-          <Button
-            variant="text"
-            size="small"
-            sx={{ ml: 1 }}
-            onClick={() => setExampleOpen((p) => !p)}
-          >
+          <Button variant="text" size="small" sx={{ ml: 1 }} onClick={() => setExampleOpen(!exampleOpen)}>
             Example
           </Button>
         )}
@@ -388,14 +521,7 @@ function StepInput({ step }) {
       )}
       {inputElem}
       {characterLimit > 0 && type !== "textarea" && (
-        <Typography
-          variant="body2"
-          sx={{
-            mt: 0.5,
-            textAlign: "right",
-            color: exceedLimit ? "red" : "text.secondary",
-          }}
-        >
+        <Typography variant="body2" sx={{ mt: 0.5, textAlign: "right", color: exceedLimit ? "red" : "text.secondary" }}>
           {value.length} / {characterLimit}
         </Typography>
       )}
@@ -403,8 +529,7 @@ function StepInput({ step }) {
   );
 }
 
-/* Renders the content for a given step, 
-   either as multiple subsections or a single step-level input. */
+// Main component that renders the content for a given step
 export default function SectionContent({ step }) {
   const { subsections } = step;
 

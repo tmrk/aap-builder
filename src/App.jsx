@@ -63,7 +63,7 @@ function App() {
       <CssBaseline />
       <AAPProvider>
         <Header />
-        <Container maxWidth="md" sx={{ pb: 3 }}>
+        <Container maxWidth="md" sx={{ pb: 5 }}>
           <VerticalStepper />
         </Container>
       </AAPProvider>

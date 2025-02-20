@@ -13,15 +13,45 @@ import {
   PageNumber,
 } from "docx";
 
+// Create a Normal paragraph with line-height 1.15
 function createNormalParagraph(text) {
   return new Paragraph({
     style: "Normal",
     alignment: AlignmentType.JUSTIFIED,
+    spacing: { line: 276, lineRule: "auto" },
     children: [new TextRun({ text })],
   });
 }
 
-/* Numbering config for headings */
+// Returns a completely blank Normal paragraph.
+function blank() {
+  return createNormalParagraph("");
+}
+
+// wrapHeading now returns ONLY the heading paragraph (no trailing blank).
+function wrapHeading(text, styleName, withNumbering = true) {
+  const numbering = withNumbering ? getNumberingOptions(styleName) : undefined;
+  return new Paragraph({
+    style: styleName,
+    numbering,
+    children: [
+      new TextRun({
+        text,
+        size: (!withNumbering && styleName === "Heading1") ? 32 : undefined,
+      }),
+    ],
+  });
+}
+
+// wrapContent returns the content paragraphs (with no extra blank lines).
+function wrapContent(text) {
+  if (text.trim() === "") {
+    return [createNormalParagraph("")];
+  }
+  return [createNormalParagraph(text)];
+}
+
+// Numbering configuration for headings.
 function getNumberingOptions(styleName) {
   if (styleName === "Heading1") return { reference: "aap-numbering", level: 0 };
   if (styleName === "Heading2") return { reference: "aap-numbering", level: 1 };
@@ -29,63 +59,25 @@ function getNumberingOptions(styleName) {
   return undefined;
 }
 
-/* Returns an array of paragraphs:
- * - A normal blank line (and an extra one if Heading1)
- * - The heading itself (with or without numbering)
- * - Another blank line
- * If styleName is "Heading1", an extra blank line is inserted before. */
-function wrapHeading(text, styleName, withNumbering = true) {
-  const numbering = withNumbering ? getNumberingOptions(styleName) : undefined;
-
-  const paragraphs = [];
-
-  // Extra blank line before Heading1
-  if (styleName === "Heading1") {
-    paragraphs.push(createNormalParagraph(""));
-  }
-
-  paragraphs.push(
-    createNormalParagraph(""),
-    new Paragraph({
-      style: styleName,
-      numbering,
-      children: [new TextRun({ text })],
-    }),
-    createNormalParagraph("")
-  );
-
-  return paragraphs;
-}
-
-/* Wraps body text with an empty Normal paragraph before and after for spacing.
-   If text is empty, returns two empty paragraphs. */
-function wrapContent(text) {
-  if (text.trim() === "") {
-    return [createNormalParagraph(""), createNormalParagraph("")];
-  }
-  return [createNormalParagraph(""), createNormalParagraph(text), createNormalParagraph("")];
-}
-
-/* Creates a paragraph for table cells, left-aligned, with 10pt text size.
-   Optionally bold. */
+// Create a paragraph for table cells.
 function createTableCellParagraph(text, options = {}) {
   return new Paragraph({
     alignment: AlignmentType.LEFT,
     children: [
       new TextRun({
         text,
-        size: 20, // half-points -> 10pt
+        size: 20, // 10pt (half-points)
         bold: options.bold || false,
       }),
     ],
   });
 }
 
+// Build the summary table (always iterates over all subsections).
 function buildAAPSummaryTable(summarySection, aapData) {
   if (!summarySection.subsections || summarySection.subsections.length === 0) {
     return null;
   }
-
   const rows = [];
   summarySection.subsections.forEach((subsec) => {
     const answer = aapData?.[summarySection.id]?.[subsec.id]?.[subsec.id] || "";
@@ -116,7 +108,6 @@ function buildAAPSummaryTable(summarySection, aapData) {
       })
     );
   });
-
   return new Table({
     rows,
     style: "AAPTableGrid",
@@ -124,9 +115,9 @@ function buildAAPSummaryTable(summarySection, aapData) {
   });
 }
 
-/* Main export function to produce the DOCX */
+// Main export function.
 export async function exportToDocx(aapData) {
-  // Grab the template from localStorage
+  // Retrieve the Markdown template.
   const templateStr = localStorage.getItem("AAP_MD_TEMPLATE");
   let sections = [];
   if (templateStr) {
@@ -136,10 +127,9 @@ export async function exportToDocx(aapData) {
       console.error("Error parsing AAP template from localStorage", err);
     }
   }
-
   const docContent = [];
 
-  // Title at the top
+  // Add the document title.
   docContent.push(
     new Paragraph({
       text: "Anticipatory Action Protocol (AAP)",
@@ -147,103 +137,138 @@ export async function exportToDocx(aapData) {
       alignment: AlignmentType.CENTER,
     })
   );
-  docContent.push(createNormalParagraph(""));
+  // Two blank lines after the title.
+  docContent.push(blank());
+  docContent.push(blank());
 
-  // The first section is "summary". It's Heading1 style but excluded from numbering.
+  // Process the summary section.
   const summarySection = sections.find((sec) => sec.id === "summary");
   if (summarySection) {
-    docContent.push(...wrapHeading("Summary", "Heading1", false));
-    // If it has subsections, build the table
+    // Add Summary heading (un-numbered Heading1).
+    docContent.push(wrapHeading("Summary", "Heading1", false));
+    // One blank line between heading and content.
+    docContent.push(blank());
     const summaryTable = buildAAPSummaryTable(summarySection, aapData);
     if (summaryTable) {
       docContent.push(summaryTable);
     } else {
       docContent.push(...wrapContent("No summary subsections found."));
     }
+    // After summary, next heading is Heading1 → insert TWO blank lines.
+    docContent.push(blank());
+    docContent.push(blank());
   }
 
-  // All other sections => Heading1 with numbering
-  sections.forEach((section) => {
-    if (section.id === "summary") return;
+  // Process all other sections.
+  // (All section headings are Heading1.)
+  for (let i = 0; i < sections.length; i++) {
+    const section = sections[i];
+    if (section.id === "summary") continue;
 
-    // Section title as heading1 with numbering
-    docContent.push(...wrapHeading(section.title, "Heading1", true));
-
-    // Step-level questions
-    if (section.questions && section.questions.length > 0) {
-      section.questions.forEach((q) => {
-        const ans = aapData?.[section.id]?.[section.id]?.[q.id] || "";
-        docContent.push(...wrapHeading(q.label, "Heading2"));
-        docContent.push(...wrapContent(ans));
-      });
-    } else if (section.type) {
-      // Single input step
-      const ans = aapData?.[section.id]?.[section.id]?.[section.id] || "";
-      docContent.push(...wrapContent(ans));
+    // Add section heading.
+    docContent.push(wrapHeading(section.title, "Heading1", true));
+    // If section has content, add ONE blank line between heading and content.
+    const sectionHasContent =
+      (section.questions && section.questions.length > 0) ||
+      section.type ||
+      (section.subsections && section.subsections.length > 0);
+    if (sectionHasContent) {
+      docContent.push(blank());
     }
 
-    // Subsections
+    // Process step-level questions (if any).
+    if (section.questions && section.questions.length > 0) {
+      for (const q of section.questions) {
+        docContent.push(wrapHeading(q.label, "Heading2", true));
+        // One blank line between Heading2 and its content.
+        docContent.push(blank());
+        const ans = aapData?.[section.id]?.[section.id]?.[q.id] || "";
+        docContent.push(...wrapContent(ans));
+        // After each question block, add ONE blank line.
+        docContent.push(blank());
+      }
+    } else if (section.type) {
+      const ans = aapData?.[section.id]?.[section.id]?.[section.id] || "";
+      docContent.push(...wrapContent(ans));
+      docContent.push(blank());
+    }
+
+    // Process subsections.
     if (section.subsections && section.subsections.length > 0) {
-      section.subsections.forEach((subsec) => {
-        docContent.push(...wrapHeading(subsec.title, "Heading2"));
+      for (const subsec of section.subsections) {
+        // Add subsection heading (Heading2).
+        docContent.push(wrapHeading(subsec.title, "Heading2", true));
+        // If subsection has content, add ONE blank line between heading and content.
+        const subsecHasContent =
+          (subsec.questions && subsec.questions.length > 0) ||
+          subsec.type ||
+          (subsec.subsubsections && subsec.subsubsections.length > 0);
+        if (subsecHasContent) {
+          docContent.push(blank());
+        }
         if (subsec.questions && subsec.questions.length > 0) {
-          subsec.questions.forEach((qq) => {
+          for (const qq of subsec.questions) {
+            docContent.push(wrapHeading(qq.label, "Heading3", true));
+            docContent.push(blank());
             const ans = aapData?.[section.id]?.[subsec.id]?.[qq.id] || "";
-            docContent.push(...wrapHeading(qq.label, "Heading3"));
             docContent.push(...wrapContent(ans));
-          });
+            docContent.push(blank());
+          }
         } else if (subsec.type) {
           const ans = aapData?.[section.id]?.[subsec.id]?.[subsec.id] || "";
           docContent.push(...wrapContent(ans));
+          docContent.push(blank());
         }
-      });
+        // Process sub‑sub‑sections.
+        if (subsec.subsubsections && subsec.subsubsections.length > 0) {
+          for (const subsub of subsec.subsubsections) {
+            docContent.push(wrapHeading(subsub.title, "Heading3", true));
+            docContent.push(blank());
+            const ans = aapData?.[section.id]?.[subsec.id]?.[subsub.id] || "";
+            docContent.push(...wrapContent(ans));
+            docContent.push(blank());
+          }
+        }
+      }
     }
-  });
 
-  // Construct the final Document with numbering, styles, and a footer.
+    // After finishing a section, if there is another section coming,
+    // the next heading will be Heading1 so insert TWO blank lines.
+    let hasNext = false;
+    for (let j = i + 1; j < sections.length; j++) {
+      if (sections[j].id !== "summary") {
+        hasNext = true;
+        break;
+      }
+    }
+    if (hasNext) {
+      docContent.push(blank());
+      docContent.push(blank());
+    }
+  }
+
+  // Construct the final Document with 2cm margins (approx. 1134 twips).
   const doc = new Document({
     numbering: {
       config: [
         {
           reference: "aap-numbering",
           levels: [
-            {
-              level: 0,
-              format: "decimal",
-              text: "%1",
-              alignment: AlignmentType.LEFT,
-              start: 1,
-            },
-            {
-              level: 1,
-              format: "decimal",
-              text: "%1.%2",
-              alignment: AlignmentType.LEFT,
-              start: 1,
-            },
-            {
-              level: 2,
-              format: "decimal",
-              text: "%1.%2.%3",
-              alignment: AlignmentType.LEFT,
-              start: 1,
-            },
+            { level: 0, format: "decimal", text: "%1", alignment: AlignmentType.LEFT, start: 1 },
+            { level: 1, format: "decimal", text: "%1.%2", alignment: AlignmentType.LEFT, start: 1 },
+            { level: 2, format: "decimal", text: "%1.%2.%3", alignment: AlignmentType.LEFT, start: 1 },
           ],
         },
       ],
     },
     styles: {
-      default: {
-        document: {
-          run: { font: "Arial" },
-        },
-      },
+      default: { document: { run: { font: "Arial" } } },
       paragraphStyles: [
         {
           id: "Normal",
           name: "Normal",
           run: { size: 24, color: "000000" },
-          paragraph: { alignment: AlignmentType.JUSTIFIED },
+          paragraph: { alignment: AlignmentType.JUSTIFIED, spacing: { line: 276, lineRule: "auto" } },
         },
         {
           id: "Title",
@@ -308,6 +333,7 @@ export async function exportToDocx(aapData) {
     },
     sections: [
       {
+        properties: { page: { margin: { top: 1134, right: 1134, bottom: 1134, left: 1134 } } },
         children: docContent,
         footers: {
           default: new Footer({
@@ -317,15 +343,9 @@ export async function exportToDocx(aapData) {
                 style: "Normal",
                 children: [
                   new TextRun("Page "),
-                  new TextRun({
-                    children: [PageNumber.CURRENT],
-                    field: true,
-                  }),
+                  new TextRun({ children: [PageNumber.CURRENT], field: true }),
                   new TextRun(" of "),
-                  new TextRun({
-                    children: [PageNumber.TOTAL_PAGES],
-                    field: true,
-                  }),
+                  new TextRun({ children: [PageNumber.TOTAL_PAGES], field: true }),
                 ],
               }),
             ],
@@ -335,6 +355,19 @@ export async function exportToDocx(aapData) {
     ],
   });
 
+  // Build filename dynamically.
+  const hazardType = aapData?.["summary"]?.["hazard"]?.["hazard"] || "UnknownHazard";
+  const country = aapData?.["summary"]?.["country"]?.["country"] || "UnknownCountry";
+  const custodian = aapData?.["summary"]?.["custodian-organisation"]?.["custodian-organisation"] || "UnknownCustodian";
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const HH = String(now.getHours()).padStart(2, "0");
+  const min = String(now.getMinutes()).padStart(2, "0");
+  const formattedDate = `${yyyy}-${mm}-${dd}_${HH}:${min}`;
+  const filename = `AAP-${hazardType}-${country}-${custodian}-${formattedDate}.docx`;
+
   const blob = await Packer.toBlob(doc);
-  saveAs(blob, "AAP-Builder-Export.docx");
+  saveAs(blob, filename);
 }
