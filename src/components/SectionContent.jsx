@@ -387,6 +387,7 @@ function SubsectionInput({ stepId, subsection }) {
               "&.Mui-selected, &.Mui-selected:hover, &:active": {
                 backgroundColor: "primary.light",
                 borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
+                "& img": { filter: "none" },
               },
               "& img": { filter: "grayscale(100%)" },
             }}
