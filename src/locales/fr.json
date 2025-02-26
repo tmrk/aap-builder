@@ -1,0 +1,44 @@
+{
+    "language": {
+      "english": "Anglais (UK)",
+      "french": "Français",
+      "portuguese": "Portugais"
+    },
+    "header": {
+      "title": "AAP Builder",
+      "subtitle": ""
+    },
+    "settings": {
+      "title": "Paramètres",
+      "textFields": "Champs de texte",
+      "expandAllTextFields": "Développer tous les champs de texte",
+      "collapseAllTextFields": "Réduire tous les champs de texte",
+      "hints": "Astuces",
+      "showAllHints": "Afficher tous les conseils",
+      "hideAllHints": "Masquer tous les conseils",
+      "examples": "Exemples",
+      "showAllExamples": "Afficher tous les exemples",
+      "hideAllExamples": "Masquer tous les exemples",
+      "language": "Langue"
+    },
+    "verticalStepper": {
+      "loadingTemplate": "Chargement du modèle...",
+      "errorLoadingTemplate": "Erreur lors du chargement du modèle : {error}",
+      "noTemplateData": "Aucune donnée de modèle disponible.",
+      "back": "Retour",
+      "next": "Suivant",
+      "export": "Exporter vers docx"
+    },
+    "triggerDesigner": {
+      "generate": "Générer l'énoncé de déclenchement",
+      "hazardNotSelected": "Risque non sélectionné. Veuillez définir un risque dans le Résumé pour activer le générateur."
+    },
+    "expandableTextField": {
+      "expand": "Développer le champ",
+      "collapse": "Réduire le champ"
+    },
+    "sectionContent": {
+      "noSubsections": "Il n'y a pas de sous-sections ou de champs de saisie définis pour cette étape."
+    }
+  }
+  

@@ -1,6 +1,7 @@
 import React, { useContext, useState } from "react";
 import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
+import { LanguageContext } from "../context/LanguageContext";
 import SettingsIcon from "@mui/icons-material/Settings";
 import CycloneIconUrl from "../assets/Icon_Tropical_Cyclone.svg";
 import DroughtIconUrl from "../assets/Icon_Drought.svg";
@@ -11,6 +12,7 @@ import SettingsDrawer from "./SettingsDrawer";
 
 export default function Header() {
   const { aapData } = useContext(AAPContext);
+  const { t } = useContext(LanguageContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
   const hazard = aapData?.["summary"]?.["hazard"]?.["hazard"] || "";
@@ -19,7 +21,6 @@ export default function Header() {
 
   const subLine = [hazard, country, custodian].filter(Boolean).join(", ");
 
-  // Determine which icon to show based on hazard text
   let hazardIconUrl = null;
   const hazardLower = hazard.toLowerCase();
   if (hazardLower.includes("cyclone")) {
@@ -38,7 +39,6 @@ export default function Header() {
     setDrawerOpen(!drawerOpen);
   };
 
-  // Scroll to top behavior
   const scrollToTop = () => {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
@@ -58,9 +58,9 @@ export default function Header() {
                     height: 32,
                     marginRight: 12,
                     objectFit: "contain",
-                    cursor: "pointer", // Let user see it's clickable
+                    cursor: "pointer"
                   }}
-                  onClick={scrollToTop} // Smooth scroll to top
+                  onClick={scrollToTop}
                 />
               )}
               <Box>
@@ -68,7 +68,7 @@ export default function Header() {
                   variant="h6"
                   sx={{ color: "#fff", fontWeight: "bold", lineHeight: 1, mt: 0.5 }}
                 >
-                  AAP Builder
+                  {t("header.title")}
                 </Typography>
                 <Typography variant="subtitle" sx={{ color: "#fff", mt: 0 }}>
                   {subLine}

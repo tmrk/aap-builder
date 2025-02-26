@@ -55,61 +55,62 @@ function getExampleKey(stepId, subsectionId, subsubId) {
     : `example-${stepId}-${subsectionId}`;
 }
 
-/**
- * Hook for controlling whether a hint or example is visible,
- * stored in localStorage, and updated globally via "Show all" / "Hide all".
- */
 function useGlobalVisibility(isHint, stepId, subsectionId, subsubId) {
   const storageKey = isHint
     ? getHintKey(stepId, subsectionId, subsubId)
     : getExampleKey(stepId, subsectionId, subsubId);
-
-  const [visible, setVisible] = useState(() => {
+  const [localVisible, setLocalVisible] = useState(() => {
     const s = getLocalSettings();
-    if (isHint) {
-      return !!s.hintsVisibility[storageKey];
-    } else {
-      return !!s.examplesVisibility[storageKey];
+    return isHint ? !!s.hintsVisibility[storageKey] : !!s.examplesVisibility[storageKey];
+  });
+  const [globalSettings, setGlobalSettings] = useState(() => {
+    try {
+      const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
+      const parsed = stored ? JSON.parse(stored) : {};
+      return parsed;
+    } catch {
+      return {};
     }
   });
+  
+  const globalFlag = isHint
+    ? globalSettings.alwaysDisplayAllHints
+    : globalSettings.alwaysDisplayAllExamples;
+  
+  const effectiveVisible = globalFlag ? true : localVisible;
 
   const toggle = () => {
-    setVisible((prev) => !prev);
+    setLocalVisible((prev) => !prev);
+    const s = getLocalSettings();
+    if (isHint) {
+      s.hintsVisibility[storageKey] = !localVisible;
+    } else {
+      s.examplesVisibility[storageKey] = !localVisible;
+    }
+    saveLocalSettings(s);
   };
 
   useEffect(() => {
-    const s = getLocalSettings();
-    if (isHint) {
-      s.hintsVisibility[storageKey] = visible;
-    } else {
-      s.examplesVisibility[storageKey] = visible;
-    }
-    saveLocalSettings(s);
-  }, [visible, isHint, storageKey]);
-
-  useEffect(() => {
-    const handleGlobalUpdate = () => {
+    function handleGlobalUpdate() {
       const s = getLocalSettings();
-      const newVal = isHint
+      const newLocal = isHint
         ? !!s.hintsVisibility[storageKey]
         : !!s.examplesVisibility[storageKey];
-      setVisible(newVal);
-    };
+      setLocalVisible(newLocal);
+      try {
+        const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
+        const parsed = stored ? JSON.parse(stored) : {};
+        setGlobalSettings(parsed);
+      } catch {
+        setGlobalSettings({});
+      }
+    }
     window.addEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
-    return () => window.removeEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
+    return () =>
+      window.removeEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
   }, [isHint, storageKey]);
 
-  return [visible, toggle];
-}
-
-function getHazardIconUrl(hazard) {
-  const lower = hazard.toLowerCase();
-  if (lower.includes("cyclone")) return CycloneIconUrl;
-  if (lower.includes("drought")) return DroughtIconUrl;
-  if (lower.includes("flood")) return FloodIconUrl;
-  if (lower.includes("heat")) return HeatwaveIconUrl;
-  if (lower.includes("disease")) return DiseaseIconUrl;
-  return "";
+  return [effectiveVisible, toggle, globalFlag];
 }
 
 // --------------------------------------------------------------------------------------
@@ -125,46 +126,81 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
     <span style={{ color: "red", marginLeft: 4 }}>*</span>
   ) : null;
   const characterLimit = subsubsection.characterLimit || 0;
-  const exceedLimit = characterLimit > 0 && value.length > characterLimit;
+  const exceedLimit =
+    characterLimit > 0 && value.length > characterLimit;
   const type = (subsubsection.type || "").toLowerCase();
 
-  const [hintOpen, toggleHint] = useGlobalVisibility(true, stepId, parentSubsectionId, subsubId);
-  const [exampleOpen, toggleExample] = useGlobalVisibility(false, stepId, parentSubsectionId, subsubId);
+  const [hintOpen, toggleHint, globalHint] = useGlobalVisibility(
+    true,
+    stepId,
+    parentSubsectionId,
+    subsubId
+  );
+  const [exampleOpen, toggleExample, globalExample] = useGlobalVisibility(
+    false,
+    stepId,
+    parentSubsectionId,
+    subsubId
+  );
 
   let inputElem = null;
   if (type === "dropdown") {
-    const opts = Array.isArray(subsubsection.options) ? subsubsection.options : [];
+    const opts = Array.isArray(subsubsection.options)
+      ? subsubsection.options
+      : [];
     inputElem = (
       <Autocomplete
         options={opts}
         value={value || ""}
-        onChange={(e, newVal) => updateField(stepId, parentSubsectionId, subsubId, newVal || "")}
+        onChange={(e, newVal) =>
+          updateField(stepId, parentSubsectionId, subsubId, newVal || "")
+        }
         renderInput={(params) => (
-          <TextField {...params} variant="outlined" placeholder={subsubsection.placeholder} />
+          <TextField
+            {...params}
+            variant="outlined"
+            placeholder={subsubsection.placeholder}
+          />
         )}
       />
     );
   } else if (type === "radio") {
-    const opts = Array.isArray(subsubsection.options) ? subsubsection.options : [];
+    const opts = Array.isArray(subsubsection.options)
+      ? subsubsection.options
+      : [];
     inputElem = (
       <FormControl component="fieldset">
         <RadioGroup
           row
           value={value}
-          onChange={(e) => updateField(stepId, parentSubsectionId, subsubId, e.target.value)}
+          onChange={(e) =>
+            updateField(stepId, parentSubsectionId, subsubId, e.target.value)
+          }
         >
           {opts.map((opt) => (
-            <FormControlLabel key={opt} value={opt} control={<Radio />} label={opt} />
+            <FormControlLabel
+              key={opt}
+              value={opt}
+              control={<Radio />}
+              label={opt}
+            />
           ))}
         </RadioGroup>
       </FormControl>
     );
   } else if (type === "checkbox") {
-    const opts = Array.isArray(subsubsection.options) ? subsubsection.options : [];
+    const opts = Array.isArray(subsubsection.options)
+      ? subsubsection.options
+      : [];
     const arrVal = Array.isArray(value) ? value : [];
     const handleCheck = (opt) => {
       if (arrVal.includes(opt)) {
-        updateField(stepId, parentSubsectionId, subsubId, arrVal.filter((x) => x !== opt));
+        updateField(
+          stepId,
+          parentSubsectionId,
+          subsubId,
+          arrVal.filter((x) => x !== opt)
+        );
       } else {
         updateField(stepId, parentSubsectionId, subsubId, [...arrVal, opt]);
       }
@@ -176,7 +212,12 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
           {opts.map((opt) => (
             <FormControlLabel
               key={opt}
-              control={<Checkbox checked={arrVal.includes(opt)} onChange={() => handleCheck(opt)} />}
+              control={
+                <Checkbox
+                  checked={arrVal.includes(opt)}
+                  onChange={() => handleCheck(opt)}
+                />
+              }
               label={opt}
             />
           ))}
@@ -189,7 +230,9 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
         storageKey={`expand-${stepId}-${parentSubsectionId}-${subsubId}`}
         placeholder={subsubsection.placeholder}
         value={value}
-        onChange={(e) => updateField(stepId, parentSubsectionId, subsubId, e.target.value)}
+        onChange={(e) =>
+          updateField(stepId, parentSubsectionId, subsubId, e.target.value)
+        }
         rows={4}
         characterLimit={subsubsection.characterLimit || 0}
       />
@@ -200,7 +243,9 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
         placeholder={subsubsection.placeholder}
         fullWidth
         value={value}
-        onChange={(e) => updateField(stepId, parentSubsectionId, subsubId, e.target.value)}
+        onChange={(e) =>
+          updateField(stepId, parentSubsectionId, subsubId, e.target.value)
+        }
       />
     );
   } else if (type === "triggerdesigner") {
@@ -213,7 +258,11 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
     );
   }
 
-  if (!inputElem && (!subsubsection.subsubsections || subsubsection.subsubsections.length === 0)) {
+  if (
+    !inputElem &&
+    (!subsubsection.subsubsections ||
+      subsubsection.subsubsections.length === 0)
+  ) {
     return null;
   }
 
@@ -224,12 +273,12 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
           {subsubsection.title}
           {requiredStar}
         </Typography>
-        {subsubsection.hint && (
+        {subsubsection.hint && !globalHint && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleHint}>
             Hint
           </Button>
         )}
-        {subsubsection.example && (
+        {subsubsection.example && !globalExample && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleExample}>
             Example
           </Button>
@@ -247,7 +296,10 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
       {subsubsection.example && (
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
           <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", fontStyle: "italic" }}
+            >
               {subsubsection.example}
             </Typography>
           </Box>
@@ -284,11 +336,22 @@ function SubsectionInput({ stepId, subsection }) {
     <span style={{ color: "red", marginLeft: 4 }}>*</span>
   ) : null;
   const characterLimit = subsection.characterLimit || 0;
-  const exceedLimit = characterLimit > 0 && value.length > characterLimit;
+  const exceedLimit =
+    characterLimit > 0 && value.length > characterLimit;
   const type = (subsection.type || "").toLowerCase();
 
-  const [hintOpen, toggleHint] = useGlobalVisibility(true, stepId, subsectionId, null);
-  const [exampleOpen, toggleExample] = useGlobalVisibility(false, stepId, subsectionId, null);
+  const [hintOpen, toggleHint, globalHint] = useGlobalVisibility(
+    true,
+    stepId,
+    subsectionId,
+    null
+  );
+  const [exampleOpen, toggleExample, globalExample] = useGlobalVisibility(
+    false,
+    stepId,
+    subsectionId,
+    null
+  );
 
   let inputElem = null;
   if (type === "radio" && subsectionId === "hazard") {
@@ -324,13 +387,24 @@ function SubsectionInput({ stepId, subsection }) {
               "&.Mui-selected, &.Mui-selected:hover, &:active": {
                 backgroundColor: "primary.light",
                 borderLeft: "1px solid rgba(0, 0, 0, 0.1)",
-                "& img": { filter: "none" },
               },
               "& img": { filter: "grayscale(100%)" },
             }}
           >
             <img
-              src={getHazardIconUrl(opt)}
+              src={
+                opt.toLowerCase().includes("cyclone")
+                  ? CycloneIconUrl
+                  : opt.toLowerCase().includes("drought")
+                  ? DroughtIconUrl
+                  : opt.toLowerCase().includes("flood")
+                  ? FloodIconUrl
+                  : opt.toLowerCase().includes("heat")
+                  ? HeatwaveIconUrl
+                  : opt.toLowerCase().includes("disease")
+                  ? DiseaseIconUrl
+                  : ""
+              }
               alt={opt}
               style={{ width: 64, height: 64 }}
             />
@@ -348,10 +422,17 @@ function SubsectionInput({ stepId, subsection }) {
         <RadioGroup
           row
           value={value}
-          onChange={(e) => updateField(stepId, subsectionId, questionId, e.target.value)}
+          onChange={(e) =>
+            updateField(stepId, subsectionId, questionId, e.target.value)
+          }
         >
           {opts.map((opt) => (
-            <FormControlLabel key={opt} value={opt} control={<Radio />} label={opt} />
+            <FormControlLabel
+              key={opt}
+              value={opt}
+              control={<Radio />}
+              label={opt}
+            />
           ))}
         </RadioGroup>
       </FormControl>
@@ -391,7 +472,12 @@ function SubsectionInput({ stepId, subsection }) {
     const arrVal = Array.isArray(value) ? value : [];
     const handleCheck = (opt) => {
       if (arrVal.includes(opt)) {
-        updateField(stepId, subsectionId, questionId, arrVal.filter((x) => x !== opt));
+        updateField(
+          stepId,
+          subsectionId,
+          questionId,
+          arrVal.filter((x) => x !== opt)
+        );
       } else {
         updateField(stepId, subsectionId, questionId, [...arrVal, opt]);
       }
@@ -403,7 +489,12 @@ function SubsectionInput({ stepId, subsection }) {
           {opts.map((opt) => (
             <FormControlLabel
               key={opt}
-              control={<Checkbox checked={arrVal.includes(opt)} onChange={() => handleCheck(opt)} />}
+              control={
+                <Checkbox
+                  checked={arrVal.includes(opt)}
+                  onChange={() => handleCheck(opt)}
+                />
+              }
               label={opt}
             />
           ))}
@@ -424,7 +515,9 @@ function SubsectionInput({ stepId, subsection }) {
         storageKey={`expand-${stepId}-${subsectionId}-${questionId}`}
         placeholder={subsection.placeholder}
         value={value}
-        onChange={(e) => updateField(stepId, subsectionId, questionId, e.target.value)}
+        onChange={(e) =>
+          updateField(stepId, subsectionId, questionId, e.target.value)
+        }
         rows={4}
         characterLimit={subsection.characterLimit || 0}
       />
@@ -435,12 +528,17 @@ function SubsectionInput({ stepId, subsection }) {
         placeholder={subsection.placeholder}
         fullWidth
         value={value}
-        onChange={(e) => updateField(stepId, subsectionId, questionId, e.target.value)}
+        onChange={(e) =>
+          updateField(stepId, subsectionId, questionId, e.target.value)
+        }
       />
     );
   }
 
-  if (!inputElem && (!subsection.subsubsections || subsection.subsubsections.length === 0)) {
+  if (
+    !inputElem &&
+    (!subsection.subsubsections || subsection.subsubsections.length === 0)
+  ) {
     return null;
   }
 
@@ -451,12 +549,12 @@ function SubsectionInput({ stepId, subsection }) {
           {subsection.title}
           {requiredStar}
         </Typography>
-        {subsection.hint && (
+        {subsection.hint && !globalHint && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleHint}>
             Hint
           </Button>
         )}
-        {subsection.example && (
+        {subsection.example && !globalExample && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleExample}>
             Example
           </Button>
@@ -520,9 +618,18 @@ function StepInput({ step }) {
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (step.type || "").toLowerCase();
 
-  // Step-level hint/example toggles
-  const [hintOpen, toggleHint] = useGlobalVisibility(true, step.id, step.id, null);
-  const [exampleOpen, toggleExample] = useGlobalVisibility(false, step.id, step.id, null);
+  const [hintOpen, toggleHint, globalHint] = useGlobalVisibility(
+    true,
+    step.id,
+    step.id,
+    null
+  );
+  const [exampleOpen, toggleExample, globalExample] = useGlobalVisibility(
+    false,
+    step.id,
+    step.id,
+    null
+  );
 
   let inputElem = null;
   if (type === "triggerdesigner") {
@@ -559,27 +666,22 @@ function StepInput({ step }) {
     return null;
   }
 
-  // We place Hint & Example on the same line
   return (
     <Box sx={{ mb: 3 }}>
-      {/* Buttons on one line */}
       {(step.hint || step.example) && (
         <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-          {/* Possibly a step title could appear here if desired */}
-          {step.hint && (
+          {step.hint && !globalHint && (
             <Button variant="text" size="small" sx={{ mr: 1 }} onClick={toggleHint}>
               Hint
             </Button>
           )}
-          {step.example && (
+          {step.example && !globalExample && (
             <Button variant="text" size="small" onClick={toggleExample}>
               Example
             </Button>
           )}
         </Box>
       )}
-
-      {/* Collapsed boxes below */}
       {step.hint && (
         <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
           <Box sx={{ px: 0.5, mb: 1 }}>
@@ -598,9 +700,7 @@ function StepInput({ step }) {
           </Box>
         </Collapse>
       )}
-
       {inputElem}
-
       {characterLimit > 0 && type !== "textarea" && (
         <Typography
           variant="body2"

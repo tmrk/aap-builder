@@ -1,0 +1,44 @@
+{
+    "language": {
+      "english": "Inglês (UK)",
+      "french": "Francês",
+      "portuguese": "Português"
+    },
+    "header": {
+      "title": "AAP Builder",
+      "subtitle": ""
+    },
+    "settings": {
+      "title": "Configurações",
+      "textFields": "Campos de texto",
+      "expandAllTextFields": "Expandir todos os campos de texto",
+      "collapseAllTextFields": "Recolher todos os campos de texto",
+      "hints": "Dicas",
+      "showAllHints": "Mostrar todas as dicas",
+      "hideAllHints": "Esconder todas as dicas",
+      "examples": "Exemplos",
+      "showAllExamples": "Mostrar todos os exemplos",
+      "hideAllExamples": "Esconder todos os exemplos",
+      "language": "Idioma"
+    },
+    "verticalStepper": {
+      "loadingTemplate": "Carregando modelo...",
+      "errorLoadingTemplate": "Erro ao carregar modelo: {error}",
+      "noTemplateData": "Nenhum dado de modelo disponível.",
+      "back": "Voltar",
+      "next": "Próximo",
+      "export": "Exportar para docx"
+    },
+    "triggerDesigner": {
+      "generate": "Gerar declaração de disparo",
+      "hazardNotSelected": "Risco não selecionado. Por favor, defina um risco no Resumo para habilitar o gerador."
+    },
+    "expandableTextField": {
+      "expand": "Expandir campo",
+      "collapse": "Recolher campo"
+    },
+    "sectionContent": {
+      "noSubsections": "Não há subseções ou campos de entrada definidos para esta etapa."
+    }
+  }
+  

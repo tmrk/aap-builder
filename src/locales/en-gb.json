@@ -1,0 +1,44 @@
+{
+    "language": {
+      "english": "English (UK)",
+      "french": "French",
+      "portuguese": "Portugese"
+    },
+    "header": {
+      "title": "AAP Builder",
+      "subtitle": ""
+    },
+    "settings": {
+      "title": "Settings",
+      "textFields": "Text Fields",
+      "expandAllTextFields": "Expand all text fields",
+      "collapseAllTextFields": "Collapse all text fields",
+      "hints": "Hints",
+      "showAllHints": "Show all hints",
+      "hideAllHints": "Hide all hints",
+      "examples": "Examples",
+      "showAllExamples": "Show all examples",
+      "hideAllExamples": "Hide all examples",
+      "language": "Language"
+    },
+    "verticalStepper": {
+      "loadingTemplate": "Loading template...",
+      "errorLoadingTemplate": "Error loading template: {error}",
+      "noTemplateData": "No template data available.",
+      "back": "Back",
+      "next": "Next",
+      "export": "Export to docx"
+    },
+    "triggerDesigner": {
+      "generate": "Generate trigger statement",
+      "hazardNotSelected": "Hazard not selected. Please set a hazard in the Summary to enable the generator."
+    },
+    "expandableTextField": {
+      "expand": "Expand field",
+      "collapse": "Collapse field"
+    },
+    "sectionContent": {
+      "noSubsections": "There are no subsections or input fields defined for this step."
+    }
+  }
+  

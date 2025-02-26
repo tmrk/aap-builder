@@ -1,5 +1,6 @@
 import React from "react";
 import { AAPProvider } from "./context/AAPContext";
+import { LanguageProvider } from "./context/LanguageContext";
 import VerticalStepper from "./components/VerticalStepper";
 import Header from "./components/Header";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
@@ -63,12 +64,14 @@ function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
-      <AAPProvider>
-        <Header />
-        <Container maxWidth="md" sx={{ pb: 5 }}>
-          <VerticalStepper />
-        </Container>
-      </AAPProvider>
+      <LanguageProvider>
+        <AAPProvider>
+          <Header />
+          <Container maxWidth="md" sx={{ pb: 5 }}>
+            <VerticalStepper />
+          </Container>
+        </AAPProvider>
+      </LanguageProvider>
     </ThemeProvider>
   );
 }
