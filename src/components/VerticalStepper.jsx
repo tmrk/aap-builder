@@ -199,7 +199,10 @@ export default function VerticalStepper() {
           <Button
             size="small"
             variant="outlined"
-            onClick={() => handleStepClick(Math.min(activeStep + 1, totalSteps - 1))}
+            onClick={() => {
+              handleStepClick(Math.min(activeStep + 1, totalSteps - 1))
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             disabled={activeStep === totalSteps - 1}
           >
             Next
@@ -209,7 +212,10 @@ export default function VerticalStepper() {
           <Button
             size="small"
             variant="outlined"
-            onClick={() => handleStepClick(Math.max(activeStep - 1, 0))}
+            onClick={() => {
+              handleStepClick(Math.max(activeStep - 1, 0))
+              window.scrollTo({ top: 0, behavior: "smooth" });
+            }}
             disabled={activeStep === 0}
           >
             Back
