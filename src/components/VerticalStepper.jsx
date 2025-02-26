@@ -15,6 +15,8 @@ import { getSectionStatus } from "../utils/validation";
 import SectionContent from "./SectionContent";
 import { exportToDocx } from "../utils/docxExport";
 
+const APP_BAR_OFFSET = 80; // px offset so the label isn't hidden beneath the AppBar
+
 function TriStateStepIcon({ stepIndex, status, active }) {
   let bgColor = "grey.400";
   if (status === "inprogress") {
@@ -36,7 +38,7 @@ function TriStateStepIcon({ stepIndex, status, active }) {
         fontSize: "0.8rem",
       }}
     >
-      {stepIndex /* removed +1 to align with chapter numbers*/ }
+      {stepIndex}
     </Box>
   );
 }
@@ -66,20 +68,23 @@ export default function VerticalStepper() {
 
   const stepStatus = (i) => getSectionStatus(steps[i], aapData);
 
+  // This is called when the step's content finishes expanding
+  // We'll scroll the step's label into view with an AppBar offset
+  const handleStepContentEntered = (idx, stepId) => {
+    if (idx === activeStep && window.innerWidth >= 960) {
+      const labelEl = document.getElementById(`step-label-${stepId}`);
+      if (labelEl) {
+        const rect = labelEl.getBoundingClientRect();
+        const scrollTop = window.scrollY + rect.top - APP_BAR_OFFSET;
+        window.scrollTo({ top: scrollTop, behavior: "smooth" });
+      }
+    }
+  };
+
+  // Switch to a step (desktop or mobile) but do not immediately scroll
+  // For desktop, we'll let the step open first, then handleStepContentEntered does the scroll
   const handleStepClick = (index) => {
     setActiveStep(index);
-  };
-
-  const handleNext = () => {
-    if (activeStep < totalSteps - 1) {
-      setActiveStep((prev) => prev + 1);
-    }
-  };
-
-  const handleBack = () => {
-    if (activeStep > 0) {
-      setActiveStep((prev) => prev - 1);
-    }
   };
 
   const desktopStepper = (
@@ -91,6 +96,7 @@ export default function VerticalStepper() {
     >
       {steps.map((step, idx) => {
         const status = stepStatus(idx);
+
         return (
           <Step key={step.id || idx} completed={false}>
             <StepLabel
@@ -110,17 +116,29 @@ export default function VerticalStepper() {
               }}
               onClick={() => handleStepClick(idx)}
             >
-              <Typography sx={{ fontWeight: "bold" }}>{step.title}</Typography>
+              {/* We give the label an ID so we can scroll to it later */}
+              <Typography id={`step-label-${step.id}`} sx={{ fontWeight: "bold" }}>
+                {step.title}
+              </Typography>
             </StepLabel>
-            <StepContent>
+
+            <StepContent
+              TransitionProps={{
+                onEntered: () => handleStepContentEntered(idx, step.id),
+              }}
+            >
               <SectionContent step={step} />
               <Box sx={{ mb: 2 }}>
-                <Button disabled={idx === 0} onClick={handleBack} sx={{ mt: 1, mr: 1 }}>
+                <Button
+                  disabled={idx === 0}
+                  onClick={() => handleStepClick(idx - 1)}
+                  sx={{ mt: 1, mr: 1 }}
+                >
                   Back
                 </Button>
                 <Button
                   variant="contained"
-                  onClick={handleNext}
+                  onClick={() => handleStepClick(idx + 1)}
                   sx={{ mt: 1, mr: 1 }}
                   disabled={idx === totalSteps - 1}
                 >
@@ -136,7 +154,15 @@ export default function VerticalStepper() {
 
   const mobileTopStepper = (
     <Box sx={{ display: { xs: "block", md: "none" } }}>
-      <Box sx={{ mb: 2, justifyContent: "space-between", display: "flex"}}>
+      <Box
+        sx={{
+          mb: 2,
+          justifyContent: "space-between",
+          display: "flex",
+          backgroundColor: "background.light",
+          borderRadius: 4,
+        }}
+      >
         {steps.map((step, idx) => {
           const status = stepStatus(idx);
           const active = idx === activeStep;
@@ -166,20 +192,26 @@ export default function VerticalStepper() {
       <SectionContent step={steps[activeStep]} />
       <MobileStepper
         variant="text"
-        steps={totalSteps - 1} // added -1 to align with chapter numbers
+        steps={totalSteps - 1}
         position="static"
-        activeStep={activeStep - 1} // added -1 to align with chapter numbers
+        activeStep={activeStep - 1}
         nextButton={
           <Button
             size="small"
-            onClick={handleNext}
+            variant="outlined"
+            onClick={() => handleStepClick(Math.min(activeStep + 1, totalSteps - 1))}
             disabled={activeStep === totalSteps - 1}
           >
             Next
           </Button>
         }
         backButton={
-          <Button size="small" onClick={handleBack} disabled={activeStep === 0}>
+          <Button
+            size="small"
+            variant="outlined"
+            onClick={() => handleStepClick(Math.max(activeStep - 1, 0))}
+            disabled={activeStep === 0}
+          >
             Back
           </Button>
         }
@@ -189,10 +221,20 @@ export default function VerticalStepper() {
 
   return (
     <Box sx={{ width: "100%", mt: 3 }}>
+      {/* Mobile stepper at top */}
       {mobileTopStepper}
+
+      {/* Desktop vertical stepper */}
       {desktopStepper}
+
       <Box sx={{ mt: 2 }}>
-        <Button variant="contained" size="large" fullWidth color="primary" onClick={handleExport}>
+        <Button
+          variant="contained"
+          size="large"
+          fullWidth
+          color="primary"
+          onClick={handleExport}
+        >
           Export to docx
         </Button>
       </Box>

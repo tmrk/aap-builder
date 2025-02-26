@@ -1,16 +1,15 @@
 <!DOCTYPE html>
 <html lang="en-gb">
   <head>
-    <meta charset="UTF-8" />   
+    <meta charset="UTF-8" />
     <link rel="icon" href="/favicon.ico" sizes="32x32">
     <link rel="icon" href="/icon.svg" type="image/svg+xml">
     <link rel="apple-touch-icon" href="/apple-touch-icon.png">
-    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
-    <meta name="theme-color" content="rgb(14,105,46)" />
-    <meta name="apple-mobile-web-app-capable" content="yes" />
-    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
-    <meta name="mobile-web-app-capable" content="yes" />
     <link rel="manifest" href="/manifest.json" />
+    <meta name="mobile-web-app-capable" content="yes" />
+    <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+    <meta name="theme-color" content="#0E692E" />
+    <meta name="viewport" content="width=device-width, initial-scale=1, maximum-scale=1, user-scalable=no" />
     <title>AAP builder</title>
     <script async src="https://www.googletagmanager.com/gtag/js?id=G-D45J6N6F8X"></script>
     <script>
@@ -18,6 +17,22 @@
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'G-D45J6N6F8X');
+    </script>
+    
+    <style>
+      body.ios-appmode {
+        background-color: #0E692E;
+        margin: 0;
+        padding: 0;
+      }
+    </style>
+    
+    <script>
+      document.addEventListener("DOMContentLoaded", function() {
+        if (("standalone" in navigator) && navigator.standalone) {
+          document.body.classList.add("ios-appmode");
+        }
+      });
     </script>
   </head>
   <body>

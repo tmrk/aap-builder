@@ -46,6 +46,8 @@ const theme = createTheme({
     },
     background: {
       default: "rgb(247, 244, 224)", // wheat-2
+      light: "rgb(229, 216, 175)", // wheat-1
+      dark: "rgb(169, 144, 115)", // brown-2
     },
     text: {
       primary: "rgb(57, 43, 39)", // dark-brown
