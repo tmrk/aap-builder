@@ -64,7 +64,7 @@ function saveLocalSettings(data) {
 
 export default function SettingsDrawer({ open, onClose }) {
   const [settings, setSettings] = useState(() => getLocalSettings());
-  const { language, changeLanguage, t } = useContext(LanguageContext);
+  const { language, changeLanguage, t, availableLanguages, getNativeLanguageName } = useContext(LanguageContext);
 
   useEffect(() => {
     const handleGlobalUpdate = () => {
@@ -86,13 +86,7 @@ export default function SettingsDrawer({ open, onClose }) {
       }}
     >
       <Box sx={{ width: 300, p: 2 }}>
-        <Box
-          sx={{
-            display: "flex",
-            alignItems: "center",
-            justifyContent: "space-between",
-          }}
-        >
+        <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
           <Typography variant="h6">{t("settings.title")}</Typography>
           <IconButton onClick={onClose}>
             <CloseIcon />
@@ -117,7 +111,7 @@ export default function SettingsDrawer({ open, onClose }) {
               }}
             />
           }
-          label="Always expand text fields"
+          label={t("settings.alwaysExpandAllTextFields")}
         />
 
         <Divider sx={{ my: 2 }} />
@@ -138,7 +132,7 @@ export default function SettingsDrawer({ open, onClose }) {
               }}
             />
           }
-          label="Always display all hints"
+          label={t("settings.alwaysDisplayAllHints")}
         />
 
         <Divider sx={{ my: 2 }} />
@@ -159,7 +153,7 @@ export default function SettingsDrawer({ open, onClose }) {
               }}
             />
           }
-          label="Always display all examples"
+          label={t("settings.alwaysDisplayAllExamples")}
         />
 
         <Divider sx={{ my: 2 }} />
@@ -172,8 +166,11 @@ export default function SettingsDrawer({ open, onClose }) {
             label={t("settings.language")}
             onChange={(e) => changeLanguage(e.target.value)}
           >
-            <MenuItem value="en-gb">{t("language.english")}</MenuItem>
-            {/* Future languages can be added here */}
+            {availableLanguages.map((langCode) => (
+              <MenuItem key={langCode} value={langCode}>
+                {getNativeLanguageName(langCode)}
+              </MenuItem>
+            ))}
           </Select>
         </FormControl>
       </Box>

@@ -14,6 +14,7 @@ import useMarkdownTemplate from "../utils/useMarkdownTemplate";
 import { getSectionStatus } from "../utils/validation";
 import SectionContent from "./SectionContent";
 import { exportToDocx } from "../utils/docxExport";
+import { LanguageContext } from "../context/LanguageContext";
 
 const APP_BAR_OFFSET = 80; // px offset so the label isn't hidden beneath the AppBar
 
@@ -44,7 +45,15 @@ function TriStateStepIcon({ stepIndex, status, active }) {
 }
 
 export default function VerticalStepper() {
-  const [activeStep, setActiveStep] = useState(0);
+
+  const [activeStep, setActiveStep] = useState(() => {
+    const stored = localStorage.getItem("AAP_ACTIVE_STEP");
+    return stored !== null ? Number(stored) : 0;
+  });
+
+  const { t } = useContext(LanguageContext);
+  
+
   const { aapData } = useContext(AAPContext);
 
   const { template, loading, error } = useMarkdownTemplate();
@@ -54,13 +63,13 @@ export default function VerticalStepper() {
   };
 
   if (loading) {
-    return <Typography>Loading template...</Typography>;
+    return <Typography>{ t("stepper.loadingTemplate")}</Typography>;
   }
   if (error) {
-    return <Typography color="error">Error loading template: {error}</Typography>;
+    return <Typography color="error">{ t("stepper.errorLoadingTemplate")} {error}</Typography>;
   }
   if (!template || template.length === 0) {
-    return <Typography>No template data available.</Typography>;
+    return <Typography>{ t("stepper.noTemplateData")}</Typography>;
   }
 
   const steps = template;
@@ -85,6 +94,7 @@ export default function VerticalStepper() {
   // For desktop, we'll let the step open first, then handleStepContentEntered does the scroll
   const handleStepClick = (index) => {
     setActiveStep(index);
+    localStorage.setItem("AAP_ACTIVE_STEP", index);
   };
 
   const desktopStepper = (
@@ -134,7 +144,7 @@ export default function VerticalStepper() {
                   onClick={() => handleStepClick(idx - 1)}
                   sx={{ mt: 1, mr: 1 }}
                 >
-                  Back
+                  { t("stepper.back")}
                 </Button>
                 <Button
                   variant="contained"
@@ -142,7 +152,7 @@ export default function VerticalStepper() {
                   sx={{ mt: 1, mr: 1 }}
                   disabled={idx === totalSteps - 1}
                 >
-                  Next
+                  { t("stepper.next")}
                 </Button>
               </Box>
             </StepContent>
@@ -205,7 +215,7 @@ export default function VerticalStepper() {
             }}
             disabled={activeStep === totalSteps - 1}
           >
-            Next
+            { t("stepper.next")}
           </Button>
         }
         backButton={
@@ -218,7 +228,7 @@ export default function VerticalStepper() {
             }}
             disabled={activeStep === 0}
           >
-            Back
+            { t("stepper.back")}
           </Button>
         }
       />
@@ -241,7 +251,7 @@ export default function VerticalStepper() {
           color="primary"
           onClick={handleExport}
         >
-          Export to docx
+          { t("stepper.exportToDocx")}
         </Button>
       </Box>
     </Box>

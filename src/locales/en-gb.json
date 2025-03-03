@@ -1,8 +1,6 @@
 {
     "language": {
-      "english": "English (UK)",
-      "french": "French",
-      "portuguese": "Portugese"
+      "native": "English"
     },
     "header": {
       "title": "AAP Builder",
@@ -11,23 +9,20 @@
     "settings": {
       "title": "Settings",
       "textFields": "Text Fields",
-      "expandAllTextFields": "Expand all text fields",
-      "collapseAllTextFields": "Collapse all text fields",
+      "alwaysExpandAllTextFields": "Always expand all text fields",
       "hints": "Hints",
-      "showAllHints": "Show all hints",
-      "hideAllHints": "Hide all hints",
+      "alwaysDisplayAllHints": "Always display all hints",
       "examples": "Examples",
-      "showAllExamples": "Show all examples",
-      "hideAllExamples": "Hide all examples",
+      "alwaysDisplayAllExamples": "Always display all examples",
       "language": "Language"
     },
-    "verticalStepper": {
+    "stepper": {
       "loadingTemplate": "Loading template...",
-      "errorLoadingTemplate": "Error loading template: {error}",
+      "errorLoadingTemplate": "Error loading template:",
       "noTemplateData": "No template data available.",
       "back": "Back",
       "next": "Next",
-      "export": "Export to docx"
+      "exportToDocx": "Export to docx"
     },
     "triggerDesigner": {
       "generate": "Generate trigger statement",
@@ -38,7 +33,13 @@
       "collapse": "Collapse field"
     },
     "sectionContent": {
-      "noSubsections": "There are no subsections or input fields defined for this step."
+      "noSubsections": "There are no subsections or input fields defined for this step.",
+      "explanatoryNote": "Explanatory note",
+      "exampleText": "Example text"
+    },
+    "button": {
+      "hint": "Hint",
+      "example": "Example"
     }
   }
   

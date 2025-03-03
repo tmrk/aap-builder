@@ -16,6 +16,7 @@ import {
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { AAPContext } from "../context/AAPContext";
+import { LanguageContext } from "../context/LanguageContext";
 import useCountries from "../utils/useCountries";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
@@ -118,6 +119,7 @@ function useGlobalVisibility(isHint, stepId, subsectionId, subsubId) {
 // --------------------------------------------------------------------------------------
 function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
   const { aapData, updateField } = useContext(AAPContext);
+  const { t } = useContext(LanguageContext);
   const subsubId = subsubsection.id;
 
   const storedValue = aapData?.[stepId]?.[parentSubsectionId]?.[subsubId] || "";
@@ -275,12 +277,12 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
         </Typography>
         {subsubsection.hint && !globalHint && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleHint}>
-            Hint
+            { t("button.hint") }
           </Button>
         )}
         {subsubsection.example && !globalExample && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleExample}>
-            Example
+            { t("button.example") }
           </Button>
         )}
       </Box>
@@ -288,6 +290,7 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
         <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
           <Box sx={{ px: 0.5, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              <b>{ t("sectionContent.explanatoryNote") }: </b>
               {subsubsection.hint}
             </Typography>
           </Box>
@@ -300,6 +303,7 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
               variant="body2"
               sx={{ color: "text.secondary", fontStyle: "italic" }}
             >
+              <b>{ t("sectionContent.exampleText") }: </b>
               {subsubsection.example}
             </Typography>
           </Box>
@@ -327,6 +331,7 @@ function SubSubsectionInput({ stepId, parentSubsectionId, subsubsection }) {
 // --------------------------------------------------------------------------------------
 function SubsectionInput({ stepId, subsection }) {
   const { aapData, updateField } = useContext(AAPContext);
+  const { t } = useContext(LanguageContext);
   const subsectionId = subsection.id;
   const questionId = subsectionId;
   const storedValue = aapData?.[stepId]?.[subsectionId]?.[questionId] || "";
@@ -552,12 +557,12 @@ function SubsectionInput({ stepId, subsection }) {
         </Typography>
         {subsection.hint && !globalHint && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleHint}>
-            Hint
+            { t("button.hint") }
           </Button>
         )}
         {subsection.example && !globalExample && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleExample}>
-            Example
+            { t("button.example") }
           </Button>
         )}
       </Box>
@@ -565,6 +570,7 @@ function SubsectionInput({ stepId, subsection }) {
         <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
           <Box sx={{ px: 0.5, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              <b>{ t("sectionContent.explanatoryNote") }: </b>
               {subsection.hint}
             </Typography>
           </Box>
@@ -574,6 +580,7 @@ function SubsectionInput({ stepId, subsection }) {
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
           <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
+              <b>{ t("sectionContent.exampleText") }: </b>
               {subsection.example}
             </Typography>
           </Box>
@@ -613,6 +620,7 @@ function SubsectionInput({ stepId, subsection }) {
 // --------------------------------------------------------------------------------------
 function StepInput({ step }) {
   const { aapData, updateField } = useContext(AAPContext);
+  const { t } = useContext(LanguageContext);
   const storedValue = aapData?.[step.id]?.[step.id]?.[step.id] || "";
   const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
   const characterLimit = step.characterLimit || 0;
@@ -673,12 +681,12 @@ function StepInput({ step }) {
         <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
           {step.hint && !globalHint && (
             <Button variant="text" size="small" sx={{ mr: 1 }} onClick={toggleHint}>
-              Hint
+              { t("button.hint") }
             </Button>
           )}
           {step.example && !globalExample && (
             <Button variant="text" size="small" onClick={toggleExample}>
-              Example
+              { t("button.example") }
             </Button>
           )}
         </Box>
@@ -687,6 +695,7 @@ function StepInput({ step }) {
         <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
           <Box sx={{ px: 0.5, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
+              <b>{ t("sectionContent.explanatoryNote") }: </b>
               {step.hint}
             </Typography>
           </Box>
@@ -696,6 +705,7 @@ function StepInput({ step }) {
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
           <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
+              <b>{ t("sectionContent.exampleText") }: </b>
               {step.example}
             </Typography>
           </Box>

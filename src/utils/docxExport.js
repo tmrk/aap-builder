@@ -132,7 +132,7 @@ export async function exportToDocx(aapData) {
   // Title
   docContent.push(
     new Paragraph({
-      text: "Anticipatory Action Protocol (AAP)",
+      text: "Anticipatory Action Plan (AAP)",
       style: "Title",
       alignment: AlignmentType.CENTER,
     })

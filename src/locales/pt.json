@@ -1,33 +1,28 @@
 {
     "language": {
-      "english": "Inglês (UK)",
-      "french": "Francês",
-      "portuguese": "Português"
+      "native": "Português"
     },
     "header": {
-      "title": "AAP Builder",
+      "title": "Construtor de PAA",
       "subtitle": ""
     },
     "settings": {
       "title": "Configurações",
       "textFields": "Campos de texto",
-      "expandAllTextFields": "Expandir todos os campos de texto",
-      "collapseAllTextFields": "Recolher todos os campos de texto",
+      "alwaysExpandAllTextFields": "Sempre expandir todos os campos de texto",
       "hints": "Dicas",
-      "showAllHints": "Mostrar todas as dicas",
-      "hideAllHints": "Esconder todas as dicas",
+      "alwaysDisplayAllHints": "Sempre exibir todas as dicas",
       "examples": "Exemplos",
-      "showAllExamples": "Mostrar todos os exemplos",
-      "hideAllExamples": "Esconder todos os exemplos",
+      "alwaysDisplayAllExamples": "Sempre exibir todos os exemplos",
       "language": "Idioma"
     },
-    "verticalStepper": {
+    "stepper": {
       "loadingTemplate": "Carregando modelo...",
-      "errorLoadingTemplate": "Erro ao carregar modelo: {error}",
+      "errorLoadingTemplate": "Erro ao carregar modelo:",
       "noTemplateData": "Nenhum dado de modelo disponível.",
       "back": "Voltar",
       "next": "Próximo",
-      "export": "Exportar para docx"
+      "exportToDocx": "Exportar para docx"
     },
     "triggerDesigner": {
       "generate": "Gerar declaração de disparo",
@@ -38,7 +33,13 @@
       "collapse": "Recolher campo"
     },
     "sectionContent": {
-      "noSubsections": "Não há subseções ou campos de entrada definidos para esta etapa."
+      "noSubsections": "Não há subseções ou campos de entrada definidos para esta etapa.",
+      "explanatoryNote": "Nota explicativa",
+      "exampleText": "Texto de exemplo"
+    },
+    "button": {
+      "hint": "Dica",
+      "example": "Exemplo"
     }
   }
   
