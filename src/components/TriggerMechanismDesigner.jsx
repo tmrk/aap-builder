@@ -1,7 +1,9 @@
 import React, { useState, useContext, useEffect } from "react";
-import { Box, Typography, TextField, Button } from "@mui/material";
+import { Box, Typography, TextField, Button, IconButton } from "@mui/material";
+import DeleteIcon from "@mui/icons-material/Delete";
 import { AAPContext } from "../context/AAPContext";
 import ExpandableTextField from "./ExpandableTextField";
+import { LanguageContext } from "../context/LanguageContext";
 
 export default function TriggerMechanismDesigner({ sectionId, subsectionId, questionId }) {
   // Use default keys if none are provided so that the trigger statement is saved/retrieved under:
@@ -11,79 +13,136 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
   const effectiveQuestionId = questionId || "hazard(s)";
 
   const { aapData, updateField } = useContext(AAPContext);
+  const { t } = useContext(LanguageContext);
 
   // Retrieve the selected hazard from the AAP summary.
   const hazardSelection = aapData?.["summary"]?.["hazard"]?.["hazard"] || "";
 
-  // Load any saved trigger statement from aapData (persisted via localStorage).
-  const [triggerOutput, setTriggerOutput] = useState(
-    aapData?.[effectiveSectionId]?.[effectiveSubsectionId]?.[effectiveQuestionId] || ""
-  );
-
-  // Ensure that whenever aapData changes (e.g. on page reload), we update the trigger statement.
-  useEffect(() => {
-    const saved = aapData?.[effectiveSectionId]?.[effectiveSubsectionId]?.[effectiveQuestionId] || "";
-    setTriggerOutput(saved);
-  }, [aapData, effectiveSectionId, effectiveSubsectionId, effectiveQuestionId]);
-
-  // State for input fields (all required).
-  const [input1, setInput1] = useState("");
-  const [input2, setInput2] = useState("");
-  const [input3, setInput3] = useState("");
-
-  // Set dynamic labels based on the hazard.
-  let label1 = "24‑hr Rainfall Threshold (mm)";
-  let label2 = "River Gauge Level (m)";
-  let label3 = "Return Period (years)";
-  const hazardKey = hazardSelection.toLowerCase();
-
-  if (hazardKey.includes("cyclone")) {
-    label1 = "Sustained Wind Speed Threshold (km/h)";
-    label2 = "Minimum Central Pressure (hPa)";
-    label3 = "Historical Intensity (e.g. return period in years)";
-  } else if (hazardKey.includes("drought")) {
-    label1 = "Cumulative Rainfall Threshold (mm)";
-    label2 = "Hydrological Index Threshold";
-    label3 = "Historical Drought Frequency (years)";
-  } else if (hazardKey.includes("flood")) {
-    // Defaults for riverine flood remain.
-    label1 = "24‑hr Rainfall Threshold (mm)";
-    label2 = "River Gauge Level (m)";
-    label3 = "Return Period (years)";
+  // Determine hazard-specific default values and placeholders.
+  let defaultSource, defaultPhaseTitle;
+  let thresholdPlaceholder = "";
+  let leadTimePlaceholder = "";
+  let probabilityPlaceholder = "";
+  if (hazardSelection.toLowerCase().includes("cyclone")) {
+    defaultSource = "Météo Madagascar (DGM)";
+    defaultPhaseTitle = t("triggerDesigner.defaultPhase1") || "Minimum Operational Readiness Activities";
+    thresholdPlaceholder = t("triggerDesigner.thresholdPlaceholderCyclone") || "e.g., Sustained wind speed (km/h)";
+    leadTimePlaceholder = t("triggerDesigner.leadTimePlaceholderCyclone") || "e.g., 48 hours";
+    probabilityPlaceholder = t("triggerDesigner.probabilityPlaceholderCyclone") || "e.g., high confidence";
+  } else if (hazardSelection.toLowerCase().includes("drought")) {
+    defaultSource = "Seasonal Rainfall Forecast";
+    defaultPhaseTitle = t("triggerDesigner.defaultPhase1") || "Minimum Operational Readiness Activities";
+    thresholdPlaceholder = t("triggerDesigner.thresholdPlaceholderDrought") || "e.g., rainfall deficit (%)";
+    leadTimePlaceholder = t("triggerDesigner.leadTimePlaceholderDrought") || "e.g., 3 months";
+    probabilityPlaceholder = t("triggerDesigner.probabilityPlaceholderDrought") || "e.g., moderate probability";
+  } else if (hazardSelection.toLowerCase().includes("flood")) {
+    defaultSource = "Hydrological Forecast System";
+    defaultPhaseTitle = t("triggerDesigner.defaultPhase1") || "Minimum Operational Readiness Activities";
+    thresholdPlaceholder = t("triggerDesigner.thresholdPlaceholderFlood") || "e.g., river gauge level (m)";
+    leadTimePlaceholder = t("triggerDesigner.leadTimePlaceholderFlood") || "e.g., 24 hours";
+    probabilityPlaceholder = t("triggerDesigner.probabilityPlaceholderFlood") || "e.g., moderate confidence";
+  } else {
+    defaultSource = t("triggerDesigner.sourceDefault") || "Local Meteorological Service";
+    defaultPhaseTitle = t("triggerDesigner.defaultPhase1") || "Minimum Operational Readiness Activities";
+    thresholdPlaceholder = t("triggerDesigner.thresholdPlaceholderDefault") || "Threshold";
+    leadTimePlaceholder = t("triggerDesigner.leadTimePlaceholderDefault") || "Lead Time";
+    probabilityPlaceholder = t("triggerDesigner.probabilityPlaceholderDefault") || "Probability (optional)";
   }
 
-  // When the hazard changes, reset the input fields.
-  useEffect(() => {
-    setInput1("");
-    setInput2("");
-    setInput3("");
-  }, [hazardSelection]);
-
-  // Ensure the generate button is enabled only when all required fields are filled.
-  const isGenerateEnabled = () => {
-    return input1 !== "" && input2 !== "" && input3 !== "";
-  };
-
-  const generateTrigger = () => {
-    let text = "";
-    if (!hazardSelection) {
-      text = "Please select a hazard in the Summary to define a custom trigger.";
-    } else if (hazardKey.includes("flood")) {
-      text = `If a 24‑hr rainfall exceeding ${input1} mm is observed, and the river gauge reaches ${input2} m – indicative of an extreme hydrological event (with a return period of ${input3} years) – then the predefined AAP measures are triggered.`;
-    } else if (hazardKey.includes("cyclone")) {
-      text = `If forecasted sustained wind speeds exceed ${input1} km/h, and the minimum central pressure falls below ${input2} hPa – as supported by historical intensity data indicating a return period of ${input3} years – then the predefined AAP measures are triggered.`;
-    } else if (hazardKey.includes("drought")) {
-      text = `If cumulative rainfall over the designated period is below ${input1} mm, and the hydrological index remains under ${input2} – corroborated by historical drought frequency of ${input3} years – then the predefined AAP measures are triggered.`;
-    } else {
-      text = `Unknown hazard: ${hazardSelection}. Please review the input criteria.`;
+  // Start with one phase by default.
+  const defaultPhases = [
+    {
+      phaseTitle: defaultPhaseTitle,
+      source: defaultSource,
+      threshold: "",
+      leadTime: "",
+      probability: ""
     }
-    setTriggerOutput(text);
-    updateField(effectiveSectionId, effectiveSubsectionId, effectiveQuestionId, text);
+  ];
+  const [phases, setPhases] = useState(defaultPhases);
+
+  // Combined output text state, loaded initially from AAP data (persisted in localStorage)
+  const initialCombined = aapData?.[effectiveSectionId]?.[effectiveSubsectionId]?.[effectiveQuestionId] || "";
+  const [combinedTrigger, setCombinedTrigger] = useState(initialCombined);
+
+  // When hazard changes, reset phases to default.
+  useEffect(() => {
+    setPhases([
+      {
+        phaseTitle: defaultPhaseTitle,
+        source: defaultSource,
+        threshold: "",
+        leadTime: "",
+        probability: ""
+      }
+    ]);
+  }, [hazardSelection, defaultSource, defaultPhaseTitle]);
+
+  // Whenever the combined trigger text changes, update the AAP data.
+  useEffect(() => {
+    updateField(effectiveSectionId, effectiveSubsectionId, effectiveQuestionId, combinedTrigger);
+  }, [combinedTrigger, effectiveSectionId, effectiveSubsectionId, effectiveQuestionId, updateField]);
+
+  // Validation: all added phases must have the required fields (phaseTitle, source, threshold, leadTime) filled.
+  const allFieldsFilled = phases.every(
+    phase =>
+      phase.phaseTitle.trim() !== "" &&
+      phase.source.trim() !== "" &&
+      phase.threshold.trim() !== "" &&
+      phase.leadTime.trim() !== ""
+  );
+
+  // Generate the combined trigger statement for all phases.
+  const generateCombinedTrigger = () => {
+    const generated = phases
+      .map((phase, index) => {
+        let statement = `When the ${phase.source} forecasts ${phase.threshold} at ${phase.leadTime}`;
+        if (phase.probability.trim() !== "") {
+          statement += ` and with a ${phase.probability}`;
+        }
+        statement += ", actions will be taken.";
+        return `Phase ${index + 1} (${phase.phaseTitle}):\n${statement}`;
+      })
+      .join("\n\n");
+    setCombinedTrigger(generated);
   };
 
-  const handleTriggerOutputChange = (newVal) => {
-    setTriggerOutput(newVal);
-    updateField(effectiveSectionId, effectiveSubsectionId, effectiveQuestionId, newVal);
+  // Update a field in a given phase.
+  const handleFieldChange = (index, field, value) => {
+    setPhases(prev => {
+      const newPhases = [...prev];
+      newPhases[index] = { ...newPhases[index], [field]: value };
+      return newPhases;
+    });
+  };
+
+  // Add a phase (up to three phases).
+  const addPhase = () => {
+    if (phases.length >= 3) return;
+    let defaultPhase;
+    if (phases.length === 1) {
+      defaultPhase = {
+        phaseTitle: t("triggerDesigner.defaultPhase2") || "Advanced Operational Readiness Activities",
+        source: defaultSource,
+        threshold: "",
+        leadTime: "",
+        probability: ""
+      };
+    } else if (phases.length === 2) {
+      defaultPhase = {
+        phaseTitle: t("triggerDesigner.defaultPhase3") || "Triggering of Anticipatory Actions",
+        source: defaultSource,
+        threshold: "",
+        leadTime: "",
+        probability: ""
+      };
+    }
+    setPhases(prev => [...prev, defaultPhase]);
+  };
+
+  // Remove a phase.
+  const removePhase = (index) => {
+    setPhases(prev => prev.filter((_, idx) => idx !== index));
   };
 
   return (
@@ -91,56 +150,93 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
       {hazardSelection ? (
         <>
           <Typography variant="subtitle1" sx={{ fontWeight: "bold", mb: 2 }}>
-            Trigger statement generator for {hazardSelection.toLowerCase()}
+            {t("triggerDesigner.header", { hazard: hazardSelection })}
           </Typography>
-          <TextField
-            label={label1}
-            variant="outlined"
-            fullWidth
-            type="number"
-            sx={{ mb: 2 }}
-            value={input1}
-            onChange={(e) => setInput1(e.target.value)}
-          />
-          <TextField
-            label={label2}
-            variant="outlined"
-            fullWidth
-            type="number"
-            sx={{ mb: 2 }}
-            value={input2}
-            onChange={(e) => setInput2(e.target.value)}
-          />
-          <TextField
-            label={label3}
-            variant="outlined"
-            fullWidth
-            type="number"
-            sx={{ mb: 2 }}
-            value={input3}
-            onChange={(e) => setInput3(e.target.value)}
-          />
-          <Button
-            variant="contained"
-            fullWidth
-            onClick={generateTrigger}
-            sx={{ mb: 2 }}
-            disabled={!isGenerateEnabled()}
-          >
-            Generate trigger statement
-          </Button>
+          {phases.map((phase, index) => (
+            <Box key={index} sx={{ mb: 2 }}>
+              <Box sx={{ display: "flex", justifyContent: "space-between", alignItems: "center", mb: 1 }}>
+                <Typography variant="h6" sx={{ flex: 1, textAlign: "center" }}>
+                  {t("triggerDesigner.phase")} {index + 1}
+                </Typography>
+                {phases.length > 1 && (
+                  <IconButton onClick={() => removePhase(index)} size="small">
+                    <DeleteIcon fontSize="small" />
+                  </IconButton>
+                )}
+              </Box>
+                <TextField
+                  label={t("triggerDesigner.phaseTitle")}
+                  variant="outlined"
+                  fullWidth
+                  value={phase.phaseTitle}
+                  onChange={(e) => handleFieldChange(index, "phaseTitle", e.target.value)}
+                  sx={{ mb: 2 }}
+                />
+                <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                  <TextField
+                    label={t("triggerDesigner.source")}
+                    variant="outlined"
+                    value={phase.source}
+                    onChange={(e) => handleFieldChange(index, "source", e.target.value)}
+                    sx={{ flex: 1 }}
+                  />
+                  <TextField
+                    label={t("triggerDesigner.threshold")}
+                    variant="outlined"
+                    placeholder={thresholdPlaceholder}
+                    value={phase.threshold}
+                    onChange={(e) => handleFieldChange(index, "threshold", e.target.value)}
+                    sx={{ flex: 1 }}
+                  />
+                </Box>
+                <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
+                  <TextField
+                    label={t("triggerDesigner.leadTime")}
+                    variant="outlined"
+                    placeholder={leadTimePlaceholder}
+                    value={phase.leadTime}
+                    onChange={(e) => handleFieldChange(index, "leadTime", e.target.value)}
+                    sx={{ flex: 1 }}
+                  />
+                  <TextField
+                    label={t("triggerDesigner.probability")}
+                    variant="outlined"
+                    placeholder={probabilityPlaceholder}
+                    value={phase.probability}
+                    onChange={(e) => handleFieldChange(index, "probability", e.target.value)}
+                    sx={{ flex: 1 }}
+                  />
+                </Box>
+            </Box>
+          ))}
+          <Box sx={{ display: "flex" }}>
+            {phases.length < 3 && (
+              <Button variant="outlined" onClick={addPhase} sx={{ mb: 2, mr: 2 }}>
+                {t("triggerDesigner.addPhase")}
+              </Button>
+            )}
+            <Button
+              variant="contained"
+              onClick={generateCombinedTrigger}
+              disabled={!allFieldsFilled}
+              sx={{ mb: 2, flexGrow: 1 }}
+            >
+              {t("triggerDesigner.generate")}
+            </Button>
+          </Box>
         </>
       ) : (
         <Typography variant="body2" sx={{ mb: 2, fontStyle: "italic" }}>
-          Hazard not selected. Please set a hazard in the Summary (step 1) to enable the generator.
+          {t("triggerDesigner.hazardNotSelected")}
         </Typography>
       )}
+      {/* Always show the combined trigger text field */}
       <ExpandableTextField
-        storageKey={`expand-${effectiveSectionId}-${effectiveSubsectionId}-${effectiveQuestionId}-trigger`}
-        placeholder="Trigger statement"
-        value={triggerOutput}
-        onChange={(e) => handleTriggerOutputChange(e.target.value)}
-        rows={4}
+        storageKey={`trigger-${effectiveSectionId}-${effectiveSubsectionId}-${effectiveQuestionId}`}
+        placeholder={t("triggerDesigner.generatedTrigger")}
+        value={combinedTrigger}
+        onChange={(e) => setCombinedTrigger(e.target.value)}
+        rows={6}
       />
     </Box>
   );

@@ -1,4 +1,4 @@
-import React, { createContext, useState, useEffect } from "react";
+import React, { createContext, useState, useEffect, useCallback } from "react";
 
 export const AAPContext = createContext();
 
@@ -14,7 +14,9 @@ export const AAPProvider = ({ children }) => {
     localStorage.setItem(LOCAL_STORAGE_KEY, JSON.stringify(aapData));
   }, [aapData]);
 
-  const updateField = (sectionId, subsectionId, questionId, value) => {
+  // Wrap updateField in useCallback so its reference remains stable,
+  // preventing re-execution of useEffects in dependent components.
+  const updateField = useCallback((sectionId, subsectionId, questionId, value) => {
     setAapData((prev) => ({
       ...prev,
       [sectionId]: {
@@ -25,7 +27,7 @@ export const AAPProvider = ({ children }) => {
         },
       },
     }));
-  };
+  }, []);
 
   return (
     <AAPContext.Provider value={{ aapData, setAapData, updateField }}>

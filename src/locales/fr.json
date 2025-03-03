@@ -1,45 +1,70 @@
 {
-    "language": {
-      "native": "Français"
-    },
-    "header": {
-      "title": "Constructeur de PAA",
-      "subtitle": ""
-    },
-    "settings": {
-      "title": "Paramètres",
-      "textFields": "Champs de texte",
-      "alwaysExpandAllTextFields": "Toujours développer tous les champs de texte",
-      "hints": "Indices",
-      "alwaysDisplayAllHints": "Toujours afficher tous les indices",
-      "examples": "Exemples",
-      "alwaysDisplayAllExamples": "Toujours afficher tous les exemples",
-      "language": "Langue"
-    },
-    "stepper": {
-      "loadingTemplate": "Chargement du modèle...",
-      "errorLoadingTemplate": "Erreur lors du chargement du modèle:",
-      "noTemplateData": "Aucune donnée de modèle disponible.",
-      "back": "Retour",
-      "next": "Suivant",
-      "exportToDocx": "Exporter vers docx"
-    },
-    "triggerDesigner": {
-      "generate": "Générer l'énoncé de déclenchement",
-      "hazardNotSelected": "Risque non sélectionné. Veuillez définir un risque dans le Résumé pour activer le générateur."
-    },
-    "expandableTextField": {
-      "expand": "Développer le champ",
-      "collapse": "Réduire le champ"
-    },
-    "sectionContent": {
-      "noSubsections": "Il n'y a pas de sous-sections ou de champs de saisie définis pour cette étape.",
-      "explanatoryNote": "Note explicative",
-      "exampleText": "Texte d'exemple"
-    },
-    "button": {
-      "hint": "Indice",
-      "example": "Exemple"
-    }
+  "language": {
+    "native": "Français"
+  },
+  "header": {
+    "title": "Constructeur de PAA",
+    "subtitle": ""
+  },
+  "settings": {
+    "title": "Paramètres",
+    "textFields": "Champs de texte",
+    "alwaysExpandAllTextFields": "Toujours développer tous les champs de texte",
+    "hints": "Indices",
+    "alwaysDisplayAllHints": "Toujours afficher tous les indices",
+    "examples": "Exemples",
+    "alwaysDisplayAllExamples": "Toujours afficher tous les exemples",
+    "language": "Langue"
+  },
+  "stepper": {
+    "loadingTemplate": "Chargement du modèle...",
+    "errorLoadingTemplate": "Erreur lors du chargement du modèle:",
+    "noTemplateData": "Aucune donnée de modèle disponible.",
+    "back": "Retour",
+    "next": "Suivant",
+    "exportToDocx": "Exporter vers docx"
+  },
+  "triggerDesigner": {
+    "generate": "Générer l'énoncé de déclenchement",
+    "hazardNotSelected": "Risque non sélectionné. Veuillez définir un risque dans le Résumé pour activer le générateur.",
+    "phase": "Phase",
+    "phaseTitle": "Titre de la phase",
+    "source": "Source d'information",
+    "sourceDefault": "Service météorologique local",
+    "threshold": "Seuil",
+    "leadTime": "Délai",
+    "probability": "Probabilité",
+    "generatedTrigger": "Énoncé de déclenchement généré",
+    "addPhase": "Ajouter une phase",
+    "defaultPhase1": "Activités de préparation opérationnelle minimales",
+    "defaultPhase2": "Activités de préparation opérationnelle avancées",
+    "defaultPhase3": "Déclenchement des actions anticipées",
+    "header": "Générateur d'énoncé de déclenchement pour {hazard}",
+    "incompleteInputs": "Veuillez compléter tous les champs obligatoires (Source, Seuil, et Délai).",
+    "thresholdPlaceholderCyclone": "ex. vitesse soutenue du vent (km/h)",
+    "leadTimePlaceholderCyclone": "ex. 48 heures",
+    "probabilityPlaceholderCyclone": "ex. grande confiance",
+    "thresholdPlaceholderDrought": "ex. déficit de précipitations (%)",
+    "leadTimePlaceholderDrought": "ex. 3 mois",
+    "probabilityPlaceholderDrought": "ex. probabilité modérée",
+    "thresholdPlaceholderFlood": "ex. niveau du jaugeage (m)",
+    "leadTimePlaceholderFlood": "ex. 24 heures",
+    "probabilityPlaceholderFlood": "ex. confiance modérée",
+    "thresholdPlaceholderDefault": "Seuil",
+    "leadTimePlaceholderDefault": "Délai",
+    "probabilityPlaceholderDefault": "Probabilité (optionnel)"
+  },
+  "expandableTextField": {
+    "expand": "Développer le champ",
+    "collapse": "Réduire le champ"
+  },
+  "sectionContent": {
+    "noSubsections": "Il n'y a pas de sous-sections ou de champs de saisie définis pour cette étape.",
+    "explanatoryNote": "Note explicative",
+    "exampleText": "Texte d'exemple"
+  },
+  "button": {
+    "hint": "Indice",
+    "example": "Exemple"
   }
-  
+}

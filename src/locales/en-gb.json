@@ -1,45 +1,70 @@
 {
-    "language": {
-      "native": "English"
-    },
-    "header": {
-      "title": "AAP Builder",
-      "subtitle": ""
-    },
-    "settings": {
-      "title": "Settings",
-      "textFields": "Text Fields",
-      "alwaysExpandAllTextFields": "Always expand all text fields",
-      "hints": "Hints",
-      "alwaysDisplayAllHints": "Always display all hints",
-      "examples": "Examples",
-      "alwaysDisplayAllExamples": "Always display all examples",
-      "language": "Language"
-    },
-    "stepper": {
-      "loadingTemplate": "Loading template...",
-      "errorLoadingTemplate": "Error loading template:",
-      "noTemplateData": "No template data available.",
-      "back": "Back",
-      "next": "Next",
-      "exportToDocx": "Export to docx"
-    },
-    "triggerDesigner": {
-      "generate": "Generate trigger statement",
-      "hazardNotSelected": "Hazard not selected. Please set a hazard in the Summary to enable the generator."
-    },
-    "expandableTextField": {
-      "expand": "Expand field",
-      "collapse": "Collapse field"
-    },
-    "sectionContent": {
-      "noSubsections": "There are no subsections or input fields defined for this step.",
-      "explanatoryNote": "Explanatory note",
-      "exampleText": "Example text"
-    },
-    "button": {
-      "hint": "Hint",
-      "example": "Example"
-    }
+  "language": {
+    "native": "English"
+  },
+  "header": {
+    "title": "AAP Builder",
+    "subtitle": ""
+  },
+  "settings": {
+    "title": "Settings",
+    "textFields": "Text Fields",
+    "alwaysExpandAllTextFields": "Always expand all text fields",
+    "hints": "Hints",
+    "alwaysDisplayAllHints": "Always display all hints",
+    "examples": "Examples",
+    "alwaysDisplayAllExamples": "Always display all examples",
+    "language": "Language"
+  },
+  "stepper": {
+    "loadingTemplate": "Loading template...",
+    "errorLoadingTemplate": "Error loading template:",
+    "noTemplateData": "No template data available.",
+    "back": "Back",
+    "next": "Next",
+    "exportToDocx": "Export to docx"
+  },
+  "triggerDesigner": {
+    "generate": "Generate trigger statement",
+    "hazardNotSelected": "Hazard not selected. Please set a hazard in the Summary to enable the generator.",
+    "phase": "Phase",
+    "phaseTitle": "Phase title",
+    "source": "Source of information",
+    "sourceDefault": "Local Meteorological Service",
+    "threshold": "Threshold",
+    "leadTime": "Lead time",
+    "probability": "Probability",
+    "generatedTrigger": "Generated trigger statement",
+    "addPhase": "Add phase",
+    "defaultPhase1": "Minimum operational readiness activities",
+    "defaultPhase2": "Advanced operational readiness activities",
+    "defaultPhase3": "Triggering of anticipatory actions",
+    "header": "Trigger statement generator for {hazard}",
+    "incompleteInputs": "Please complete all required fields (source, threshold, and lead time).",
+    "thresholdPlaceholderCyclone": "e.g. Sustained wind speed (km/h)",
+    "leadTimePlaceholderCyclone": "e.g. 48 hours",
+    "probabilityPlaceholderCyclone": "e.g. high confidence",
+    "thresholdPlaceholderDrought": "e.g. rainfall deficit (%)",
+    "leadTimePlaceholderDrought": "e.g. 3 months",
+    "probabilityPlaceholderDrought": "e.g. moderate probability",
+    "thresholdPlaceholderFlood": "e.g. river gauge level (m)",
+    "leadTimePlaceholderFlood": "e.g. 24 hours",
+    "probabilityPlaceholderFlood": "e.g. moderate confidence",
+    "thresholdPlaceholderDefault": "Threshold",
+    "leadTimePlaceholderDefault": "Lead time",
+    "probabilityPlaceholderDefault": "Probability (optional)"
+  },
+  "expandableTextField": {
+    "expand": "Expand field",
+    "collapse": "Collapse field"
+  },
+  "sectionContent": {
+    "noSubsections": "There are no subsections or input fields defined for this step.",
+    "explanatoryNote": "Explanatory note",
+    "exampleText": "Example text"
+  },
+  "button": {
+    "hint": "Hint",
+    "example": "Example"
   }
-  
+}
