@@ -71,6 +71,8 @@
   },
   "button": {
     "hint": "Indice",
-    "example": "Exemple"
+    "example": "Exemple",
+    "hideHint": "Masquer l'indice",
+    "hideExample": "Masquer l'exemple"
   }
 }

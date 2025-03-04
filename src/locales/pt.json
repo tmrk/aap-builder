@@ -71,6 +71,8 @@
   },
   "button": {
     "hint": "Dica",
-    "example": "Exemplo"
+    "example": "Exemplo",
+    "hideHint": "Ocultar dica",
+    "hideExample": "Ocultar exemplo"
   }
 }

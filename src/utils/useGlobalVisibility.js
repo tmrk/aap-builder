@@ -88,5 +88,5 @@ export function useGlobalVisibility(isHint, stepId, subsectionId, subsubId) {
       window.removeEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
   }, [isHint, storageKey]);
 
-  return [effectiveVisible, toggle];
+  return [effectiveVisible, toggle, globalFlag];
 }

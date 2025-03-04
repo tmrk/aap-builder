@@ -45,17 +45,13 @@ function TriStateStepIcon({ stepIndex, status, active }) {
 }
 
 export default function VerticalStepper() {
-
   const [activeStep, setActiveStep] = useState(() => {
     const stored = localStorage.getItem("AAP_ACTIVE_STEP");
     return stored !== null ? Number(stored) : 0;
   });
 
   const { t } = useContext(LanguageContext);
-  
-
   const { aapData } = useContext(AAPContext);
-
   const { template, loading, error } = useMarkdownTemplate();
 
   const handleExport = () => {
@@ -63,22 +59,26 @@ export default function VerticalStepper() {
   };
 
   if (loading) {
-    return <Typography>{ t("stepper.loadingTemplate")}</Typography>;
+    return <Typography>{t("stepper.loadingTemplate")}</Typography>;
   }
   if (error) {
-    return <Typography color="error">{ t("stepper.errorLoadingTemplate")} {error}</Typography>;
+    return (
+      <Typography color="error">
+        {t("stepper.errorLoadingTemplate")} {error}
+      </Typography>
+    );
   }
-  if (!template || template.length === 0) {
-    return <Typography>{ t("stepper.noTemplateData")}</Typography>;
+  if (!template || !template.template || template.template.length === 0) {
+    return <Typography>{t("stepper.noTemplateData")}</Typography>;
   }
 
-  const steps = template;
+  // Use the parsed array of steps from the template object.
+  const steps = template.template;
   const totalSteps = steps.length;
 
   const stepStatus = (i) => getSectionStatus(steps[i], aapData);
 
-  // This is called when the step's content finishes expanding
-  // We'll scroll the step's label into view with an AppBar offset
+  // When the step's content finishes expanding, scroll the label into view.
   const handleStepContentEntered = (idx, stepId) => {
     if (idx === activeStep && window.innerWidth >= 960) {
       const labelEl = document.getElementById(`step-label-${stepId}`);
@@ -90,8 +90,6 @@ export default function VerticalStepper() {
     }
   };
 
-  // Switch to a step (desktop or mobile) but do not immediately scroll
-  // For desktop, we'll let the step open first, then handleStepContentEntered does the scroll
   const handleStepClick = (index) => {
     setActiveStep(index);
     localStorage.setItem("AAP_ACTIVE_STEP", index);
@@ -106,7 +104,6 @@ export default function VerticalStepper() {
     >
       {steps.map((step, idx) => {
         const status = stepStatus(idx);
-
         return (
           <Step key={step.id || idx} completed={false}>
             <StepLabel
@@ -126,12 +123,10 @@ export default function VerticalStepper() {
               }}
               onClick={() => handleStepClick(idx)}
             >
-              {/* We give the label an ID so we can scroll to it later */}
               <Typography id={`step-label-${step.id}`} sx={{ fontWeight: "bold" }}>
                 {step.title}
               </Typography>
             </StepLabel>
-
             <StepContent
               TransitionProps={{
                 onEntered: () => handleStepContentEntered(idx, step.id),
@@ -144,7 +139,7 @@ export default function VerticalStepper() {
                   onClick={() => handleStepClick(idx - 1)}
                   sx={{ mt: 1, mr: 1 }}
                 >
-                  { t("stepper.back")}
+                  {t("stepper.back")}
                 </Button>
                 <Button
                   variant="contained"
@@ -152,7 +147,7 @@ export default function VerticalStepper() {
                   sx={{ mt: 1, mr: 1 }}
                   disabled={idx === totalSteps - 1}
                 >
-                  { t("stepper.next")}
+                  {t("stepper.next")}
                 </Button>
               </Box>
             </StepContent>
@@ -210,12 +205,12 @@ export default function VerticalStepper() {
             size="small"
             variant="outlined"
             onClick={() => {
-              handleStepClick(Math.min(activeStep + 1, totalSteps - 1))
+              handleStepClick(Math.min(activeStep + 1, totalSteps - 1));
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             disabled={activeStep === totalSteps - 1}
           >
-            { t("stepper.next")}
+            {t("stepper.next")}
           </Button>
         }
         backButton={
@@ -223,12 +218,12 @@ export default function VerticalStepper() {
             size="small"
             variant="outlined"
             onClick={() => {
-              handleStepClick(Math.max(activeStep - 1, 0))
+              handleStepClick(Math.max(activeStep - 1, 0));
               window.scrollTo({ top: 0, behavior: "smooth" });
             }}
             disabled={activeStep === 0}
           >
-            { t("stepper.back")}
+            {t("stepper.back")}
           </Button>
         }
       />
@@ -237,12 +232,8 @@ export default function VerticalStepper() {
 
   return (
     <Box sx={{ width: "100%", mt: 3 }}>
-      {/* Mobile stepper at top */}
       {mobileTopStepper}
-
-      {/* Desktop vertical stepper */}
       {desktopStepper}
-
       <Box sx={{ mt: 2 }}>
         <Button
           variant="contained"
@@ -251,7 +242,7 @@ export default function VerticalStepper() {
           color="primary"
           onClick={handleExport}
         >
-          { t("stepper.exportToDocx")}
+          {t("stepper.exportToDocx")}
         </Button>
       </Box>
     </Box>

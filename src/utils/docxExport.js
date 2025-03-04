@@ -33,26 +33,18 @@ function blank() {
 }
 
 /**
- * By default, if we just do one paragraph with line breaks, Word will fully justify
- * each line, including short lines. To avoid that, we treat each line as its own
- * paragraph. That way, the 'last line' in each paragraph is never fully justified.
+ * To avoid fully justified short lines, split multiline text into multiple paragraphs.
  */
 function wrapContent(text) {
-  // If the text is empty or whitespace, return one empty paragraph
   if (!text || !text.trim()) {
     return [new Paragraph({ style: "Normal", children: [] })];
   }
-
-  // Split on newline, produce one docx Paragraph per line
-  // Using style "Normal" + alignment: JUSTIFIED
   const lines = text.split("\n");
   return lines.map((line) =>
     new Paragraph({
       style: "Normal",
       alignment: AlignmentType.JUSTIFIED,
-      children: [
-        new TextRun(line),
-      ],
+      children: [new TextRun(line)],
     })
   );
 }
@@ -65,8 +57,7 @@ function getNumberingOptions(styleName) {
 }
 
 /**
- * Create a table for the summary section. Each answer is processed with wrapContent
- * so multiline text is rendered as multiple paragraphs (lines).
+ * Create a table for the summary section.
  */
 function buildAAPSummaryTable(summarySection, aapData) {
   if (!summarySection?.subsections?.length) return null;
@@ -108,20 +99,23 @@ function buildAAPSummaryTable(summarySection, aapData) {
 }
 
 function wrapHeadingOrType(sectionOrSubsec, fallbackHeading) {
-  // If it has "questions", we handle them separately. If it has "type", we handle that, else fallback
-  // This helper might not be strictly necessary, but left for clarity
   return fallbackHeading;
 }
 
-// Main export function: gather data from aapData, 
-// parse the template, produce docx
+// Export the document using the AAP data and template stored under "AAP_TEMPLATE"
 export async function exportToDocx(aapData) {
-  // Retrieve the Markdown template from localStorage
-  const templateStr = localStorage.getItem("AAP_MD_TEMPLATE");
+  const templateStr = localStorage.getItem("AAP_TEMPLATE");
+  let parsedTemplate = null;
   let sections = [];
   if (templateStr) {
     try {
-      sections = JSON.parse(templateStr);
+      parsedTemplate = JSON.parse(templateStr);
+      // If the stored object has a "template" property, use that.
+      if (parsedTemplate && parsedTemplate.template) {
+        sections = parsedTemplate.template;
+      } else {
+        sections = parsedTemplate;
+      }
     } catch (err) {
       console.error("Error parsing AAP template from localStorage", err);
     }
@@ -140,7 +134,7 @@ export async function exportToDocx(aapData) {
   docContent.push(blank());
   docContent.push(blank());
 
-  // Handle summary
+  // Handle summary section
   const summarySection = sections.find((sec) => sec.id === "summary");
   if (summarySection) {
     docContent.push(wrapHeading("Summary", "Heading1", false));
@@ -155,13 +149,12 @@ export async function exportToDocx(aapData) {
     docContent.push(blank());
   }
 
-  // All other sections
+  // Other sections
   for (let i = 0; i < sections.length; i++) {
     const section = sections[i];
     if (section.id === "summary") continue;
 
     docContent.push(wrapHeading(section.title, "Heading1", true));
-    // If it has content, add a blank
     const sectionHasContent =
       (section.questions && section.questions.length > 0) ||
       section.type ||
@@ -170,7 +163,6 @@ export async function exportToDocx(aapData) {
       docContent.push(blank());
     }
 
-    // Step-level questions
     if (section.questions && section.questions.length > 0) {
       for (const q of section.questions) {
         docContent.push(wrapHeading(q.label, "Heading2", true));
@@ -185,7 +177,6 @@ export async function exportToDocx(aapData) {
       docContent.push(blank());
     }
 
-    // Subsections
     if (section.subsections && section.subsections.length > 0) {
       for (const subsec of section.subsections) {
         docContent.push(wrapHeading(subsec.title, "Heading2", true));
@@ -209,7 +200,6 @@ export async function exportToDocx(aapData) {
           docContent.push(...wrapContent(ans));
           docContent.push(blank());
         }
-        // Sub-subsections
         if (subsec.subsubsections && subsec.subsubsections.length > 0) {
           for (const subsub of subsec.subsubsections) {
             docContent.push(wrapHeading(subsub.title, "Heading3", true));
@@ -222,7 +212,6 @@ export async function exportToDocx(aapData) {
       }
     }
 
-    // Insert 2 blanks before next top-level section
     let hasNext = false;
     for (let j = i + 1; j < sections.length; j++) {
       if (sections[j].id !== "summary") {
@@ -236,7 +225,6 @@ export async function exportToDocx(aapData) {
     }
   }
 
-  // Construct final Document
   const doc = new Document({
     numbering: {
       config: [
@@ -351,7 +339,6 @@ export async function exportToDocx(aapData) {
     ],
   });
 
-  // Build filename
   const hazardType = aapData?.["summary"]?.["hazard"]?.["hazard"] || "UnknownHazard";
   const country = aapData?.["summary"]?.["country"]?.["country"] || "UnknownCountry";
   const custodian =

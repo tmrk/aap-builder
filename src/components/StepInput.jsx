@@ -15,9 +15,9 @@ const StepInput = ({ step }) => {
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (step.type || "").toLowerCase();
 
-  // Use the updated global visibility hook returning two values.
-  const [hintOpen, toggleHint] = useGlobalVisibility(true, step.id, step.id, null);
-  const [exampleOpen, toggleExample] = useGlobalVisibility(false, step.id, step.id, null);
+  // Use the updated global visibility hook returning three values.
+  const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(true, step.id, step.id, null);
+  const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(false, step.id, step.id, null);
 
   let inputElem = null;
   if (type === "triggerdesigner") {
@@ -58,14 +58,14 @@ const StepInput = ({ step }) => {
     <Box sx={{ mb: 3 }}>
       {(step.hint || step.example) && (
         <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
-          {step.hint && !hintOpen && (
+          {step.hint && !alwaysDisplayHints && (
             <Button variant="text" size="small" sx={{ mr: 1 }} onClick={toggleHint}>
-              {t("button.hint")}
+              {hintOpen ? t("button.hideHint") : t("button.hint")}
             </Button>
           )}
-          {step.example && !exampleOpen && (
+          {step.example && !alwaysDisplayExamples && (
             <Button variant="text" size="small" onClick={toggleExample}>
-              {t("button.example")}
+              {exampleOpen ? t("button.hideExample") : t("button.example")}
             </Button>
           )}
         </Box>

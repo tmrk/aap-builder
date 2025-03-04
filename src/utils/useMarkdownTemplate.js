@@ -2,10 +2,46 @@ import { useState, useEffect } from "react";
 
 const GIST_URL =
   "https://gist.githubusercontent.com/tmrk/27d1348f855547079dc8d00ab5454c06/raw/AAP-template.md";
-const TEMPLATE_STORAGE_KEY = "AAP_MD_TEMPLATE";
+const TEMPLATE_STORAGE_KEY = "AAP_TEMPLATE";
 
 function canFetchRemote() {
   return typeof navigator !== "undefined" && navigator.onLine === true;
+}
+
+// Parse an optional metadata block at the beginning of the markdown.
+// If a block delimited by '---' is present, it is parsed into key/value pairs.
+// Otherwise, default metadata values are used.
+function parseMetadataAndMarkdown(mdText) {
+  // Default metadata values
+  let metadata = {
+    title: "Default AAP Template",
+    version: "1.0",
+    language: "en-gb",
+    "last updated": "",
+    "created by": ""
+  };
+  let content = mdText;
+  const lines = mdText.split("\n");
+  if (lines[0].trim() === "---") {
+    let metaLines = [];
+    let i = 1;
+    while (i < lines.length && lines[i].trim() !== "---") {
+      metaLines.push(lines[i]);
+      i++;
+    }
+    if (i < lines.length && lines[i].trim() === "---") {
+      metaLines.forEach(line => {
+        const colonIndex = line.indexOf(":");
+        if (colonIndex !== -1) {
+          const key = line.slice(0, colonIndex).trim();
+          const value = line.slice(colonIndex + 1).trim();
+          metadata[key] = value;
+        }
+      });
+      content = lines.slice(i + 1).join("\n");
+    }
+  }
+  return { metadata, content };
 }
 
 function parseMarkdown(mdText) {
@@ -192,7 +228,9 @@ export default function useMarkdownTemplate() {
           throw new Error(`Network error: ${resp.status}`);
         }
         const mdText = await resp.text();
-        const parsed = parseMarkdown(mdText);
+        const { metadata, content } = parseMetadataAndMarkdown(mdText);
+        const parsedTemplate = parseMarkdown(content);
+        const parsed = { metadata, template: parsedTemplate };
         if (JSON.stringify(parsed) !== JSON.stringify(template)) {
           localStorage.setItem(TEMPLATE_STORAGE_KEY, JSON.stringify(parsed));
           setTemplate(parsed);

@@ -42,9 +42,9 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (subsection.type || "").toLowerCase();
   
-  // Now using the updated hook which returns only two elements.
-  const [hintOpen, toggleHint] = useGlobalVisibility(true, stepId, subsectionId, null);
-  const [exampleOpen, toggleExample] = useGlobalVisibility(false, stepId, subsectionId, null);
+  // Use the updated global visibility hook returning three values.
+  const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(true, stepId, subsectionId, null);
+  const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(false, stepId, subsectionId, null);
   
   let inputElem = null;
   if (type === "radio" && subsectionId === "hazard") {
@@ -260,14 +260,14 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
           {subsection.title}
           {requiredStar}
         </Typography>
-        {subsection.hint && !hintOpen && (
+        {subsection.hint && !alwaysDisplayHints && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleHint}>
-            {t("button.hint")}
+            {hintOpen ? t("button.hideHint") : t("button.hint")}
           </Button>
         )}
-        {subsection.example && !exampleOpen && (
+        {subsection.example && !alwaysDisplayExamples && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleExample}>
-            {t("button.example")}
+            {exampleOpen ? t("button.hideExample") : t("button.example")}
           </Button>
         )}
       </Box>
