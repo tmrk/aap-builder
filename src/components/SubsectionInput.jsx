@@ -1,4 +1,4 @@
-import React, { useContext, useState, useEffect } from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Typography,
@@ -25,96 +25,7 @@ import HeatwaveIconUrl from "../assets/Icon_Heatwave.svg";
 import DiseaseIconUrl from "../assets/Icon_Disease.svg";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
-
-function getLocalSettings() {
-  const GLOBAL_SETTINGS_KEY = "AAP_BUILDER_SETTINGS";
-  try {
-    const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
-    const parsed = stored ? JSON.parse(stored) : {};
-    if (!parsed.hintsVisibility) parsed.hintsVisibility = {};
-    if (!parsed.examplesVisibility) parsed.examplesVisibility = {};
-    return parsed;
-  } catch {
-    return { hintsVisibility: {}, examplesVisibility: {} };
-  }
-}
-
-function saveLocalSettings(data) {
-  const GLOBAL_SETTINGS_KEY = "AAP_BUILDER_SETTINGS";
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(data));
-  window.dispatchEvent(new Event("AAP_SETTINGS_UPDATED"));
-}
-
-function getHintKey(stepId, subsectionId, subsubId) {
-  return subsubId
-    ? `hint-${stepId}-${subsectionId}-${subsubId}`
-    : `hint-${stepId}-${subsectionId}`;
-}
-function getExampleKey(stepId, subsectionId, subsubId) {
-  return subsubId
-    ? `example-${stepId}-${subsectionId}-${subsubId}`
-    : `example-${stepId}-${subsectionId}`;
-}
-
-function useGlobalVisibility(isHint, stepId, subsectionId, subsubId) {
-  const storageKey = isHint
-    ? getHintKey(stepId, subsectionId, subsubId)
-    : getExampleKey(stepId, subsectionId, subsubId);
-  const [localVisible, setLocalVisible] = useState(() => {
-    const s = getLocalSettings();
-    return isHint ? !!s.hintsVisibility[storageKey] : !!s.examplesVisibility[storageKey];
-  });
-  const [globalSettings, setGlobalSettings] = useState(() => {
-    const GLOBAL_SETTINGS_KEY = "AAP_BUILDER_SETTINGS";
-    try {
-      const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
-      const parsed = stored ? JSON.parse(stored) : {};
-      return parsed;
-    } catch {
-      return {};
-    }
-  });
-  
-  const globalFlag = isHint
-    ? globalSettings.alwaysDisplayAllHints
-    : globalSettings.alwaysDisplayAllExamples;
-  
-  const effectiveVisible = globalFlag ? true : localVisible;
-  
-  const toggle = () => {
-    setLocalVisible((prev) => !prev);
-    const s = getLocalSettings();
-    if (isHint) {
-      s.hintsVisibility[storageKey] = !localVisible;
-    } else {
-      s.examplesVisibility[storageKey] = !localVisible;
-    }
-    saveLocalSettings(s);
-  };
-
-  useEffect(() => {
-    function handleGlobalUpdate() {
-      const s = getLocalSettings();
-      const newLocal = isHint
-        ? !!s.hintsVisibility[storageKey]
-        : !!s.examplesVisibility[storageKey];
-      setLocalVisible(newLocal);
-      try {
-        const GLOBAL_SETTINGS_KEY = "AAP_BUILDER_SETTINGS";
-        const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
-        const parsed = stored ? JSON.parse(stored) : {};
-        setGlobalSettings(parsed);
-      } catch {
-        setGlobalSettings({});
-      }
-    }
-    window.addEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
-    return () =>
-      window.removeEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
-  }, [isHint, storageKey]);
-
-  return [effectiveVisible, toggle, globalFlag];
-}
+import { useGlobalVisibility } from "../utils/useGlobalVisibility";
 
 const SubsectionInput = ({ stepId, subsection, isSummary }) => {
   const { aapData, updateField } = useContext(AAPContext);
@@ -131,8 +42,9 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (subsection.type || "").toLowerCase();
   
-  const [hintOpen, toggleHint, globalHint] = useGlobalVisibility(true, stepId, subsectionId, null);
-  const [exampleOpen, toggleExample, globalExample] = useGlobalVisibility(false, stepId, subsectionId, null);
+  // Now using the updated hook which returns only two elements.
+  const [hintOpen, toggleHint] = useGlobalVisibility(true, stepId, subsectionId, null);
+  const [exampleOpen, toggleExample] = useGlobalVisibility(false, stepId, subsectionId, null);
   
   let inputElem = null;
   if (type === "radio" && subsectionId === "hazard") {
@@ -348,12 +260,12 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
           {subsection.title}
           {requiredStar}
         </Typography>
-        {subsection.hint && !globalHint && (
+        {subsection.hint && !hintOpen && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleHint}>
             {t("button.hint")}
           </Button>
         )}
-        {subsection.example && !globalExample && (
+        {subsection.example && !exampleOpen && (
           <Button variant="text" size="small" sx={{ ml: 1 }} onClick={toggleExample}>
             {t("button.example")}
           </Button>
