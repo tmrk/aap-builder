@@ -13,19 +13,16 @@ import ExpandableTextField from "./ExpandableTextField";
 import { LanguageContext } from "../context/LanguageContext";
 
 export default function TriggerMechanismDesigner({ sectionId, subsectionId, questionId }) {
-  // Use default keys if none are provided so that the trigger statement is saved/retrieved under:
-  // "risk-analysis" → "hazard(s)" → "hazard(s)"
   const effectiveSectionId = sectionId || "risk-analysis";
   const effectiveSubsectionId = subsectionId || "hazard(s)";
   const effectiveQuestionId = questionId || "hazard(s)";
 
-  const { aapData, updateField } = useContext(AAPContext);
-  const { t } = useContext(LanguageContext);
+  const { currentFile, updateField } = useContext(AAPContext);
+  const { t, language } = useContext(LanguageContext);
+  const aapData = currentFile ? currentFile.AAP_BUILDER_DATA : {};
 
-  // Retrieve the selected hazard from the AAP summary.
   const hazardSelection = aapData?.["summary"]?.["hazard"]?.["hazard"] || "";
 
-  // Determine hazard-specific default values and placeholders.
   let defaultPhaseTitle;
   let sourcePlaceholder = "";
   let thresholdPlaceholder = "";
@@ -53,11 +50,10 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
     defaultPhaseTitle = t("triggerDesigner.defaultPhase1") || "Minimum Operational Readiness Activities";
     sourcePlaceholder= t("triggerDesigner.sourcePlaceholderDefault") || "Source of information";
     thresholdPlaceholder = t("triggerDesigner.thresholdPlaceholderDefault") || "Threshold";
-    leadTimePlaceholder = t("triggerDesigner.leadTimePlaceholderDefault") || "Lead Time";
+    leadTimePlaceholder = t("triggerDesigner.leadTimePlaceholderDefault") || "Lead time";
     probabilityPlaceholder = t("triggerDesigner.probabilityPlaceholderDefault") || "Probability (optional)";
   }
 
-  // Start with one phase by default.
   const defaultPhases = [
     {
       phaseTitle: defaultPhaseTitle,
@@ -68,45 +64,25 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
     },
   ];
 
-  // Read trigger phases from AAPContext using key composed of effectiveSubsectionId and "-phases"
   const storedPhases = aapData?.[effectiveSectionId]?.[`${effectiveSubsectionId}-phases`];
   const initialPhases = Array.isArray(storedPhases) ? storedPhases : defaultPhases;
   const [phases, setPhases] = useState(initialPhases);
 
-  // Whenever phases change, update the AAPContext field for trigger phases.
   useEffect(() => {
     updateField(effectiveSectionId, `${effectiveSubsectionId}-phases`, "phases", phases);
   }, [phases, effectiveSectionId, effectiveSubsectionId, updateField]);
 
-  // Combined output text state, loaded initially from AAP data.
-  const initialCombined =
-    aapData?.[effectiveSectionId]?.[effectiveSubsectionId]?.[effectiveQuestionId] || "";
+  const initialCombined = aapData?.[effectiveSectionId]?.[effectiveSubsectionId]?.[effectiveQuestionId] || "";
   const [combinedTrigger, setCombinedTrigger] = useState(initialCombined);
 
-  // When hazard changes, reset phases to default.
-  useEffect(() => {
-    setPhases([
-      {
-        phaseTitle: defaultPhaseTitle,
-        source: "",
-        threshold: "",
-        leadTime: "",
-        probability: "",
-      },
-    ]);
-  }, [hazardSelection, defaultPhaseTitle]);
-
-  // Whenever the combined trigger text changes, update the AAP data.
   useEffect(() => {
     updateField(effectiveSectionId, effectiveSubsectionId, effectiveQuestionId, combinedTrigger);
   }, [combinedTrigger, effectiveSectionId, effectiveSubsectionId, effectiveQuestionId, updateField]);
 
-  // Toggle visibility: if the combined trigger already has content, start collapsed.
   const [generatorVisible, setGeneratorVisible] = useState(() => {
     return combinedTrigger.trim() === "" ? true : false;
   });
 
-  // Validation: all added phases must have the required fields filled.
   const allFieldsFilled = phases.every(
     (phase) =>
       phase.phaseTitle.trim() !== "" &&
@@ -115,7 +91,6 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
       phase.leadTime.trim() !== ""
   );
 
-  // Generate the combined trigger statement for all phases.
   const generateCombinedTrigger = () => {
     const generated = phases
       .map((phase, index) => {
@@ -130,7 +105,6 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
     setCombinedTrigger(generated);
   };
 
-  // Update a field in a given phase.
   const handleFieldChange = (index, field, value) => {
     setPhases((prev) => {
       const newPhases = [...prev];
@@ -139,7 +113,6 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
     });
   };
 
-  // Add a phase (up to three phases).
   const addPhase = () => {
     if (phases.length >= 3) return;
     let defaultPhase;
@@ -163,7 +136,6 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
     setPhases((prev) => [...prev, defaultPhase]);
   };
 
-  // Remove a phase.
   const removePhase = (index) => {
     setPhases((prev) => prev.filter((_, idx) => idx !== index));
   };
@@ -204,6 +176,10 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
                   value={phase.phaseTitle}
                   onChange={(e) => handleFieldChange(index, "phaseTitle", e.target.value)}
                   sx={{ mb: 2 }}
+                  inputProps={{
+                    lang: language,
+                    spellCheck: "true",
+                  }}
                 />
                 <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
                   <TextField
@@ -213,6 +189,10 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
                     value={phase.source}
                     onChange={(e) => handleFieldChange(index, "source", e.target.value)}
                     sx={{ flex: 1 }}
+                    inputProps={{
+                      lang: language,
+                      spellCheck: "true",
+                    }}
                   />
                   <TextField
                     label={t("triggerDesigner.threshold")}
@@ -221,6 +201,10 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
                     value={phase.threshold}
                     onChange={(e) => handleFieldChange(index, "threshold", e.target.value)}
                     sx={{ flex: 1 }}
+                    inputProps={{
+                      lang: language,
+                      spellCheck: "true",
+                    }}
                   />
                 </Box>
                 <Box sx={{ display: "flex", gap: 2, mb: 2 }}>
@@ -231,6 +215,10 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
                     value={phase.leadTime}
                     onChange={(e) => handleFieldChange(index, "leadTime", e.target.value)}
                     sx={{ flex: 1 }}
+                    inputProps={{
+                      lang: language,
+                      spellCheck: "true",
+                    }}
                   />
                   <TextField
                     label={t("triggerDesigner.probability")}
@@ -239,6 +227,10 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
                     value={phase.probability}
                     onChange={(e) => handleFieldChange(index, "probability", e.target.value)}
                     sx={{ flex: 1 }}
+                    inputProps={{
+                      lang: language,
+                      spellCheck: "true",
+                    }}
                   />
                 </Box>
               </Box>
@@ -265,7 +257,6 @@ export default function TriggerMechanismDesigner({ sectionId, subsectionId, ques
           {t("triggerDesigner.hazardNotSelected")}
         </Typography>
       )}
-      {/* Always show the combined trigger text field */}
       <ExpandableTextField
         storageKey={`trigger-${effectiveSectionId}-${effectiveSubsectionId}-${effectiveQuestionId}`}
         placeholder={t("triggerDesigner.generatedTrigger")}

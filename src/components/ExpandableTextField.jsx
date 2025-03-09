@@ -1,24 +1,7 @@
 import React, { useState, useRef, useEffect, useContext } from "react";
 import { TextField, Button, Box, Typography } from "@mui/material";
 import { LanguageContext } from "../context/LanguageContext";
-
-const GLOBAL_SETTINGS_KEY = "AAP_BUILDER_SETTINGS";
-
-function getLocalSettings() {
-  try {
-    const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
-    const parsed = stored ? JSON.parse(stored) : {};
-    if (!parsed.textFieldExpansions) parsed.textFieldExpansions = {};
-    return parsed;
-  } catch {
-    return { textFieldExpansions: {} };
-  }
-}
-
-function saveLocalSettings(data) {
-  localStorage.setItem(GLOBAL_SETTINGS_KEY, JSON.stringify(data));
-  window.dispatchEvent(new Event("AAP_SETTINGS_UPDATED"));
-}
+import { AAPContext } from "../context/AAPContext";
 
 export default function ExpandableTextField({
   storageKey,
@@ -30,24 +13,23 @@ export default function ExpandableTextField({
   ...props
 }) {
   const { t } = useContext(LanguageContext);
-  const [expanded, setExpanded] = useState(() => {
-    const s = getLocalSettings();
-    return !!s.textFieldExpansions[storageKey];
-  });
-  const [globalSettings, setGlobalSettings] = useState(() => {
-    try {
-      const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
-      return stored ? JSON.parse(stored) : {};
-    } catch {
-      return {};
-    }
-  });
+  const { language } = useContext(LanguageContext); // for lang
+  const { currentFile, updateFileSettings } = useContext(AAPContext);
 
-  // If "alwaysExpandTextFields" is true, force expansion
-  const effectiveExpanded = globalSettings.alwaysExpandTextFields ? true : expanded;
-
+  // Get initial expanded value from current file settings (default false)
+  const initialExpanded = currentFile?.AAP_BUILDER_SETTINGS?.textFieldExpansions?.[storageKey] || false;
+  const [expanded, setExpanded] = useState(initialExpanded);
   const [showToggle, setShowToggle] = useState(false);
   const measureRef = useRef(null);
+
+  // Sync local state if external setting changes.
+  useEffect(() => {
+    const stored = currentFile?.AAP_BUILDER_SETTINGS?.textFieldExpansions?.[storageKey] || false;
+    if (stored !== expanded) {
+      setExpanded(stored);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [currentFile, storageKey]);
 
   function measureOverflow() {
     if (!measureRef.current) {
@@ -55,8 +37,7 @@ export default function ExpandableTextField({
       return;
     }
     const { scrollHeight, clientHeight } = measureRef.current;
-    const isOverflow = scrollHeight > clientHeight + 1;
-    setShowToggle(isOverflow);
+    setShowToggle(scrollHeight > clientHeight + 1);
   }
 
   useEffect(() => {
@@ -64,40 +45,34 @@ export default function ExpandableTextField({
     return () => cancelAnimationFrame(rafId);
   }, [value, expanded]);
 
-  useEffect(() => {
-    const s = getLocalSettings();
-    s.textFieldExpansions[storageKey] = expanded;
-    saveLocalSettings(s);
-  }, [expanded, storageKey]);
-
-  useEffect(() => {
-    function handleGlobalUpdate() {
-      const s = getLocalSettings();
-      const newVal = !!s.textFieldExpansions[storageKey];
-      setExpanded(newVal);
-      try {
-        const stored = localStorage.getItem(GLOBAL_SETTINGS_KEY);
-        const parsed = stored ? JSON.parse(stored) : {};
-        setGlobalSettings(parsed);
-      } catch {
-        setGlobalSettings({});
-      }
-    }
-    window.addEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
-    return () =>
-      window.removeEventListener("AAP_SETTINGS_UPDATED", handleGlobalUpdate);
-  }, [storageKey]);
-
   function handleToggle() {
-    setExpanded((prev) => !prev);
+    // Update local state first.
+    setExpanded((prev) => {
+      const newVal = !prev;
+      if (currentFile) {
+        const newSettings = {
+          ...currentFile.AAP_BUILDER_SETTINGS,
+          textFieldExpansions: {
+            ...currentFile.AAP_BUILDER_SETTINGS.textFieldExpansions,
+            [storageKey]: newVal,
+          },
+        };
+        // Defer the update to file settings to after the current render cycle.
+        setTimeout(() => {
+          updateFileSettings(newSettings);
+        }, 0);
+      }
+      return newVal;
+    });
   }
-
-  const textFieldProps = effectiveExpanded
-    ? { multiline: true, minRows: rows }
-    : { multiline: true, rows, InputProps: { style: { overflow: "auto" } } };
 
   const collapsedLineHeight = 24;
   const collapsedMaxHeight = rows * collapsedLineHeight;
+
+  const textFieldProps =
+    currentFile?.AAP_BUILDER_SETTINGS?.alwaysExpandTextFields || expanded
+      ? { multiline: true, minRows: rows }
+      : { multiline: true, rows, InputProps: { style: { overflow: "auto" } } };
 
   return (
     <Box sx={{ position: "relative" }}>
@@ -107,9 +82,12 @@ export default function ExpandableTextField({
         value={value}
         onChange={onChange}
         placeholder={placeholder}
+        inputProps={{
+          lang: language,
+          spellCheck: "true",
+        }}
         {...props}
       />
-
       <Box
         ref={measureRef}
         sx={{
@@ -128,23 +106,15 @@ export default function ExpandableTextField({
       >
         {value}
       </Box>
-
       <Box
-        sx={{
-          display: "flex",
-          justifyContent: "flex-end",
-          alignItems: "center",
-          mt: 0.5,
-          gap: 3,
-        }}
+        sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", mt: 0.5, gap: 3 }}
       >
-        {!globalSettings.alwaysExpandTextFields && showToggle && (
-          <Button size="small" onClick={handleToggle}>
-            {expanded
-              ? t("expandableTextField.collapse")
-              : t("expandableTextField.expand")}
-          </Button>
-        )}
+        {!currentFile?.AAP_BUILDER_SETTINGS?.alwaysExpandTextFields &&
+          showToggle && (
+            <Button size="small" onClick={handleToggle}>
+              {expanded ? t("expandableTextField.collapse") : t("expandableTextField.expand")}
+            </Button>
+          )}
         {characterLimit > 0 && (
           <Typography
             variant="body2"

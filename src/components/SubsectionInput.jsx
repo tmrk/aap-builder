@@ -11,7 +11,7 @@ import {
   Checkbox,
   Autocomplete,
   Collapse,
-  Button,
+  Button
 } from "@mui/material";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
@@ -26,26 +26,37 @@ import DiseaseIconUrl from "../assets/Icon_Disease.svg";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
 import { useGlobalVisibility } from "../utils/useGlobalVisibility";
+import DOMPurify from "dompurify";
 
 const SubsectionInput = ({ stepId, subsection, isSummary }) => {
-  const { aapData, updateField } = useContext(AAPContext);
-  const { t } = useContext(LanguageContext);
+  const { currentFile, updateField } = useContext(AAPContext);
+  const { t, language } = useContext(LanguageContext);
+  const aapData = currentFile ? currentFile.AAP_BUILDER_DATA : {};
   const subsectionId = subsection.id;
-  const questionId = subsectionId;
+  const questionId = subsection.id;
   const storedValue = aapData?.[stepId]?.[subsectionId]?.[questionId] || "";
   const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
-  
+
   const requiredStar = subsection.required ? (
     <span style={{ color: "red", marginLeft: 4 }}>*</span>
   ) : null;
   const characterLimit = subsection.characterLimit || 0;
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (subsection.type || "").toLowerCase();
-  
-  // Use the updated global visibility hook returning three values.
-  const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(true, stepId, subsectionId, null);
-  const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(false, stepId, subsectionId, null);
-  
+
+  const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(
+    true,
+    stepId,
+    subsectionId,
+    null
+  );
+  const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(
+    false,
+    stepId,
+    subsectionId,
+    null
+  );
+
   let inputElem = null;
   if (type === "radio" && subsectionId === "hazard") {
     const opts = Array.isArray(subsection.options) ? subsection.options : [];
@@ -142,7 +153,16 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
             updateField(stepId, subsectionId, questionId, newVal || "")
           }
           renderInput={(params) => (
-            <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
+            <TextField
+              {...params}
+              variant="outlined"
+              placeholder={subsection.placeholder}
+              inputProps={{
+                ...params.inputProps,
+                lang: language,
+                spellCheck: "true",
+              }}
+            />
           )}
         />
       );
@@ -156,7 +176,16 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
             updateField(stepId, subsectionId, questionId, newVal || "")
           }
           renderInput={(params) => (
-            <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
+            <TextField
+              {...params}
+              variant="outlined"
+              placeholder={subsection.placeholder}
+              inputProps={{
+                ...params.inputProps,
+                lang: language,
+                spellCheck: "true",
+              }}
+            />
           )}
         />
       );
@@ -225,14 +254,18 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
         onChange={(e) =>
           updateField(stepId, subsectionId, questionId, e.target.value)
         }
+        inputProps={{
+          lang: language,
+          spellCheck: "true",
+        }}
       />
     );
   }
-  
+
   if (!inputElem && (!subsection.subsubsections || subsection.subsubsections.length === 0)) {
     return null;
   }
-  
+
   if (isSummary) {
     return (
       <Box>
@@ -252,7 +285,7 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       </Box>
     );
   }
-  
+
   return (
     <Box sx={{ mb: 3 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
@@ -276,7 +309,9 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
           <Box sx={{ px: 0.5, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               <b>{t("sectionContent.explanatoryNote")}: </b>
-              {subsection.hint}
+              <span
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.hint) }}
+              />
             </Typography>
           </Box>
         </Collapse>
@@ -284,16 +319,28 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       {subsection.example && (
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
           <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
+            <Typography
+              variant="body2"
+              sx={{ color: "text.secondary", fontStyle: "italic" }}
+            >
               <b>{t("sectionContent.exampleText")}: </b>
-              {subsection.example}
+              <span
+                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.example) }}
+              />
             </Typography>
           </Box>
         </Collapse>
       )}
       {inputElem}
       {characterLimit > 0 && type !== "textarea" && (
-        <Typography variant="body2" sx={{ mt: 0.5, textAlign: "right", color: exceedLimit ? "red" : "text.secondary" }}>
+        <Typography
+          variant="body2"
+          sx={{
+            mt: 0.5,
+            textAlign: "right",
+            color: exceedLimit ? "red" : "text.secondary",
+          }}
+        >
           {value.length} / {characterLimit}
         </Typography>
       )}

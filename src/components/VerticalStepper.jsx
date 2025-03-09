@@ -1,4 +1,4 @@
-import React, { useState, useContext } from "react";
+import React, { useContext } from "react";
 import {
   Box,
   Stepper,
@@ -10,13 +10,13 @@ import {
   MobileStepper
 } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
-import useMarkdownTemplate from "../utils/useMarkdownTemplate";
+import useTemplate from "../utils/useTemplate";  // <-- Renamed import
 import { getSectionStatus } from "../utils/validation";
 import SectionContent from "./SectionContent";
 import { exportToDocx } from "../utils/docxExport";
 import { LanguageContext } from "../context/LanguageContext";
 
-const APP_BAR_OFFSET = 80; // px offset so the label isn't hidden beneath the AppBar
+const APP_BAR_OFFSET = 80;
 
 function TriStateStepIcon({ stepIndex, status, active }) {
   let bgColor = "grey.400";
@@ -45,17 +45,31 @@ function TriStateStepIcon({ stepIndex, status, active }) {
 }
 
 export default function VerticalStepper() {
-  const [activeStep, setActiveStep] = useState(() => {
-    const stored = localStorage.getItem("AAP_ACTIVE_STEP");
-    return stored !== null ? Number(stored) : 0;
-  });
-
+  const { currentFile, updateActiveStep } = useContext(AAPContext);
   const { t } = useContext(LanguageContext);
-  const { aapData } = useContext(AAPContext);
-  const { template, loading, error } = useMarkdownTemplate();
+  const currentTemplateId = currentFile ? currentFile.aap_template : null;
+  const { template, loading, error } = useTemplate(currentTemplateId); // <--
 
-  const handleExport = () => {
-    exportToDocx(aapData);
+  // Use the active step from the current file (default to 0)
+  const activeStep = currentFile ? currentFile.AAP_ACTIVE_STEP : 0;
+  const totalSteps = template && template.template ? template.template.length : 0;
+
+  const stepStatus = (i) =>
+    getSectionStatus(template.template[i], currentFile ? currentFile.AAP_BUILDER_DATA : {});
+
+  const handleStepContentEntered = (idx, stepId) => {
+    if (idx === activeStep && window.innerWidth >= 960) {
+      const labelEl = document.getElementById(`step-label-${stepId}`);
+      if (labelEl) {
+        const rect = labelEl.getBoundingClientRect();
+        const scrollTop = window.scrollY + rect.top - APP_BAR_OFFSET;
+        window.scrollTo({ top: scrollTop, behavior: "smooth" });
+      }
+    }
+  };
+
+  const handleStepClick = (index) => {
+    updateActiveStep(index);
   };
 
   if (loading) {
@@ -72,54 +86,17 @@ export default function VerticalStepper() {
     return <Typography>{t("stepper.noTemplateData")}</Typography>;
   }
 
-  // Use the parsed array of steps from the template object.
-  const steps = template.template;
-  const totalSteps = steps.length;
-
-  const stepStatus = (i) => getSectionStatus(steps[i], aapData);
-
-  // When the step's content finishes expanding, scroll the label into view.
-  const handleStepContentEntered = (idx, stepId) => {
-    if (idx === activeStep && window.innerWidth >= 960) {
-      const labelEl = document.getElementById(`step-label-${stepId}`);
-      if (labelEl) {
-        const rect = labelEl.getBoundingClientRect();
-        const scrollTop = window.scrollY + rect.top - APP_BAR_OFFSET;
-        window.scrollTo({ top: scrollTop, behavior: "smooth" });
-      }
-    }
-  };
-
-  const handleStepClick = (index) => {
-    setActiveStep(index);
-    localStorage.setItem("AAP_ACTIVE_STEP", index);
-  };
-
   const desktopStepper = (
-    <Stepper
-      activeStep={activeStep}
-      orientation="vertical"
-      nonLinear
-      sx={{ display: { xs: "none", md: "block" } }}
-    >
-      {steps.map((step, idx) => {
+    <Stepper activeStep={activeStep} orientation="vertical" nonLinear sx={{ display: { xs: "none", md: "block" } }}>
+      {template.template.map((step, idx) => {
         const status = stepStatus(idx);
         return (
           <Step key={step.id || idx} completed={false}>
             <StepLabel
-              icon={
-                <TriStateStepIcon
-                  stepIndex={idx}
-                  status={status}
-                  active={idx === activeStep}
-                />
-              }
+              icon={<TriStateStepIcon stepIndex={idx} status={status} active={idx === activeStep} />}
               sx={{
                 cursor: "pointer",
-                ".MuiStepLabel-label": {
-                  fontWeight: "bold",
-                  fontSize: "1.1rem",
-                },
+                ".MuiStepLabel-label": { fontWeight: "bold", fontSize: "1.1rem" },
               }}
               onClick={() => handleStepClick(idx)}
             >
@@ -128,9 +105,7 @@ export default function VerticalStepper() {
               </Typography>
             </StepLabel>
             <StepContent
-              TransitionProps={{
-                onEntered: () => handleStepContentEntered(idx, step.id),
-              }}
+              TransitionProps={{ onEntered: () => handleStepContentEntered(idx, step.id) }}
             >
               <SectionContent step={step} />
               <Box sx={{ mb: 2 }}>
@@ -168,7 +143,7 @@ export default function VerticalStepper() {
           borderRadius: 4,
         }}
       >
-        {steps.map((step, idx) => {
+        {template.template.map((step, idx) => {
           const status = stepStatus(idx);
           const active = idx === activeStep;
           return (
@@ -192,9 +167,9 @@ export default function VerticalStepper() {
         })}
       </Box>
       <Typography variant="h6" sx={{ mb: 2, fontWeight: "bold", textAlign: "center" }}>
-        {steps[activeStep].title}
+        {template.template[activeStep].title}
       </Typography>
-      <SectionContent step={steps[activeStep]} />
+      <SectionContent step={template.template[activeStep]} />
       <MobileStepper
         variant="text"
         steps={totalSteps - 1}
@@ -240,7 +215,7 @@ export default function VerticalStepper() {
           size="large"
           fullWidth
           color="primary"
-          onClick={handleExport}
+          onClick={() => exportToDocx(currentFile.AAP_BUILDER_DATA)}
         >
           {t("stepper.exportToDocx")}
         </Button>

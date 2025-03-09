@@ -1,5 +1,5 @@
 import React, { useContext, useState } from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton, Button } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
 import { LanguageContext } from "../context/LanguageContext";
 import SettingsIcon from "@mui/icons-material/Settings";
@@ -11,13 +11,13 @@ import DiseaseIconUrl from "../assets/Icon_Disease.svg";
 import SettingsDrawer from "./SettingsDrawer";
 
 export default function Header() {
-  const { aapData } = useContext(AAPContext);
+  const { currentFile, setCurrentFile } = useContext(AAPContext);
   const { t } = useContext(LanguageContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
 
-  const hazard = aapData?.["summary"]?.["hazard"]?.["hazard"] || "";
-  const country = aapData?.["summary"]?.["country"]?.["country"] || "";
-  const custodian = aapData?.["summary"]?.["custodian-organisation"]?.["custodian-organisation"] || "";
+  const hazard = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["hazard"]?.["hazard"] || "";
+  const country = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["country"]?.["country"] || "";
+  const custodian = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["custodian-organisation"]?.["custodian-organisation"] || "";
 
   const subLine = [hazard, country, custodian].filter(Boolean).join(", ");
 
@@ -43,6 +43,11 @@ export default function Header() {
     window.scrollTo({ top: 0, behavior: "smooth" });
   };
 
+  const handleSaveAndClose = () => {
+    // With auto-save via context, simply clear the current file to return to the dashboard.
+    setCurrentFile(null);
+  };
+
   return (
     <>
       <AppBar position="sticky" sx={{ backgroundColor: "rgb(14, 105, 46)" }}>
@@ -64,10 +69,7 @@ export default function Header() {
                 />
               )}
               <Box>
-                <Typography
-                  variant="h6"
-                  sx={{ color: "#fff", fontWeight: "bold", lineHeight: 1, mt: 0.5 }}
-                >
+                <Typography variant="h6" sx={{ color: "#fff", fontWeight: "bold", lineHeight: 1, mt: 0.5 }}>
                   {t("header.title")}
                 </Typography>
                 <Typography variant="subtitle" sx={{ color: "#fff", mt: 0 }}>
@@ -75,9 +77,16 @@ export default function Header() {
                 </Typography>
               </Box>
             </Box>
-            <IconButton color="inherit" onClick={handleDrawerToggle}>
-              <SettingsIcon />
-            </IconButton>
+            <Box>
+              {currentFile && (
+                <Button color="inherit" onClick={handleSaveAndClose}>
+                  {t("header.saveAndClose")}
+                </Button>
+              )}
+              <IconButton color="inherit" onClick={handleDrawerToggle}>
+                <SettingsIcon />
+              </IconButton>
+            </Box>
           </Toolbar>
         </Box>
       </AppBar>

@@ -1,8 +1,9 @@
-import React from "react";
-import { AAPProvider } from "./context/AAPContext";
+import React, { useContext } from "react";
+import { AAPProvider, AAPContext } from "./context/AAPContext";
 import { LanguageProvider } from "./context/LanguageContext";
 import VerticalStepper from "./components/VerticalStepper";
 import Header from "./components/Header";
+import Dashboard from "./components/Dashboard";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, Container } from "@mui/material";
 
@@ -29,30 +30,35 @@ brown-2: rgb(169, 144, 115);
 wheat-1: rgb(229, 216, 175);
 wheat-2: rgb(247, 244, 224);
 */
+
 const theme = createTheme({
   palette: {
     primary: {
-      main: "rgb(47, 171, 22)", // green
-      light: "rgb(214, 228, 200)", // green-3
-      dark: "rgb(14, 105, 46)", // dark-green
+      main: "rgb(47, 171, 22)",
+      light: "rgb(214, 228, 200)",
+      dark: "rgb(14, 105, 46)",
+    },
+    secondary: {
+      main: "rgb(89, 150, 228)",
+      light: "rgb(128, 176, 234)",
     },
     success: {
-      main: "rgb(89, 150, 228)", // blue
+      main: "rgb(89, 150, 228)",
     },
     warning: {
-      main: "rgb(255, 158, 17)", // orange
+      main: "rgb(255, 158, 17)",
     },
     error: {
-      main: "rgb(207, 0, 51)", // blaze-red
+      main: "rgb(207, 0, 51)",
     },
     background: {
-      default: "rgb(247, 244, 224)", // wheat-2
-      light: "rgb(229, 216, 175)", // wheat-1
-      dark: "rgb(169, 144, 115)", // brown-2
+      default: "rgb(247, 244, 224)",
+      light: "rgb(229, 216, 175)",
+      dark: "rgb(169, 144, 115)",
     },
     text: {
-      primary: "rgb(57, 43, 39)", // dark-brown
-      secondary: "rgb(92, 69, 60)", // brown-1
+      primary: "rgb(57, 43, 39)",
+      secondary: "rgb(92, 69, 60)",
     },
   },
   typography: {
@@ -60,16 +66,25 @@ const theme = createTheme({
   },
 });
 
+function AppContent() {
+  const { currentFile } = useContext(AAPContext);
+  return (
+    <>
+      <Header />
+      <Container maxWidth="md" sx={{ pb: 5 }}>
+        {currentFile ? ( <VerticalStepper /> ) : ( <Dashboard /> )}
+      </Container>
+    </>
+  );
+}
+
 function App() {
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <LanguageProvider>
         <AAPProvider>
-          <Header />
-          <Container maxWidth="md" sx={{ pb: 5 }}>
-            <VerticalStepper />
-          </Container>
+          <AppContent />
         </AAPProvider>
       </LanguageProvider>
     </ThemeProvider>

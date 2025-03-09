@@ -28,13 +28,9 @@ function wrapHeading(text, styleName, withNumbering = true) {
 }
 
 function blank() {
-  // Return a single empty paragraph with Normal style
   return new Paragraph({ style: "Normal", children: [] });
 }
 
-/**
- * To avoid fully justified short lines, split multiline text into multiple paragraphs.
- */
 function wrapContent(text) {
   if (!text || !text.trim()) {
     return [new Paragraph({ style: "Normal", children: [] })];
@@ -56,9 +52,6 @@ function getNumberingOptions(styleName) {
   return undefined;
 }
 
-/**
- * Create a table for the summary section.
- */
 function buildAAPSummaryTable(summarySection, aapData) {
   if (!summarySection?.subsections?.length) return null;
 
@@ -98,11 +91,6 @@ function buildAAPSummaryTable(summarySection, aapData) {
   });
 }
 
-function wrapHeadingOrType(sectionOrSubsec, fallbackHeading) {
-  return fallbackHeading;
-}
-
-// Export the document using the AAP data and template stored under "AAP_TEMPLATE"
 export async function exportToDocx(aapData) {
   const templateStr = localStorage.getItem("AAP_TEMPLATE");
   let parsedTemplate = null;
@@ -110,7 +98,6 @@ export async function exportToDocx(aapData) {
   if (templateStr) {
     try {
       parsedTemplate = JSON.parse(templateStr);
-      // If the stored object has a "template" property, use that.
       if (parsedTemplate && parsedTemplate.template) {
         sections = parsedTemplate.template;
       } else {

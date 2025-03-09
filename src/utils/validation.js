@@ -1,71 +1,42 @@
+/**
+ * Returns "unstarted", "inprogress", or "complete" for a given step.
+ * 
+ * - "unstarted": no required or optional fields have any values (nothing entered).
+ * - "inprogress": at least one field has a value, but at least one required is empty
+ *   or a field exceeds its characterLimit.
+ * - "complete": all required fields are filled and within their character limits,
+ *   and at least one field has a value.
+ */
 export function getSectionStatus(step, aapData) {
+  // 1) Collect all nodes under `step` that define inputs (node.type is truthy).
+  const allNodes = collectAllInputNodes(step);
+
   let answeredAny = false;
   let missingRequired = false;
   let exceededCharLimit = false;
 
-  // If the step has subsections, validate each subsection and its sub-subsections
-  if (step.subsections && step.subsections.length > 0) {
-    for (const subsection of step.subsections) {
-      const sectionId = step.id;
-      const subsecId = subsection.id;
-      const questionId = subsecId;
-      
-      // Validate the subsection's own input value
-      const rawValue = aapData?.[sectionId]?.[subsecId]?.[questionId] || "";
-      const val = Array.isArray(rawValue)
-        ? rawValue.join(", ")
-        : String(rawValue).trim();
-      
-      if (val.length > 0) {
-        answeredAny = true;
-      }
-      if (subsection.required && val.length === 0) {
-        missingRequired = true;
-      }
-      if (subsection.characterLimit > 0 && val.length > subsection.characterLimit) {
-        exceededCharLimit = true;
-      }
+  // 2) For each node, read its stored value from aapData[step.id][node.id][node.id].
+  //    Then update these flags accordingly.
+  for (const node of allNodes) {
+    const val = getValue(aapData, step.id, node.id);
 
-      // Now validate any sub-sub-sections (third-level inputs)
-      if (subsection.subsubsections && subsection.subsubsections.length > 0) {
-        for (const subsub of subsection.subsubsections) {
-          const subsubId = subsub.id;
-          const rawValSubsub = aapData?.[sectionId]?.[subsecId]?.[subsubId] || "";
-          const valSubsub = Array.isArray(rawValSubsub)
-            ? rawValSubsub.join(", ")
-            : String(rawValSubsub).trim();
-
-          if (valSubsub.length > 0) {
-            answeredAny = true;
-          }
-          if (subsub.required && valSubsub.length === 0) {
-            missingRequired = true;
-          }
-          if (subsub.characterLimit > 0 && valSubsub.length > subsub.characterLimit) {
-            exceededCharLimit = true;
-          }
-        }
-      }
-    }
-  }
-  // Otherwise, if the step has no subsections but has its own type (a single input field)
-  else if (step.type) {
-    const rawValue = aapData?.[step.id]?.[step.id]?.[step.id] || "";
-    const val = Array.isArray(rawValue)
-      ? rawValue.join(", ")
-      : String(rawValue).trim();
-
+    // Check if anything is answered
     if (val.length > 0) {
       answeredAny = true;
     }
-    if (step.required && val.length === 0) {
+
+    // Required fields must not be empty
+    if (node.required && val.length === 0) {
       missingRequired = true;
     }
-    if (step.characterLimit > 0 && val.length > step.characterLimit) {
+
+    // Check character limits
+    if (node.characterLimit && node.characterLimit > 0 && val.length > node.characterLimit) {
       exceededCharLimit = true;
     }
   }
 
+  // 3) Decide the final status
   if (!answeredAny) {
     return "unstarted";
   }
@@ -73,4 +44,49 @@ export function getSectionStatus(step, aapData) {
     return "inprogress";
   }
   return "complete";
+}
+
+/**
+ * Recursively collects every node that can contain an input.
+ * That means any node with `node.type` is considered an "input node."
+ * 
+ * For example, a step might have multiple subsections, which might have subsubsections.
+ * This function unrolls that entire tree into a flat array.
+ */
+function collectAllInputNodes(node, result = []) {
+  // If this node is itself an input (node.type is truthy), store it.
+  if (node.type) {
+    result.push(node);
+  }
+
+  // Recurse for subsections
+  if (Array.isArray(node.subsections)) {
+    for (const child of node.subsections) {
+      collectAllInputNodes(child, result);
+    }
+  }
+
+  // Recurse for subsubsections
+  if (Array.isArray(node.subsubsections)) {
+    for (const child of node.subsubsections) {
+      collectAllInputNodes(child, result);
+    }
+  }
+
+  return result;
+}
+
+/**
+ * Retrieves a string value from the aapData at [stepId][nodeId][nodeId].
+ * Returns "" if nothing is stored or the path doesn't exist.
+ */
+function getValue(aapData, stepId, nodeId) {
+  const raw = aapData?.[stepId]?.[nodeId]?.[nodeId];
+  if (!raw) {
+    return "";
+  }
+  if (Array.isArray(raw)) {
+    return raw.join(", ").trim();
+  }
+  return String(raw).trim();
 }
