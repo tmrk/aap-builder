@@ -24,11 +24,18 @@ import { LanguageContext } from "../context/LanguageContext";
 
 const availableTemplates = [
   {
-    id: "template1",
+    id: "wahafa1",
     name: "WHH AAP",
     description: "The original Anticipatory Action template by WHH",
     language: "english",
-    url: "https://gist.githubusercontent.com/tmrk/b10c99520e27a59f196f5980d9ba72e9/raw/AAP-template.json"
+    url: "https://raw.githubusercontent.com/tmrk/aap-builder/refs/heads/main/src/aap-templates/aap-template_wahafa.json"
+  },
+  {
+    id: "wahafa2",
+    name: "WHH AAP 2.0",
+    description: "The new and improved Anticipatory Action template by WHH (DRAFT)",
+    language: "english",
+    url: "https://raw.githubusercontent.com/tmrk/aap-builder/refs/heads/main/src/aap-templates/aap-template-2_wahafa.json"
   }
 ];
 
