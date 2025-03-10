@@ -6,10 +6,11 @@ import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
 import { useGlobalVisibility } from "../utils/useGlobalVisibility";
 import DOMPurify from "dompurify";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const StepInput = ({ step }) => {
   const { currentFile, updateField } = useContext(AAPContext);
-  const { t, language } = useContext(LanguageContext);
+  const { t, language, dateFnsLocale } = useContext(LanguageContext);
   const aapData = currentFile ? currentFile.AAP_BUILDER_DATA : {};
   const rawValue = aapData?.[step.id]?.[step.id]?.[step.id] || "";
   const value = Array.isArray(rawValue) ? rawValue.join(", ") : String(rawValue);
@@ -40,6 +41,25 @@ const StepInput = ({ step }) => {
         characterLimit={step.characterLimit || 0}
       />
     );
+  } else if (type === "datepicker") {
+    inputElem = (
+      <DatePicker
+        locale={dateFnsLocale}
+        value={value ? new Date(value) : null}
+        onChange={(newValue) =>
+          updateField(step.id, step.id, step.id, newValue ? newValue.toISOString() : "")
+        }
+        format="yyyy-MM-dd"
+        slots={{ textField: TextField }}
+        slotProps={{
+          textField: {
+            variant: "outlined",
+            placeholder: step.placeholder,
+            fullWidth: true
+          }
+        }}
+      />
+    );
   } else if (type === "text") {
     inputElem = (
       <TextField
@@ -55,7 +75,6 @@ const StepInput = ({ step }) => {
     );
   }
 
-  // If there's no input for this step, just return null.
   if (!inputElem) {
     return null;
   }

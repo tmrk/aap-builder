@@ -1,11 +1,13 @@
 import React, { useContext } from "react";
 import { AAPProvider, AAPContext } from "./context/AAPContext";
-import { LanguageProvider } from "./context/LanguageContext";
+import { LanguageProvider, LanguageContext } from "./context/LanguageContext";
 import VerticalStepper from "./components/VerticalStepper";
 import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
 import { CssBaseline, Container } from "@mui/material";
+import { LocalizationProvider } from "@mui/x-date-pickers";
+import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
 /*
 blue: rgb(89, 150, 228);
@@ -67,14 +69,26 @@ const theme = createTheme({
 });
 
 function AppContent() {
-  const { currentFile } = useContext(AAPContext);
+  // Use a defensive check in case the context is not provided
+  const aapContext = useContext(AAPContext);
+  if (!aapContext) return null;
+  const { currentFile } = aapContext;
   return (
     <>
       <Header />
       <Container maxWidth="md" sx={{ pb: 5 }}>
-        {currentFile ? ( <VerticalStepper /> ) : ( <Dashboard /> )}
+        {currentFile ? <VerticalStepper /> : <Dashboard />}
       </Container>
     </>
+  );
+}
+
+function AppWithLocalization() {
+  const { dateFnsLocale } = useContext(LanguageContext);
+  return (
+    <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dateFnsLocale}>
+      <AppContent />
+    </LocalizationProvider>
   );
 }
 
@@ -84,7 +98,7 @@ function App() {
       <CssBaseline />
       <LanguageProvider>
         <AAPProvider>
-          <AppContent />
+          <AppWithLocalization />
         </AAPProvider>
       </LanguageProvider>
     </ThemeProvider>

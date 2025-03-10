@@ -1,0 +1,354 @@
+{
+    "metadata": {
+      "title": "Anticipatory Action Plan Template",
+      "version": "1.0",
+      "language": "en",
+      "last_updated": "2025-03-04",
+      "created_by": "WHH"
+    },
+    "template": [
+      {
+        "id": "summary",
+        "title": "Summary",
+        "subsections": [
+          {
+            "id": "hazard",
+            "title": "Hazard",
+            "options": [
+              "Flood",
+              "Drought",
+              "Tropical cyclone"
+            ],
+            "type": "radio",
+            "required": true
+          },
+          {
+            "id": "country",
+            "title": "Country",
+            "type": "dropdown",
+            "required": true
+          },
+          {
+            "id": "location",
+            "title": "Location",
+            "placeholder": "County, district, village...",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "custodian-organisation",
+            "title": "Custodian organisation",
+            "placeholder": "e.g. WHH",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "aap-validity-period",
+            "title": "AAP validity period",
+            "placeholder": "e.g. 2025-2026",
+            "type": "text",
+            "required": false
+          },
+          {
+            "id": "prioritised-impacts-to-be-addressed-by-aa",
+            "title": "Prioritised impacts to be addressed by AA",
+            "placeholder": "e.g. loss of harvest, loss of livelihoods, etc.",
+            "type": "text",
+            "required": false
+          },
+          {
+            "id": "prioritised-anticipatory-actions",
+            "title": "Prioritised anticipatory actions",
+            "placeholder": "e.g. cash transfers, livestock vaccination, seed distribution, etc.",
+            "type": "text",
+            "required": false
+          },
+          {
+            "id": "focal-point-for-this-aap",
+            "title": "Focal point for this AAP",
+            "placeholder": "e.g. Head of Programme, WHH",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "governmental-coordinating-agency",
+            "title": "Governmental coordinating agency",
+            "placeholder": "e.g. National Disaster Management Authority",
+            "type": "text",
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "introduction",
+        "title": "Introduction",
+        "example": "This AAP was developed to define how the risk of xxxxxx will be managed in an anticipatory approach, from risk analysis to the implementation of anticipatory actions. This AAP can be used in a variety of ways such as documenting information and procedures established to guarantee timely delivery of anticipatory actions based on early warnings for xxxxxx. This AAP can also be used as a reference document to provide insights on any AHA related documents and to support communications, advocacy, as well as efforts in resource mobilisation. In the ideal situation this AAP should be updated every xxxxxx or after every activation.",
+        "subsections": [
+          {
+            "id": "executive-summary",
+            "title": "Executive summary",
+            "hint": "Write a short overview highlighting the key elements of the Anticipatory Action Plan: this could include the regions and population targeted, hazard risk profile and its expected impacts, forecast data and trigger threshold(s), main actors and responsibilities, anticipatory actions, MEAL components. It is advised to draft this section after concluding the main body of the plan. This approach ensures that the executive summary serves as a streamlined synopsis, offering a brief yet comprehensive preview of the entire document's contents.",
+            "type": "textarea",
+            "characterLimit": 2500,
+            "required": true
+          },
+          {
+            "id": "strategic-positioning",
+            "title": "Strategic positioning",
+            "hint": "Describe the broader strategic positioning of the AAP. Explain how the AAP was aligned with the organisational or government strategies, priorities, contingency plans for DRR existing DRR and AHA.",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": false
+          },
+          {
+            "id": "introduction-of-the-aap-custodians",
+            "title": "Introduction of the AAP custodian(s)",
+            "hint": "Insert a short introduction to implementing organisation(s) and AAP Custodians – INGO and Local Humanitarian Partner (LHP) if applicable. Please include the organisation’s name, mandate, field of expertise, their presence in the country and target district(s) for the AAP. If relevant, you can also highlight prior experience with AHA or DRM.",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": false
+          },
+          {
+            "id": "other-relevant-stakeholders",
+            "title": "Other relevant stakeholders",
+            "hint": "Insert a paragraph on stakeholders involved (where relevant, specify if at national, regional and local level). Outline their respective roles and responsibilities for the AAP implementation and if MoUs between partners or other relevant documents exist.",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "risk-analysis",
+        "title": "Risk analysis",
+        "subsections": [
+          {
+            "id": "overview",
+            "title": "Overview",
+            "hint": "Outline the hazard risk profile on which the Anticipatory Action Plan focuses. Information on why the hazard(s) were selected for this AAP, target locations, vulnerabilities and impacts should be provided. Introductory paragraph about the country, including information on hazard exposure and vulnerability to climate change. This helps to introduce any unfamiliar readers to the country.",
+            "example": "Due to its geographic location in the southwest Indian Ocean, Disasterlandia is highly prone to natural hazards such as tropical cyclones, floods and drought, ranking 27th out of 191 countries in the INFORM Risk Index (2024, v. 0.6.7), an open-source global assessment considering exposure, vulnerability and coping capacity indictors. Disasterlandia is also amongst the most vulnerable countries in the world to the effects of climate change (165th out of 185 countries) according to the ND-GAIN Index (2021) rankings.",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": true
+          },
+          {
+            "id": "hazards",
+            "title": "Hazard(s)",
+            "hint": "This section is ‘science focused’ providing information on the hazard occurrence, rationalising why this hazard is important to take anticipatory action for. Please provide information on: (1) The rationale for the selection of the hazards and information on any cascading hazards that could also be expected. (2) The time when the hazards is most likely to occur. (3) If the AAP is about floods, please define the type of floods (e.g. river, coastal, flash). Which floods are covered by this AAP? How are floods caused? (e.g. heavy rainfall, cyclones). (4) If the AAP is about drought, please define the type of drought (e.g. meteorological, agricultural). (5) If the AAP is about tropical cyclones, please include a table of the tropical cyclone intensity category for your country. (6) Consider using graphs of historical hazard information, see an example from Madagascar see below. If you need any assistance with creating figures such as these, please contact the WAHAFA team.",
+            "example": "In Disasterlandia, River Floods are a frequently occurring hazard, with severe floods occurring approximately every 3 years. Floods can have devastating consequences for communities and households. There are different types of floods in Disasterlandia: Coastal floods can result in significant impacts but are relatively rare. The risks are restricted to low-lying areas of the country, and typically linked to tropical cyclone storm surge, with the highest risk when a cyclone surge combines with a high tide. Coastal floods are out of scope for this AAP... etc. In Disasterlandia, river flooding can occur during the rainy season from November to April, and cyclone systems are also associated with excessive rainfall during the same period (Figure 1). The geographical areas likely to be exposed to the risk of flooding are primarily coastal areas, particularly towns or villages around the mouth of a river. Floods can cause collapse of riverbanks, and heavy rainfall events are also associated with landslides in hilly areas...",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "required": true
+          },
+          {
+            "id": "target-locations",
+            "title": "Target locations",
+            "hint": "This short section explains the target locations of the AAP. Please provide information on: (1) Geographical areas and communities most exposed to the hazard(s). (2) Describe the neighbourhood identification process, objective and outcomes (including attendance of partners, alignment with other anticipatory action actors, co-design process with local government). (3) Appropriate information from relevant reports can be used, such as the start-up workshop report (add a link or appendix). (4) Briefly mention how the hazard is monitored in these areas. (5) Please include a map or a table of the target areas. If you need any support with making a map, please contact the WAHAFA team.",
+            "example": "The targeted areas were identified by a set of criteria including historical flood events, number of people affected by floods previously and community capacity for flood early warning monitoring… For most river basins in Disasterlandia, there are no flood forecasting and early warning systems…communities maintain their own river gauges… Seasonal climate outlooks and monthly forecasts are issued by the national meteorological agency, helping to identify whether above normal rainfall is anticipated over the coming months... The project targets specific at-risk areas, including the district of ... (Figure 2). The risk analysis carried out as part of the WAHAFA project made it possible to draw up a flood risk profile for these regions, detailed in the vulnerability section below... Figure 2. Map showing intervention zones.",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": true
+          },
+          {
+            "id": "impact-analysis",
+            "title": "Impact analysis",
+            "hint": "This section provides information on historic hazard events, outlining the main impacts and exposed elements (e.g. key infrastructure, crops). Please provide information on: (1) Expected severity and types of impact based on historic information and information from communities; (2) Any correlation between timing and evolution of the hazard and livelihood activities in the target area(s) using a crisis timeline to support. A crisis timeline can be used to demonstrate hazard occurrence over the period of a year or season, the timing of triggers, how and when it would influence livelihood activities, and the window of opportunity for AHA; (3) Any livelihood groups exposed to the hazard and how they could be impacted; (4) Note: It can be helpful to consider the impacts by sector, to aid later identifying actions that could be taken. (5) Take into account past and future trends of the hazard, and how impacts could vary in the future due to climate change or other factors.",
+            "example": "In our areas of intervention, in the rural areas of southern Disasterlandia, rainfall is very scarce even during the rainy season. As a result, communities establish their crop fields close to the rivers, which are affected by flood waters, negatively impacting livelihoods… Additional consequences can include displacement, loss of property and livelihoods, and damage to infrastructure such as roads and bridges (Table 1)... Table 1. Historic flood events and their impacts in Disasterlandia. Date: Jan-2023\tFlood cause: Cyclone (Cheneso) Location: Northern districts Impact: 35,000 people affected, with 14,400 people displaced. Over 10,500 homes damaged or destroyed. Schools and health clinics damaged or destroyed. 141,000 ha cropland damaged which impacted the second rice harvest and resulted in rising food prices. Destruction of food stored for the lean season, seeing an early onset of the lean season and decline in food security. Date: Jan-2020 Flood cause: Above average rainfall Location: Central, Western and Northeastern parts Impact: Damage to the main road that links Antananarivo to the North, restricting humanitarian access. Destruction of late season crops and young main season crops recently sown. As a positive, the higher rainfall led to a lower than normal Fall Army Worm infestation rate. Flooding often occurs during the rainy season, which coincides with the main agricultural season (Figure 3)... Figure 3. Seasonal calendar showing peak flood risk in relation to livelihood activities. The population groups exposed to the risk of flooding depends on their geographical location. In fact, the populations at risk are particularly those living in remote villages bordered by a river or watercourse. In more detail, these population groups are as follows: (1) Farmers growing crops on flood plains are often severely affected by flooding, as their crops may be damaged or destroyed. Farmland can become waterlogged, making it impossible to grow crops for some time, affecting farmers' incomes. (2) Fishing communities that depend on rivers, lakes or coastal areas can be seriously affected by flooding, as it can disrupt fish stocks and destroy fishing equipment...",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true
+          },
+          {
+            "id": "vulnerabilities-and-capacities",
+            "title": "Vulnerabilities and capacities",
+            "hint": "This section provides information on any key vulnerabilities that mean specific groups or communities are more vulnerable to the hazard impacts. Having this information in the AAP helps identify the main risks and ensures that actions are appropriate Consider including information on: (1) Which people are most likely to experience the impacts of the hazard? Where do they live and why are they vulnerable? These could be identified through key informant interviews, national surveys and community discussions. (2) Consider livelihood groups that are most vulnerable and numbers of potentially affected individuals, and at-risk assets such as crops, livestock, and infrastructure. (3) If livelihoods and food security are key impacts, provide information on food security, including areas more prone to adverse outcomes (e.g. from IPC). (4) Please provide links to any risk and vulnerability assessment reports or other information used to detail this section. Include maps if available. If you need mapping support, please contact the WAHAFA team. (5) What capacities do communities have in managing this hazard? E.g. have people constructed plinths around their homes, have they established communication chains? How do these capacities affect the impact of the hazard? (6) If you have created a vulnerability index include information on the indicators used and the scores, including information on how regularly this index will be updated.",
+            "example": "Most riverine communities are affected by some degree of flooding on an annual basis. However, there are certain communities that are particularly exposed in terms of the height of flood waters, population exposure and extent of agriculture. The flood risk assessment for the intervention areas is summarised in the Flood Risk Assessment Report... Focus group discussions with communities identified several vulnerabilities that mean people experience more severe impacts from floods. Specific groups at risk of more severe impacts include: (1) Elderly people are less able to move from their homes when floodwaters rise, leading to increased risk of mortality. They are also less likely to have carried out flood mitigation measures on their homes, e.g. building plinths. (2) Children under 5 are more likely to contract water-borne diseases after floods... Focus groups identified barriers to early warning communication. The expected severity of flood impact depends on a number of factors, such as the lack of communication and information... Communities across all intervention areas have established flood response teams... Any other capacities...",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "early-warning-and-risk-monitoring",
+        "title": "Early warning and risk monitoring",
+        "subsections": [
+          {
+            "id": "trigger-model",
+            "title": "Trigger model",
+            "hint": "This section will provide summary information on the Trigger Model, including who is responsible for monitoring the triggers. Please include: (1) Trigger statement(s) including the source, lead time and probability; (2) Summary information of the forecast indicators and thresholds for each phase / geographic location, if the indicators and thresholds vary geographically. For each indicator, insert the data source, lead time, monitoring period, and the predefined trigger thresholds that will prompt anticipatory actions. (3) Details of the monitoring approach used (including the frequency of monitoring, responsibilities, and methods for monitoring these systems). (4) Information on how the triggers have been established, including links to any field reports.",
+            "example": "The trigger of flood anticipatory actions for the targeted locations has two phases: (1) Phase 1 AAP Minimum Readiness Activities and/or Advanced Readiness Activities are triggered when: (1a) The Met Agency issues a 1-3 month seasonal climate outlook indicating that the probability for wetter than normal conditions exceeds 60% over the November to April rainy season; (1b) And / or a community administered flood gauge records a yellow reading. Note that lead times for potential flooding vary by gauge. (2) Phase 2 Anticipatory Action activities are triggered when: (2a) A community administered flood gauge records a red reading. Note that lead times for potential flooding vary by gauge; (2b) And / or the meteorological agency issues a 1-3-day tropical cyclone rainfall forecast indicating extreme rainfall. The triggers and their sources were decided in combination with ... taking into account seasonal calendars (Figure 4, Table 2). The indicators identified for monitoring were considered to have high reliability... Figure 4. Summary of trigger source availability relative to seasonal livelihood activities. Table 2. Summary of indicators and thresholds used in this AAP.",
+            "type": "triggerDesigner",
+            "characterLimit": 2000,
+            "required": true
+          },
+          {
+            "id": "trigger-monitoring-guidelines",
+            "title": "Trigger monitoring guidelines",
+            "hint": "This section should specify which actions are to be taken by which actors during the monitoring phase based on the observed trigger levels. (1) Define under which circumstances ground-truthing and consensus-building exercises (including relevant stakeholders, in particular affected populations) would be conducted, as well as those situations where inaction is warranted. (2) Define the parameters under which we would implement a phased approach to delivery of anticipatory actions based on the level of confidence in the forecast, among other factors. (3) Describe communication mechanisms and channels for forwarding and communicating trigger information and issuing early warnings to relevant stakeholders. (4) Describe how intervention areas will be identified, including description of how forecast information will be combined with vulnerability and exposure information.",
+            "example": "The roles and responsibilities to be taken during the monitoring period for both phases will be shared between the organisation implementing the AAP, in this case WHH, the national coordination institution including the BNGRC and the local authorities in the areas potentially affected by a flood (Table 3). When Phase 1 trigger thresholds are met, Information on enhanced flood risk will be disseminated in the form of... When the Phase 2 trigger thresholds are reached the WHH emergency team and governments including the BNGRC should coordinate to disseminate... Table 3. Summary table of monitoring lead, actions and communication channels. Phase 1: Setting up minimum operational preparation activities, Communication of the pre-activation of the mechanism at WHH internal level (internal to the Country Office and internal to head office), etc. Phase 2: Setting up advanced operational preparation activities, Communication of the activation of the anticipation mechanism to national and local authorities, etc.",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true
+          },
+          {
+            "id": "stop-mechanism",
+            "title": "Stop mechanism",
+            "hint": "For all forecast triggers with a lead time of more than 3 days, the AAP should contain a stop mechanism. This means that if a later forecast, prior to the commencement of readiness or anticipatory actions, shows that the hazard risk has reduced, the activation of the AAP will be stopped to avoid use of resources. There are also scenarios where a forecast could change, for example rapid intensification of a cyclone, where staff could be put in danger, requiring activities to be halted. This section should specify example scenarios of when anticipatory activities could be stopped, including who is responsible for giving the signal to stop and communicating this with communities.",
+            "example": "Forecasting the timing, intensity and amount of rainfall alongside the potential timing of peak river flood waters can be challenging. Example scenarios that could result in stopping anticipatory actions include...: (1) Red gauge reading does not result in a flood materialising. (2) Flash or river flooding occurs that limits ability of WHH to access flood-affected areas to implement anticipatory actions. (3) Etc. Any anticipatory actions implemented prior to the stop mechanism being enacted were based on a ‘no regrets’ principle. This means that even if Phase II actions have commenced, these actions will still benefit the most vulnerable households... Halting of activities will be decided by...",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true
+          },
+          {
+            "id": "linkages-with-our-other-aaps",
+            "title": "Linkages with our other AAPs",
+            "hint": "If the AAP is linked with another, i.e. there could be a triggered of two AAPs in the same intervention area at the same time, include information on the overlap here. This includes whether communication methods differ and how decisions will be taken over resources and management of potential duplication of anticipatory actions.",
+            "example": "The Cyclone AAP addresses humanitarian impacts due to high windspeeds in the targeted locations, which overlap with those in this Flood AAP. It is possible that tropical cyclones classified as intense tropical cyclones or above could trigger both the Cyclone AAP and this Flood AAP at the same time...",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "anticipatory-actions",
+        "title": "Anticipatory actions",
+        "subsections": [
+          {
+            "id": "identification-and-prioritisation-of-anticipatory-actions",
+            "title": "Identification & prioritisation of anticipatory actions",
+            "hint": "Describe the process of anticipatory action identification, giving a brief overview of methods or criteria used to select actions, and touching on how actions were selected using a people centred approach/community engagement approach (it is possible to use suitable information from Anticipatory Action Identification and Prioritisation Report, if available, link or add as annex). Outline prioritised anticipatory actions and which main hazard impacts they are addressing. This can include: (1) Identified and prioritised hazard impacts; (2) Negative coping strategies of affected populations; (3) Identified and prioritised anticipatory actions.",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true
+          },
+          {
+            "id": "theory-of-change",
+            "title": "Theory of change",
+            "hint": "Develop a Theory of Change (ToC) for each anticipatory action (see template).",
+            "example": "Preventing food insecurity: The theory of change for preventing food insecurity begins with clear and reliable cyclone forecasts, disseminated in a timely manner so that local authorities and humanitarian partners in Disasterlandia can activate early warnings before roads become impassable. Once the early warning system (EWS) triggers, communities are promptly informed about the potential hazard, and coordination among WHH, and local authorities incl. BNGRC ensures that the anticipatory action plan is implemented smoothly. Because all implementers understand their roles and responsibilities, early financing can be disbursed quickly, allowing for immediate distribution of cash or food vouchers. Households receive instructions on how to access these transfers through partnerships with mobile money providers, ensuring that local markets, which have been pre‐stocked, remain functional and adequately supplied. By reaching targeted vulnerable households first, the action avoids exclusion errors, and these families secure enough food to cover their needs through the cyclone period. This pre‐emptive approach means that households do not resort to selling assets, skipping meals, or engaging in harmful coping practices such as early marriage. As a result, food security is stabilised before, during, and after the cyclone, preventing a sharp increase in hunger and malnutrition.",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "operationalisation",
+        "title": "Operationalisation",
+        "subsections": [
+          {
+            "id": "financial-flow-process",
+            "title": "Financial flow process",
+            "hint": "For WAHAFA AAP Custodians, funding to support an AAP activation can be accessed under the WAHAFA Fuel component. Insert information on the process of how this funding can be accessed, including the process from formal application to WAHAFA until funds are received in AAP Custodian accounts. Outline if there are any other funding mechanisms that will be used to fund anticipatory actions, expected contributions and how it would complement existing funding under WAHAFA.",
+            "example": "The funds to support the anticipatory actions under this AAP will be provided by WHH. Once a trigger is activated, the [XYZ Organisation Country Office] immediately informs [XYZ German HQ Office] and WHH. WHH acknowledges the activation to both [XYZ Germany] and [XYZ Country Office]. [XYZ Germany] on the same day initiates the transfer of the funds to [XYZ Country Office] and informs both WHH and [XYZ Country Office] about this. For the funds to reach [XYZ Country Office] is expected to take up to 6 business days. As soon WHH receives confirmation of the initiated transfer by [XYZ Germany] to [XYZ Country Office], WHH begins processing the transfer of the same amount to [XYZ Germany], and informs [XYZ Germany] about this. This can take up to 4 weeks. All services in the country of implementation are paid by [XYZ Country Office] after the work has been done, therefore, as soon as the funds are released by [XYZ Germany], anticipatory actions described in the AAP commence.",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": true
+          },
+          {
+            "id": "organisational-preparedness",
+            "title": "Organisational preparedness / organisational readiness",
+            "hint": "Explain internal administrative processes (e.g., regarding internal approval and decision-making structures). Specify under which circumstances certain processes can or will be adapted (if at all).",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "subsubsections": [
+              {
+                "id": "minimum-readiness-activities",
+                "title": "Minimum readiness activities",
+                "hint": "Describe the minimum readiness activities that need to be in place before the AAP can be activated. This could include: (1) The establishment of a dedicated team with clear roles and responsibilities; (2) The identification of key partners and stakeholders; (3) The development of a communication strategy; (4) The establishment of a monitoring and evaluation framework.",
+                "example": "When a forecast trigger reaches a pre-defined threshold, the AAP is activated. This sets in motion the implementation of the planned anticipatory actions, depending on the responsibilities, deadlines and locations defined in the Protocol. Annex B outlines minimum readiness requirements/activities which must be reviewed at least annually and put in place after a first stage trigger / minimum readiness trigger to ensure organisational preparedness / operational readiness to implement anticipatory actions. In the context of this AAP this is done when [insert details of trigger used to start review of minimum readiness activities]. It is suggested that a separate Anticipatory Action Plan follow-up form be created for each Anticipatory Action Plan. The form clearly outlines activities and their responsible focal point and timeline. The annex may be edited and customised depending on the organisation’s needs. For WHH, the information given in the document follow the basic assumption that measures outlined in basic Preparedness [Country Office’s Emergency Preparedness and Response Plan (EPReP)] are in place.",
+                "type": "textarea",
+                "characterLimit": 3000,
+                "required": true
+              },
+              {
+                "id": "advanced-readiness-activities",
+                "title": "Advanced readiness activities",
+                "hint": "Describe the advanced readiness activities that need to be in place before the AAP can be activated. This could include: (1) The establishment of a dedicated team with clear roles and responsibilities; (2) The identification of key partners and stakeholders; (3) The development of a communication strategy; (4) The establishment of a monitoring and evaluation framework.",
+                "example": "This form outlines advanced readiness requirements which must be reviewed annually and need to be implemented after [insert details of trigger used to start review of minimum readiness activities]. Annex XXX may be edited and customised depending on organisation’s needs. For WHH, the information given in the document follows the basic assumption that measures outlined in the Country Office’s EPReP (Emergency Preparedness and Response Plan) and Minimum Readiness Activities are in place. See annex Checklist for Advanced Readiness Activities",
+                "type": "textarea",
+                "characterLimit": 3000,
+                "required": true
+              }
+            ]
+          },
+          {
+            "id": "anticipatory-action-implementation-process",
+            "title": "Anticipatory action implementation process",
+            "hint": "Describe the process step by step or in a log frame from day 1 to day X of the implementation of the selected anticipatory actions. Include all support tasks necessary for each of the steps and respective responsibilities. Each task should indicate the position and contact information of the person responsible. For each action, include at which level it will take place (HO, regional, community). This document should be updated at least annually.",
+            "example": "Anticipatory cash. Day X (after trigger): (1) Organise set-up of cash distribution points in the target areas. (2) Prepare cash distribution lists. (3) Train cash distribution teams. (4) Distribute cash to beneficiaries. (5) Monitor cash distribution. (6) Evaluate cash distribution. (7) Close cash distribution. (8) Prepare cash distribution report. (9) Share cash distribution report with stakeholders. (10) Archive cash distribution report.",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": true
+          },
+          {
+            "id": "targeting-strategy",
+            "title": "Targeting strategy for population(s) at risk",
+            "hint": "Provide a short summary of the target population (rationale, number of individuals, location, etc.) and used method and indicators (e.g., vulnerability markers, geographical criteria, feasibility criteria, household level criteria). If applicable: Describe databases of Social Protection systems or other government mechanisms and indicate how targeted households are selected.",
+            "example": "The targeting strategy for the AAP is based on the vulnerability assessment conducted in the target areas. The assessment identified the most vulnerable households based on the following criteria: (1) Households with children under 5 years old; (2) Households with elderly people; etc.",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "required": false
+          }
+        ]
+      },
+      {
+        "id": "meal",
+        "title": "MEAL",
+        "hint": "This section should describe the Monitoring, Evaluation, Accountability and Learning (MEAL) framework for the AAP. It should include the indicators, data collection methods, and the roles and responsibilities of the MEAL team.",
+        "example": "Well planned and structured MEAL components allow to assess the operational ability of the AAP, the impact of the anticipatory actions and form the basis for learning for future implementations. Therefore, the following MEAL products have been prepared to be implementable in case of a trigger: (1) AAP Monitoring Form (2) Trigger Evaluation (3) Baseline, Post-Distribution Monitoring and Endline surveys adapted to the specific prioritised anticipatory actions. The following MEAL products have been added to the annex: add products (e.g., annex – AAP monitoring form). Note: MEAL implementation needs to be factored into the budget. Therefore, also the baseline study is part of the AAP implementation as one of the first steps to be conducted shortly after the trigger and pay-out but before anticipatory action implementation.",
+        "type": "textarea",
+        "characterLimit": 3000,
+        "required": true
+      },
+      {
+        "id": "budget",
+        "title": "Budget",
+        "hint": "Provide the AAP budget as a separate annex using the WAHAFA template. In the budget, make sure to indicate who will be responsible for each expenditure according to the roles and responsibilities in the AAP.",
+        "example": "The budget for the AAP is attached as an annex. The budget includes the costs linked to trigger the AAP as well as readiness and pre-positioning costs, incl. for the implementation of the anticipatory actions, the monitoring and evaluation, and the communication strategy. The budget also includes the costs for the MEAL framework, the financial flow process, and the organisational preparedness.",
+        "type": "textarea",
+        "characterLimit": 3000,
+        "required": true
+      },
+      {
+        "id": "aap-validation",
+        "title": "AAP Validation",
+        "hint": "Describe by whom, how and when the AAP was endorsed. Describe the AAP final validation process, and results - link AAP development, validation and operationalisation report as annex and use most suitable information, especially from: (1) Community Feedback Meetings: (1a) Very brief overview methodology, (1b) Feedback received, (1c) Explanation how results were fed back in AAP. (2) Final Validation: (2a) Brief overview methodology, (2b) Feedback received, (2c) Explanation how results were fed back in AAP.",
+        "example": "The AAP was validated by the following stakeholders: (1) The AAP was validated by the National Disaster Management Authority, the Ministry of Agriculture, and the Ministry of Health. (2) The AAP was validated by the community members in the target areas. The validation process involved community feedback meetings where the AAP was presented and feedback was collected. The feedback was then incorporated into the AAP.",
+        "type": "textarea",
+        "characterLimit": 3000,
+        "required": true
+      },
+      {
+        "id": "annexes",
+        "title": "Annexes",
+        "subsections": [
+          {
+            "id": "log-frame",
+            "title": "Log-frame",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": false
+          },
+          {
+            "id": "minimum-readiness-annex",
+            "title": "Minimum readiness activities",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": false
+          },
+          {
+            "id": "advanced-readiness-annex",
+            "title": "Advanced readiness activities",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": false
+          }
+        ]
+      }
+    ]
+  }
+  

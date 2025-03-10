@@ -40,7 +40,7 @@ function wrapContent(text) {
     new Paragraph({
       style: "Normal",
       alignment: AlignmentType.JUSTIFIED,
-      children: [new TextRun(line)],
+      children: [new TextRun({ text: line, size: 20 })],
     })
   );
 }
@@ -55,9 +55,26 @@ function getNumberingOptions(styleName) {
 function buildAAPSummaryTable(summarySection, aapData) {
   if (!summarySection?.subsections?.length) return null;
 
+  // Build a lookup for countries from localStorage if available
+  const localCountries = localStorage.getItem("COUNTRIES_DATA");
+  let countriesLookup = {};
+  if (localCountries) {
+    try {
+      const countriesArray = JSON.parse(localCountries);
+      countriesArray.forEach(c => {
+         countriesLookup[c.alpha2] = c.name;
+      });
+    } catch(e) {
+      console.error("Error parsing countries from localStorage", e);
+    }
+  }
+  
   const rows = summarySection.subsections.map((subsec) => {
-    const answer = aapData?.[summarySection.id]?.[subsec.id]?.[subsec.id] || "";
-
+    let answer = aapData?.[summarySection.id]?.[subsec.id]?.[subsec.id] || "";
+    // If this is the country field, look up the localised name.
+    if (subsec.id === "country" && answer) {
+      answer = countriesLookup[answer] || answer;
+    }
     return new TableRow({
       children: [
         new TableCell({
@@ -212,6 +229,41 @@ export async function exportToDocx(aapData) {
     }
   }
 
+  // Process country field for filename:
+  const storedCountry = aapData?.["summary"]?.["country"]?.["country"] || "";
+  let countryName = "UnknownCountry";
+  if (storedCountry) {
+    try {
+      const localCountries = localStorage.getItem("COUNTRIES_DATA");
+      if (localCountries) {
+        const countriesArray = JSON.parse(localCountries);
+        const found = countriesArray.find(c => c.alpha2 === storedCountry);
+        if (found) {
+          countryName = found.name;
+        } else {
+          countryName = storedCountry;
+        }
+      }
+    } catch(e) {
+      console.error(e);
+    }
+  } else {
+    countryName = "UnknownCountry";
+  }
+
+  const hazardType = aapData?.["summary"]?.["hazard"]?.["hazard"] || "UnknownHazard";
+  const custodian =
+    aapData?.["summary"]?.["custodian-organisation"]?.["custodian-organisation"] || "UnknownCustodian";
+
+  const now = new Date();
+  const yyyy = now.getFullYear();
+  const mm = String(now.getMonth() + 1).padStart(2, "0");
+  const dd = String(now.getDate()).padStart(2, "0");
+  const HH = String(now.getHours()).padStart(2, "0");
+  const min = String(now.getMinutes()).padStart(2, "0");
+  const formattedDate = `${yyyy}-${mm}-${dd}_${HH}.${min}`;
+  const filename = `AAP-${hazardType}-${countryName}-${custodian}-${formattedDate}.docx`;
+
   const doc = new Document({
     numbering: {
       config: [
@@ -325,20 +377,6 @@ export async function exportToDocx(aapData) {
       },
     ],
   });
-
-  const hazardType = aapData?.["summary"]?.["hazard"]?.["hazard"] || "UnknownHazard";
-  const country = aapData?.["summary"]?.["country"]?.["country"] || "UnknownCountry";
-  const custodian =
-    aapData?.["summary"]?.["custodian-organisation"]?.["custodian-organisation"] || "UnknownCustodian";
-
-  const now = new Date();
-  const yyyy = now.getFullYear();
-  const mm = String(now.getMonth() + 1).padStart(2, "0");
-  const dd = String(now.getDate()).padStart(2, "0");
-  const HH = String(now.getHours()).padStart(2, "0");
-  const min = String(now.getMinutes()).padStart(2, "0");
-  const formattedDate = `${yyyy}-${mm}-${dd}_${HH}.${min}`;
-  const filename = `AAP-${hazardType}-${country}-${custodian}-${formattedDate}.docx`;
 
   const blob = await Packer.toBlob(doc);
   saveAs(blob, filename);

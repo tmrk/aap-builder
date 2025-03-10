@@ -27,36 +27,27 @@ import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
 import { useGlobalVisibility } from "../utils/useGlobalVisibility";
 import DOMPurify from "dompurify";
+import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const SubsectionInput = ({ stepId, subsection, isSummary }) => {
   const { currentFile, updateField } = useContext(AAPContext);
-  const { t, language } = useContext(LanguageContext);
+  const { t, language, dateFnsLocale } = useContext(LanguageContext);
   const aapData = currentFile ? currentFile.AAP_BUILDER_DATA : {};
   const subsectionId = subsection.id;
-  const questionId = subsection.id;
+  const questionId = subsectionId;
   const storedValue = aapData?.[stepId]?.[subsectionId]?.[questionId] || "";
   const value = Array.isArray(storedValue) ? storedValue : String(storedValue);
-
+  
   const requiredStar = subsection.required ? (
     <span style={{ color: "red", marginLeft: 4 }}>*</span>
   ) : null;
   const characterLimit = subsection.characterLimit || 0;
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (subsection.type || "").toLowerCase();
-
-  const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(
-    true,
-    stepId,
-    subsectionId,
-    null
-  );
-  const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(
-    false,
-    stepId,
-    subsectionId,
-    null
-  );
-
+  
+  const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(true, stepId, subsectionId, null);
+  const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(false, stepId, subsectionId, null);
+  
   let inputElem = null;
   if (type === "radio" && subsectionId === "hazard") {
     const opts = Array.isArray(subsection.options) ? subsection.options : [];
@@ -147,22 +138,14 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       const countries = useCountries();
       inputElem = (
         <Autocomplete
-          options={Array.isArray(countries) ? countries : []}
-          value={value || ""}
+          options={countries}
+          getOptionLabel={(option) => option.name || ""}
+          value={countries.find(c => c.alpha2 === value) || null}
           onChange={(e, newVal) =>
-            updateField(stepId, subsectionId, questionId, newVal || "")
+            updateField(stepId, subsectionId, questionId, newVal ? newVal.alpha2 : "")
           }
           renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder={subsection.placeholder}
-              inputProps={{
-                ...params.inputProps,
-                lang: language,
-                spellCheck: "true",
-              }}
-            />
+            <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
           )}
         />
       );
@@ -176,16 +159,7 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
             updateField(stepId, subsectionId, questionId, newVal || "")
           }
           renderInput={(params) => (
-            <TextField
-              {...params}
-              variant="outlined"
-              placeholder={subsection.placeholder}
-              inputProps={{
-                ...params.inputProps,
-                lang: language,
-                spellCheck: "true",
-              }}
-            />
+            <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
           )}
         />
       );
@@ -245,6 +219,25 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
         characterLimit={subsection.characterLimit || 0}
       />
     );
+  } else if (type === "datepicker") {
+    inputElem = (
+      <DatePicker
+        locale={dateFnsLocale}
+        value={value ? new Date(value) : null}
+        onChange={(newValue) =>
+          updateField(stepId, subsectionId, questionId, newValue ? newValue.toISOString() : "")
+        }
+        format="yyyy-MM-dd"
+        slots={{ textField: TextField }}
+        slotProps={{
+          textField: {
+            variant: "outlined",
+            placeholder: subsection.placeholder,
+            fullWidth: true
+          }
+        }}
+      />
+    );
   } else if (type === "text") {
     inputElem = (
       <TextField
@@ -254,18 +247,14 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
         onChange={(e) =>
           updateField(stepId, subsectionId, questionId, e.target.value)
         }
-        inputProps={{
-          lang: language,
-          spellCheck: "true",
-        }}
       />
     );
   }
-
+  
   if (!inputElem && (!subsection.subsubsections || subsection.subsubsections.length === 0)) {
     return null;
   }
-
+  
   if (isSummary) {
     return (
       <Box>
@@ -285,7 +274,7 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       </Box>
     );
   }
-
+  
   return (
     <Box sx={{ mb: 3 }}>
       <Box sx={{ display: "flex", alignItems: "center", mb: 1 }}>
@@ -309,9 +298,7 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
           <Box sx={{ px: 0.5, mb: 1 }}>
             <Typography variant="body2" sx={{ color: "text.secondary" }}>
               <b>{t("sectionContent.explanatoryNote")}: </b>
-              <span
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.hint) }}
-              />
+              <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.hint) }} />
             </Typography>
           </Box>
         </Collapse>
@@ -319,28 +306,16 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       {subsection.example && (
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
           <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
-            <Typography
-              variant="body2"
-              sx={{ color: "text.secondary", fontStyle: "italic" }}
-            >
+            <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
               <b>{t("sectionContent.exampleText")}: </b>
-              <span
-                dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.example) }}
-              />
+              <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.example) }} />
             </Typography>
           </Box>
         </Collapse>
       )}
       {inputElem}
       {characterLimit > 0 && type !== "textarea" && (
-        <Typography
-          variant="body2"
-          sx={{
-            mt: 0.5,
-            textAlign: "right",
-            color: exceedLimit ? "red" : "text.secondary",
-          }}
-        >
+        <Typography variant="body2" sx={{ mt: 0.5, textAlign: "right", color: exceedLimit ? "red" : "text.secondary" }}>
           {value.length} / {characterLimit}
         </Typography>
       )}

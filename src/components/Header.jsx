@@ -1,22 +1,27 @@
 import React, { useContext, useState } from "react";
-import { AppBar, Toolbar, Typography, Box, IconButton, Button } from "@mui/material";
+import { AppBar, Toolbar, Typography, Box, IconButton, Tooltip } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
 import { LanguageContext } from "../context/LanguageContext";
 import SettingsIcon from "@mui/icons-material/Settings";
+import CloseIcon from '@mui/icons-material/Close';
 import CycloneIconUrl from "../assets/Icon_Tropical_Cyclone.svg";
 import DroughtIconUrl from "../assets/Icon_Drought.svg";
 import FloodIconUrl from "../assets/Icon_Flood.svg";
 import HeatwaveIconUrl from "../assets/Icon_Heatwave.svg";
 import DiseaseIconUrl from "../assets/Icon_Disease.svg";
 import SettingsDrawer from "./SettingsDrawer";
+import useCountries from "../utils/useCountries";
 
 export default function Header() {
   const { currentFile, setCurrentFile } = useContext(AAPContext);
   const { t } = useContext(LanguageContext);
   const [drawerOpen, setDrawerOpen] = useState(false);
+  
+  const countries = useCountries();
+  const storedCountryCode = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["country"]?.["country"] || "";
 
   const hazard = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["hazard"]?.["hazard"] || "";
-  const country = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["country"]?.["country"] || "";
+  const country = countries.find(c => c.alpha2 === storedCountryCode)?.name || "";
   const custodian = currentFile?.AAP_BUILDER_DATA?.["summary"]?.["custodian-organisation"]?.["custodian-organisation"] || "";
 
   const subLine = [hazard, country, custodian].filter(Boolean).join(", ");
@@ -52,8 +57,8 @@ export default function Header() {
     <>
       <AppBar position="sticky" sx={{ backgroundColor: "rgb(14, 105, 46)" }}>
         <Box sx={{ maxWidth: "md", margin: "0 auto", width: "100%" }}>
-          <Toolbar sx={{ justifyContent: "space-between" }}>
-            <Box sx={{ display: "flex", alignItems: "center" }}>
+          <Toolbar>
+            <Box sx={{ display: "flex", alignItems: "center", flex: 1 }}>
               {hazardIconUrl && (
                 <img
                   src={hazardIconUrl}
@@ -77,16 +82,16 @@ export default function Header() {
                 </Typography>
               </Box>
             </Box>
-            <Box>
               {currentFile && (
-                <Button color="inherit" onClick={handleSaveAndClose}>
-                  {t("header.saveAndClose")}
-                </Button>
+                <Tooltip title={t("header.saveAndClose")}>
+                  <IconButton color="inherit" onClick={handleSaveAndClose}>
+                    <CloseIcon />
+                  </IconButton>
+                </Tooltip>
               )}
               <IconButton color="inherit" onClick={handleDrawerToggle}>
                 <SettingsIcon />
               </IconButton>
-            </Box>
           </Toolbar>
         </Box>
       </AppBar>

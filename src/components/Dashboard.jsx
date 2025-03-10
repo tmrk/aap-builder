@@ -29,6 +29,7 @@ import { AAPContext } from "../context/AAPContext";
 import TemplateSelector from "./TemplateSelector";
 import { LanguageContext } from "../context/LanguageContext";
 import { exportAAPFile, importAAPFile } from "../utils/exportImport";
+import useCountries from "../utils/useCountries";
 
 const formatDateTime = (dateStr) => {
   const date = new Date(dateStr);
@@ -44,6 +45,7 @@ const formatDateTime = (dateStr) => {
 export default function Dashboard() {
   const { store, loadFileById, deleteFile, importFile } = useContext(AAPContext);
   const { t } = useContext(LanguageContext);
+  const countries = useCountries();
   const [activeInterface, setActiveInterface] = useState(null); // null, 'import', or 'template'
   const [importUrl, setImportUrl] = useState("");
   const [fileToDelete, setFileToDelete] = useState(null);
@@ -98,7 +100,7 @@ export default function Dashboard() {
           display: "flex", 
           flexDirection: { xs: "column", md: "row" }, 
           gap: 2, 
-          mb: 3 
+          mb: 1
         }}
       >
         <Button
@@ -262,6 +264,7 @@ export default function Dashboard() {
           <Typography variant="h5" fontWeight="bold" textAlign="center">
             {t("dashboard.savedAAPfiles")}
           </Typography>
+          <Divider sx={{ mt: 2 }} />
           <List>
             {[...store.AAP_FILES]
               .sort((a, b) => new Date(b.last_updated) - new Date(a.last_updated))
@@ -271,9 +274,9 @@ export default function Dashboard() {
                     <ListItemText
                       primary={`
                         ${file.AAP_BUILDER_DATA?.summary?.hazard?.hazard || "Unspecified hazard"} - 
-                        ${file.AAP_BUILDER_DATA?.summary?.country?.country || "unspecified country"} - 
+                        ${countries.find(c => c.alpha2 === (file.AAP_BUILDER_DATA?.summary?.country?.country || ""))?.name || "unspecified country"} - 
                         ${file.AAP_BUILDER_DATA?.summary?.["custodian-organisation"]?.["custodian-organisation"] || "unspecified custodian"} 
-                        / ${file.last_updated.slice(0, 10)}
+                        (${file.last_updated.slice(0, 10)})
                       `}
                       secondary={t("dashboard.lastUpdated") + ": " + formatDateTime(file.last_updated)}
                     />
