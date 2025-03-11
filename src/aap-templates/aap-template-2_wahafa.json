@@ -32,7 +32,7 @@
             "id": "location",
             "title": "Location",
             "type": "text",
-            "placeholder": "e.g. Zimbabwe, Chimanimani, ward xxx, community xxx",
+            "placeholder": "e.g. Chimanimani, ward xxx, community xxx",
             "required": true
           },
           {
