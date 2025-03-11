@@ -15,27 +15,19 @@ export default function SectionContent({ step }) {
     return <SummarySection step={step} />;
   }
 
-  if ((!subsections || subsections.length === 0) && step.type) {
-    return (
-      <Box sx={{ mt: 2 }}>
-        <StepInput step={step} />
-      </Box>
-    );
-  }
-
-  if (!subsections || subsections.length === 0) {
-    return (
-      <Typography sx={{ mb: 2 }}>
-        There are no subsections or input fields defined for this step.
-      </Typography>
-    );
-  }
-
   return (
     <Box sx={{ mt: 2 }}>
-      {subsections.map((subsec) => (
-        <SubsectionInput key={subsec.id} stepId={step.id} subsection={subsec} />
-      ))}
+      {step.type && <StepInput step={step} />}
+      {subsections && subsections.length > 0 &&
+        subsections.map((subsec) => (
+          <SubsectionInput key={subsec.id} stepId={step.id} subsection={subsec} />
+        ))
+      }
+      {(!step.type && (!subsections || subsections.length === 0)) && (
+        <Typography sx={{ mb: 2 }}>
+          There are no subsections or input fields defined for this step.
+        </Typography>
+      )}
     </Box>
   );
 }
