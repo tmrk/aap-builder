@@ -23,6 +23,7 @@ import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
+import DescriptionIcon from '@mui/icons-material/Description';
 import LinkIcon from "@mui/icons-material/Link";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { AAPContext } from "../context/AAPContext";
@@ -260,7 +261,7 @@ export default function Dashboard() {
 
       {store.AAP_FILES && store.AAP_FILES.length > 0 && (
         <>
-        <Box sx={{ mt: 2, border: "1px solid #ccc", p: 2, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.3)" }}>
+        <Box sx={{ mt: 2, border: "1px solid #ccc", p: 2, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.5)" }}>
           <Typography variant="h5" fontWeight="bold" textAlign="center">
             {t("dashboard.savedAAPfiles")}
           </Typography>
@@ -268,19 +269,28 @@ export default function Dashboard() {
           <List>
             {[...store.AAP_FILES]
               .sort((a, b) => new Date(b.last_updated) - new Date(a.last_updated))
-              .map((file) => (
+              .map((file) => {
+                const templateUsed = store.AAP_TEMPLATES.find(template => template.id === file.aap_template);
+                const templateName = templateUsed ? (templateUsed.metadata?.name || templateUsed.name) : t("dashboard.unknownTemplate");
+
+                return (
                 <Box key={file.id} sx={{ display: "flex", alignItems: "center" }}>
                   <ListItemButton variant="outlined" onClick={() => loadFileById(file.id)} sx={{ flex: 1, borderRadius: 1 }}>
+                    <DescriptionIcon sx={{ mr: 2 }} />
                     <ListItemText
                       primary={`
-                        ${file.AAP_BUILDER_DATA?.summary?.hazard?.hazard || "Unspecified hazard"} - 
-                        ${countries.find(c => c.alpha2 === (file.AAP_BUILDER_DATA?.summary?.country?.country || ""))?.name || "unspecified country"} - 
-                        ${file.AAP_BUILDER_DATA?.summary?.["custodian-organisation"]?.["custodian-organisation"] || "unspecified custodian"} 
+                        ${file.AAP_BUILDER_DATA?.summary?.hazard?.hazard || t("dashboard.unspecifiedHazard")} - 
+                        ${countries.find(c => c.alpha2 === (file.AAP_BUILDER_DATA?.summary?.country?.country || ""))?.name || t("dashboard.unspecifiedCountry")} - 
+                        ${file.AAP_BUILDER_DATA?.summary?.["custodian-organisation"]?.["custodian-organisation"] || t("dashboard.unspecifiedCustodian")} 
                         (${file.last_updated.slice(0, 10)})
                       `}
-                      secondary={t("dashboard.lastUpdated") + ": " + formatDateTime(file.last_updated)}
+                      secondary={
+                        t("dashboard.templateUsed") + ": " + templateName +
+                        " | " +
+                        t("dashboard.lastEdited") + ": " + formatDateTime(file.last_updated)
+                      }                      
                     />
-                    <Tooltip title="Download">
+                    <Tooltip title={t("dashboard.fileDownload")}>
                       <IconButton
                         onClick={(e) => {
                           e.stopPropagation();
@@ -290,7 +300,7 @@ export default function Dashboard() {
                         <DownloadIcon />
                       </IconButton>
                     </Tooltip>
-                    <Tooltip title="Delete">
+                    <Tooltip title={t("dashboard.fileDelete")}>
                       <IconButton
                         onClick={(e) => {
                           e.stopPropagation();
@@ -303,7 +313,8 @@ export default function Dashboard() {
                     </Tooltip>
                   </ListItemButton>
                 </Box>
-              ))}
+              )}
+            )}
           </List>
           {fileToDelete && (
             <Dialog

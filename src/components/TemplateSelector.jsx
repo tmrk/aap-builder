@@ -65,6 +65,7 @@ export default function TemplateSelector({ onClose }) {
       
       const parsedTemplate = {
         id: template.id,
+        name: template.name,
         metadata: { ...jsonData.metadata, url: template.url },
         template: jsonData.template,
       };

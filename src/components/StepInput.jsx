@@ -1,5 +1,6 @@
 import React, { useContext } from "react";
 import { Box, Typography, TextField, Collapse, Button } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import { AAPContext } from "../context/AAPContext";
 import { LanguageContext } from "../context/LanguageContext";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
@@ -17,6 +18,7 @@ const StepInput = ({ step }) => {
   const characterLimit = step.characterLimit || 0;
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (step.type || "").toLowerCase();
+  const theme = useTheme();
 
   const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(true, step.id, step.id, null);
   const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(false, step.id, step.id, null);
@@ -75,6 +77,30 @@ const StepInput = ({ step }) => {
     );
   }
 
+  const helpTextStyles = {
+    "& a": {
+      color: theme.palette.primary.main,
+      textDecoration: "none",
+      "&:hover": {
+        textDecoration: "underline",
+      },
+    },
+    "& table": {
+      p: 1,
+      border: "1px solid rgba(0,0,0,0.2)",
+      borderCollapse: "collapse",
+      my: 1,
+    },
+    "& table td, & table th": {
+      border: "1px solid rgba(0,0,0,0.2)",
+      p: 2,
+    },
+    "& table th": {
+      textAlign: "center",
+      fontWeight: "bold",
+    },
+  };
+
   if (!inputElem) {
     return null;
   }
@@ -101,22 +127,29 @@ const StepInput = ({ step }) => {
 
       {step.hint && (
         <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
-          <Box sx={{ px: 0.5, mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              <b>{t("sectionContent.explanatoryNote")}: </b>
-              <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(step.hint) }} />
-            </Typography>
+          <Box sx={{
+            px: 0.5, mb: 1,
+            ...theme.typography.body2,
+            color: "text.secondary", 
+            ...helpTextStyles,
+          }}>
+            <Typography variant="inherit" sx={{ display: "inline", fontWeight: "bold" }}>{t("sectionContent.explanatoryNote")}: </Typography>
+            <Box sx={{ display: "inline" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(step.hint) }} />
           </Box>
         </Collapse>
       )}
 
       {step.example && (
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
-          <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
-              <b>{t("sectionContent.exampleText")}: </b>
-              <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(step.example) }} />
-            </Typography>
+          <Box sx={{
+            px: 0.5, mb: 1,
+            ...theme.typography.body2,
+            color: "text.secondary", 
+            fontStyle: "italic",
+            ...helpTextStyles,
+          }}>
+            <Typography variant="inherit" sx={{ display: "inline", fontWeight: "bold" }}>{t("sectionContent.exampleText")}: </Typography>
+            <Box sx={{ display: "inline" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(step.example) }} />
           </Box>
         </Collapse>
       )}

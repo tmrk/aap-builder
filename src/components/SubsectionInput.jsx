@@ -13,6 +13,7 @@ import {
   Collapse,
   Button
 } from "@mui/material";
+import { useTheme } from "@mui/material/styles";
 import ToggleButton from "@mui/material/ToggleButton";
 import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { AAPContext } from "../context/AAPContext";
@@ -44,7 +45,7 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
   const characterLimit = subsection.characterLimit || 0;
   const exceedLimit = characterLimit > 0 && value.length > characterLimit;
   const type = (subsection.type || "").toLowerCase();
-  
+  const theme = useTheme();
   const [hintOpen, toggleHint, alwaysDisplayHints] = useGlobalVisibility(true, stepId, subsectionId, null);
   const [exampleOpen, toggleExample, alwaysDisplayExamples] = useGlobalVisibility(false, stepId, subsectionId, null);
   
@@ -144,6 +145,29 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
           onChange={(e, newVal) =>
             updateField(stepId, subsectionId, questionId, newVal ? newVal.alpha2 : "")
           }
+          renderOption={(props, option) => {
+            // Destructure 'key' from props and pass it explicitly
+            const { key, ...rest } = props;
+            return (
+              <Box 
+                key={key} 
+                {...rest}
+                component="li"
+                sx={{ "& > img": { mr: 2, flexShrink: 0 } }}
+              >
+                {option?.alpha2 && (
+                  <img
+                    loading="lazy"
+                    width="20"
+                    srcSet={`https://flagcdn.com/w40/${option.alpha2.toLowerCase()}.png 2x`}
+                    src={`https://flagcdn.com/w20/${option.alpha2.toLowerCase()}.png`}
+                    alt=""
+                  />
+                )}
+                {option.name}
+              </Box>
+            );
+          }}          
           renderInput={(params) => (
             <TextField {...params} variant="outlined" placeholder={subsection.placeholder} />
           )}
@@ -274,6 +298,30 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       </Box>
     );
   }
+
+  const helpTextStyles = {
+    "& a": {
+      color: theme.palette.primary.main,
+      textDecoration: "none",
+      "&:hover": {
+        textDecoration: "underline",
+      },
+    },
+    "& table": {
+      p: 1,
+      border: "1px solid rgba(0,0,0,0.2)",
+      borderCollapse: "collapse",
+      my: 1,
+    },
+    "& table td, & table th": {
+      border: "1px solid rgba(0,0,0,0.2)",
+      p: 2,
+    },
+    "& table th": {
+      textAlign: "center",
+      fontWeight: "bold",
+    },
+  };
   
   return (
     <Box sx={{ mb: 3 }}>
@@ -295,21 +343,28 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
       </Box>
       {subsection.hint && (
         <Collapse in={hintOpen} sx={{ mb: hintOpen ? 1 : 0 }}>
-          <Box sx={{ px: 0.5, mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary" }}>
-              <b>{t("sectionContent.explanatoryNote")}: </b>
-              <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.hint) }} />
-            </Typography>
+          <Box sx={{
+            px: 0.5, mb: 1,
+            ...theme.typography.body2,
+            color: "text.secondary", 
+            ...helpTextStyles,
+          }}>
+            <Typography variant="inherit" sx={{ display: "inline", fontWeight: "bold" }}>{t("sectionContent.explanatoryNote")}: </Typography>
+            <Box sx={{ display: "inline" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.hint) }} />
           </Box>
         </Collapse>
       )}
       {subsection.example && (
         <Collapse in={exampleOpen} sx={{ mb: exampleOpen ? 1 : 0 }}>
-          <Box sx={{ p: 1, border: "1px dashed #aaa", borderRadius: 1, mb: 1 }}>
-            <Typography variant="body2" sx={{ color: "text.secondary", fontStyle: "italic" }}>
-              <b>{t("sectionContent.exampleText")}: </b>
-              <span dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.example) }} />
-            </Typography>
+          <Box sx={{
+            px: 0.5, mb: 1,
+            ...theme.typography.body2,
+            color: "text.secondary", 
+            fontStyle: "italic",
+            ...helpTextStyles,
+          }}>
+            <Typography variant="inherit" sx={{ display: "inline", fontWeight: "bold" }}>{t("sectionContent.exampleText")}: </Typography>
+            <Box sx={{ display: "inline" }} dangerouslySetInnerHTML={{ __html: DOMPurify.sanitize(subsection.example) }} />
           </Box>
         </Collapse>
       )}

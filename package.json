@@ -1,7 +1,7 @@
 {
   "name": "aap-builder",
   "private": true,
-  "version": "0.5.5",
+  "version": "0.5.6",
   "type": "module",
   "homepage": "https://tmrk.github.io/aap-builder",
   "scripts": {
