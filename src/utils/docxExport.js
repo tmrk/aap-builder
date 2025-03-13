@@ -31,16 +31,20 @@ function blank() {
   return new Paragraph({ style: "Normal", children: [] });
 }
 
-function wrapContent(text) {
+/**
+ * Modified to accept an optional style parameter.
+ * If not provided, it defaults to "Normal".
+ */
+function wrapContent(text, style = "Normal") {
   if (!text || !text.trim()) {
-    return [new Paragraph({ style: "Normal", children: [] })];
+    return [new Paragraph({ style: style, children: [] })];
   }
   const lines = text.split("\n");
   return lines.map((line) =>
     new Paragraph({
-      style: "Normal",
+      style: style,
       alignment: AlignmentType.JUSTIFIED,
-      children: [new TextRun({ text: line, size: 20 })],
+      children: [new TextRun(line)],
     })
   );
 }
@@ -95,7 +99,8 @@ function buildAAPSummaryTable(summarySection, aapData) {
         }),
         new TableCell({
           margins: { top: 113, bottom: 113, left: 113, right: 113 },
-          children: wrapContent(answer),
+          // Use the "SummaryNormal" style here so that text is 10pt.
+          children: wrapContent(answer, "SummaryNormal"),
         }),
       ],
     });
@@ -284,6 +289,17 @@ export async function exportToDocx(aapData) {
           id: "Normal",
           name: "Normal",
           run: { size: 24, color: "000000" },
+          paragraph: {
+            alignment: AlignmentType.JUSTIFIED,
+            spacing: { line: 276, lineRule: "auto" },
+          },
+        },
+        // New style for Summary table content (10pt)
+        {
+          id: "SummaryNormal",
+          name: "Summary Normal",
+          basedOn: "Normal",
+          run: { size: 20, color: "000000" },
           paragraph: {
             alignment: AlignmentType.JUSTIFIED,
             spacing: { line: 276, lineRule: "auto" },
