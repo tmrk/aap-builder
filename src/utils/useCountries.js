@@ -1,29 +1,36 @@
 import { useState, useEffect, useContext } from "react";
 import { LanguageContext } from "../context/LanguageContext";
-import ptTranslations from "../locales/pt.json";
 
 const STORAGE_KEY = "COUNTRIES_DATA";
 
 export default function useCountries() {
   const [countries, setCountries] = useState([]);
-  const { language } = useContext(LanguageContext);
+  const { language, currentTranslation } = useContext(LanguageContext);
 
   // Map app language to the corresponding key in the online JSON.
   const languageToKey = {
-    "en": "name",
-    "fr": "nameFrench",
-    "es": "nameSpanish",
-    "ru": "nameRussian",
-    "zh": "nameChinese",
-    "ar": "nameArabic",
+    en: "name",
+    fr: "nameFrench",
+    es: "nameSpanish",
+    ru: "nameRussian",
+    zh: "nameChinese",
+    ar: "nameArabic",
   };
   const localizedKey = languageToKey[language] || "name";
 
   useEffect(() => {
-    // If the language is Portuguese and the translation file provides a countries list, use it.
-    if (language === "pt" && ptTranslations.countries && Array.isArray(ptTranslations.countries) && ptTranslations.countries.length > 0) {
-      setCountries(ptTranslations.countries);
-      localStorage.setItem(STORAGE_KEY, JSON.stringify(ptTranslations.countries));
+    // If the current translation provides a countries list, use it.
+    if (
+      currentTranslation &&
+      currentTranslation.countries &&
+      Array.isArray(currentTranslation.countries) &&
+      currentTranslation.countries.length > 0
+    ) {
+      setCountries(currentTranslation.countries);
+      localStorage.setItem(
+        STORAGE_KEY,
+        JSON.stringify(currentTranslation.countries)
+      );
       return;
     }
 
@@ -55,14 +62,17 @@ export default function useCountries() {
               name: c[localizedKey] || c.name,
             }));
             setCountries(processedCountries);
-            localStorage.setItem(STORAGE_KEY, JSON.stringify(processedCountries));
+            localStorage.setItem(
+              STORAGE_KEY,
+              JSON.stringify(processedCountries)
+            );
           } else {
             console.error("Expected an array but got:", data);
           }
         })
         .catch((err) => console.error("Error fetching countries:", err));
     }
-  }, [language, localizedKey]);
+  }, [language, localizedKey, currentTranslation]);
 
   return countries;
 }

@@ -3,7 +3,11 @@
     "native": "Português",
     "english": "Inglês",
     "french": "Francês",
-    "portuguese": "Português"
+    "portuguese": "Português",
+    "shona": "Shona",
+    "chichewa": "Chichewa",
+    "swahili": "Suaíli",
+    "luganda": "Luganda"
   },
   "header": {
     "title": "Construtor de PAA",

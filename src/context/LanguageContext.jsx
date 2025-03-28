@@ -2,6 +2,10 @@ import React, { createContext, useState, useEffect } from "react";
 import en from "../locales/en.json";
 import fr from "../locales/fr.json";
 import pt from "../locales/pt.json";
+import sn from "../locales/sn.json";
+import ny from "../locales/ny.json";
+import sw from "../locales/sw.json";
+import lg from "../locales/lg.json";
 import enGB from "date-fns/locale/en-GB";
 import frLocale from "date-fns/locale/fr";
 import ptLocale from "date-fns/locale/pt";
@@ -12,10 +16,14 @@ const translations = {
   en: en,
   fr: fr,
   pt: pt,
+  sn: sn,
+  ny: ny,
+  sw: sw,
+  lg: lg,
 };
 
 // List of available language codes
-const availableLanguages = ["en", "fr", "pt"];
+const availableLanguages = ["en", "fr", "pt", "sn", "ny", "sw", "lg"];
 
 // Helper function to get the date-fns locale based on language
 const getDateFnsLocale = (lang) => {
@@ -84,6 +92,9 @@ export const LanguageProvider = ({ children }) => {
     return translations[code]?.language?.native || code;
   };
 
+  // Expose the current translation for the selected language
+  const currentTranslation = translations[language] || translations["en"];
+
   return (
     <LanguageContext.Provider
       value={{
@@ -92,6 +103,7 @@ export const LanguageProvider = ({ children }) => {
         t,
         availableLanguages,
         getNativeLanguageName,
+        currentTranslation,
         dateFnsLocale: getDateFnsLocale(language),
       }}
     >

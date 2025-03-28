@@ -32,7 +32,7 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 
 const SubsectionInput = ({ stepId, subsection, isSummary }) => {
   const { currentFile, updateField } = useContext(AAPContext);
-  const { t, language, dateFnsLocale } = useContext(LanguageContext);
+  const { t, dateFnsLocale } = useContext(LanguageContext);
   const aapData = currentFile ? currentFile.AAP_BUILDER_DATA : {};
   const subsectionId = subsection.id;
   const questionId = subsectionId;

@@ -3,7 +3,11 @@
     "native": "English",
     "english": "English",
     "french": "French",
-    "portuguese": "Portuguese"
+    "portuguese": "Portuguese",
+    "shona": "Shona",
+    "chichewa": "Chichewa",
+    "swahili": "Swahili",
+    "luganda": "Luganda"
   },
   "header": {
     "title": "AAP Builder",

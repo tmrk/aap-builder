@@ -69,11 +69,20 @@ export default function SettingsDrawer({ open, onClose }) {
             label={t("settings.language")}
             onChange={(e) => changeLanguage(e.target.value)}
           >
-            {availableLanguages.map((langCode) => (
-              <MenuItem key={langCode} value={langCode}>
-                {getNativeLanguageName(langCode)}
-              </MenuItem>
-            ))}
+            {availableLanguages
+              .slice()
+              .sort((a, b) => {
+                const nameA = getNativeLanguageName(a).toUpperCase();
+                const nameB = getNativeLanguageName(b).toUpperCase();
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+              })
+              .map((langCode) => (
+                <MenuItem key={langCode} value={langCode}>
+                  {getNativeLanguageName(langCode)}
+                </MenuItem>
+              ))}
           </Select>
         </FormControl>
 

@@ -3,7 +3,11 @@
     "native": "Français",
     "english": "Anglais",
     "french": "Français",
-    "portuguese": "Portugais"
+    "portuguese": "Portugais",
+    "shona": "Shona",
+    "chichewa": "Chichewa",
+    "swahili": "Swahili",
+    "luganda": "Luganda"
   },
   "header": {
     "title": "Créateur d’PAA",
