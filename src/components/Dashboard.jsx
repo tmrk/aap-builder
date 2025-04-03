@@ -296,6 +296,7 @@ export default function Dashboard() {
                           e.stopPropagation();
                           exportAAPFile(file);
                         }}
+                        sx={{ "&:hover": { color: "primary.main" } }}
                       >
                         <DownloadIcon />
                       </IconButton>

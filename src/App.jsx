@@ -1,11 +1,14 @@
-import React, { useContext } from "react";
+import React, { useState, useContext } from "react";
 import { AAPProvider, AAPContext } from "./context/AAPContext";
 import { LanguageProvider, LanguageContext } from "./context/LanguageContext";
 import VerticalStepper from "./components/VerticalStepper";
 import Header from "./components/Header";
 import Dashboard from "./components/Dashboard";
+import Footer from "./components/Footer";
+import FullScreenAAPView from "./components/FullScreenAAPView";
+import SettingsDrawer from "./components/SettingsDrawer";
 import { createTheme, ThemeProvider } from "@mui/material/styles";
-import { CssBaseline, Container } from "@mui/material";
+import { CssBaseline, Box, Container } from "@mui/material";
 import { LocalizationProvider } from "@mui/x-date-pickers";
 import { AdapterDateFns } from "@mui/x-date-pickers/AdapterDateFns";
 
@@ -68,37 +71,59 @@ const theme = createTheme({
   },
 });
 
-function AppContent() {
-  // Use a defensive check in case the context is not provided
-  const aapContext = useContext(AAPContext);
-  if (!aapContext) return null;
-  const { currentFile } = aapContext;
+// Wrap content in a flex column so that the footer is pushed to the bottom when content is short.
+function AppContentWithFooter({ onToggleFullScreen }) {
+  const { currentFile } = useContext(AAPContext);
+  const [settingsDrawerOpen, setSettingsDrawerOpen] = useState(false);
+  const toggleSettingsDrawer = () => setSettingsDrawerOpen((prev) => !prev);
+
   return (
     <>
-      <Header />
-      <Container maxWidth="md" sx={{ pb: 5 }}>
-        {currentFile ? <VerticalStepper /> : <Dashboard />}
-      </Container>
+      <Header 
+        drawerOpen={settingsDrawerOpen} 
+        onToggleDrawer={toggleSettingsDrawer}
+        onToggleFullScreen={currentFile ? onToggleFullScreen : undefined}
+      />
+      <Box component="main" sx={{ flexGrow: 1 }}>
+        <Container maxWidth="md" sx={{ pb: 5 }}>
+          {currentFile ? <VerticalStepper /> : <Dashboard />}
+        </Container>
+      </Box>
+      <Footer
+        onToggleDrawer={toggleSettingsDrawer}
+        onToggleFullScreen={currentFile ? onToggleFullScreen : undefined}
+        currentFile={currentFile}
+      />
+      <SettingsDrawer open={settingsDrawerOpen} onClose={toggleSettingsDrawer} />
     </>
   );
 }
 
-function AppWithLocalization() {
+function AppWithLocalization({ onToggleFullScreen }) {
   const { dateFnsLocale } = useContext(LanguageContext);
   return (
     <LocalizationProvider dateAdapter={AdapterDateFns} adapterLocale={dateFnsLocale}>
-      <AppContent />
+      <AppContentWithFooter onToggleFullScreen={onToggleFullScreen} />
     </LocalizationProvider>
   );
 }
 
 function App() {
+  const [fullScreen, setFullScreen] = useState(false);
+  const toggleFullScreen = () => setFullScreen((prev) => !prev);
+
   return (
     <ThemeProvider theme={theme}>
       <CssBaseline />
       <LanguageProvider>
         <AAPProvider>
-          <AppWithLocalization />
+          {fullScreen ? (
+            <FullScreenAAPView onClose={() => setFullScreen(false)} />
+          ) : (
+            <Box sx={{ display: "flex", flexDirection: "column", minHeight: "100vh" }}>
+              <AppWithLocalization onToggleFullScreen={toggleFullScreen} />
+            </Box>
+          )}
         </AAPProvider>
       </LanguageProvider>
     </ThemeProvider>

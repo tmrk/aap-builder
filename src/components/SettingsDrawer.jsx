@@ -62,32 +62,6 @@ export default function SettingsDrawer({ open, onClose }) {
 
         <Divider sx={{ my: 2 }} />
 
-        <FormControl fullWidth sx={{ my: 2 }}>
-          <InputLabel>{t("settings.language")}</InputLabel>
-          <Select
-            value={language}
-            label={t("settings.language")}
-            onChange={(e) => changeLanguage(e.target.value)}
-          >
-            {availableLanguages
-              .slice()
-              .sort((a, b) => {
-                const nameA = getNativeLanguageName(a).toUpperCase();
-                const nameB = getNativeLanguageName(b).toUpperCase();
-                if (nameA < nameB) return -1;
-                if (nameA > nameB) return 1;
-                return 0;
-              })
-              .map((langCode) => (
-                <MenuItem key={langCode} value={langCode}>
-                  {getNativeLanguageName(langCode)}
-                </MenuItem>
-              ))}
-          </Select>
-        </FormControl>
-
-        <Divider sx={{ my: 2 }} />
-
         <Typography variant="subtitle1" sx={{ mb: 1 }}>
           {t("settings.textFields")}
         </Typography>
@@ -133,6 +107,51 @@ export default function SettingsDrawer({ open, onClose }) {
           }
           label={t("settings.alwaysDisplayAllExamples")}
         />
+
+        <Divider sx={{ my: 2 }} />
+
+        {/* === This is only for the full screen view so it's not used now ===
+        <Typography variant="subtitle1" sx={{ mb: 1 }}>
+          {t("settings.darkMode")}
+        </Typography>
+
+        <FormControlLabel
+          control={
+            <Switch
+              checked={settings.darkMode || false}
+              onChange={(e) => handleSettingChange("darkMode", e.target.checked)}
+              disabled={disabled}
+            />
+          }
+          label={t("settings.darkMode")}
+        />
+
+        <Divider sx={{ my: 2 }} />
+        */}
+
+        <FormControl fullWidth sx={{ my: 2 }}>
+          <InputLabel>{t("settings.language")}</InputLabel>
+          <Select
+            value={language}
+            label={t("settings.language")}
+            onChange={(e) => changeLanguage(e.target.value)}
+          >
+            {availableLanguages
+              .slice()
+              .sort((a, b) => {
+                const nameA = getNativeLanguageName(a).toUpperCase();
+                const nameB = getNativeLanguageName(b).toUpperCase();
+                if (nameA < nameB) return -1;
+                if (nameA > nameB) return 1;
+                return 0;
+              })
+              .map((langCode) => (
+                <MenuItem key={langCode} value={langCode}>
+                  {getNativeLanguageName(langCode)}
+                </MenuItem>
+              ))}
+          </Select>
+        </FormControl>
 
       </Box>
     </Drawer>

@@ -22,10 +22,11 @@ const translations = {
   lg: lg,
 };
 
-// List of available language codes
+// List of available language codes (update as needed)
 const availableLanguages = ["en", "fr", "pt", "sn", "ny", "sw", "lg"];
+// Hardcoded BASE_URL for your sub-directory (adjust as needed)
+const BASE_URL = "/aap-builder";
 
-// Helper function to get the date-fns locale based on language
 const getDateFnsLocale = (lang) => {
   switch (lang) {
     case "en":
@@ -43,8 +44,28 @@ export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState("en");
 
   useEffect(() => {
-    const storedLang = localStorage.getItem("AAP_BUILDER_LANGUAGE");
-    if (storedLang) {
+    const path = window.location.pathname;
+    let relativePath = path;
+    if (BASE_URL && path.startsWith(BASE_URL)) {
+      relativePath = path.substring(BASE_URL.length) || "/";
+    }
+    // Build regex from availableLanguages
+    const languageRegex = new RegExp(`^\\/(${availableLanguages.join("|")})(\\/|$)`);
+    const match = relativePath.match(languageRegex);
+    if (match) {
+      const urlLang = match[1];
+      // If trailing slash is missing (match[2] is empty), update URL to add it.
+      if (match[2] !== "/") {
+        const newPath = BASE_URL + "/" + urlLang + "/" + relativePath.substring(match[0].length);
+        window.history.replaceState(null, "", newPath);
+      }
+      setLanguage(urlLang);
+      localStorage.setItem("AAP_BUILDER_LANGUAGE", urlLang);
+    } else {
+      const storedLang = localStorage.getItem("AAP_BUILDER_LANGUAGE") || language;
+      // Ensure trailing slash after language code.
+      const newPath = BASE_URL + "/" + storedLang + (relativePath.startsWith("/") ? relativePath : "/" + relativePath);
+      window.history.replaceState(null, "", newPath);
       setLanguage(storedLang);
     }
   }, []);
@@ -52,12 +73,21 @@ export const LanguageProvider = ({ children }) => {
   const changeLanguage = (lang) => {
     setLanguage(lang);
     localStorage.setItem("AAP_BUILDER_LANGUAGE", lang);
+    const path = window.location.pathname;
+    let relativePath = path;
+    if (BASE_URL && path.startsWith(BASE_URL)) {
+      relativePath = path.substring(BASE_URL.length) || "/";
+    }
+    const languageRegex = new RegExp(`^\\/(${availableLanguages.join("|")})(\\/|$)`);
+    const newRelativePath = relativePath.replace(languageRegex, "");
+    // Ensure there is a trailing slash after the language code.
+    const newPath = BASE_URL + "/" + lang + (newRelativePath.startsWith("/") ? newRelativePath : "/" + newRelativePath);
+    window.history.replaceState(null, "", newPath);
   };
 
   const t = (key, replacements = {}) => {
     const keys = key.split(".");
     let translation = translations[language];
-    // Traverse the keys to get the translation in the current language
     for (const k of keys) {
       if (translation && translation[k]) {
         translation = translation[k];
@@ -66,7 +96,6 @@ export const LanguageProvider = ({ children }) => {
         break;
       }
     }
-    // Fallback to English if no translation was found
     if (!translation) {
       translation = translations["en"];
       for (const k of keys) {
@@ -87,12 +116,10 @@ export const LanguageProvider = ({ children }) => {
     return key;
   };
 
-  // Retrieve the native language name using the dedicated "native" property
   const getNativeLanguageName = (code) => {
     return translations[code]?.language?.native || code;
   };
 
-  // Expose the current translation for the selected language
   const currentTranslation = translations[language] || translations["en"];
 
   return (

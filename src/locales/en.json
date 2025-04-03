@@ -111,7 +111,18 @@
   "button": {
     "hint": "Hint",
     "example": "Example",
-    "hideHint": "Hide Hint",
-    "hideExample": "Hide Example"
+    "hideHint": "Hide hint",
+    "hideExample": "Hide example",
+    "showLess": "Show less",
+    "showMore": "Show more",
+    "print": "Print",
+    "switchToLightMode": "Switch to light mode",
+    "switchToDarkMode": "Switch to dark mode",
+    "enterFullscreen": "Enter fullscreen",
+    "exitFullscreen": "Exit fullscreen"
+  },
+  "fullscreen": {
+    "AAPFullScreenView": "AAP Full Screen View",
+    "tableOfContents": "Table of contents"
   }
 }
