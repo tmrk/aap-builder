@@ -84,7 +84,7 @@ function AppContentWithFooter({ onToggleFullScreen }) {
         onToggleDrawer={toggleSettingsDrawer}
         onToggleFullScreen={currentFile ? onToggleFullScreen : undefined}
       />
-      <Box component="main" sx={{ flexGrow: 1 }}>
+      <Box component="main" sx={{ flexGrow: 1, pt: 8 }}>
         <Container maxWidth="md" sx={{ pb: 5 }}>
           {currentFile ? <VerticalStepper /> : <Dashboard />}
         </Container>

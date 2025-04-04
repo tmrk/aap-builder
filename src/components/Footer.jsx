@@ -13,7 +13,10 @@ export default function Footer({ onToggleDrawer, onToggleFullScreen, currentFile
   return (
     <Box
       component="footer"
-      sx={{ backgroundColor: "rgba(0,0,0,0.05)" }}
+      sx={{ 
+        pb: "env(safe-area-inset-bottom)",
+        backgroundColor: "rgba(0,0,0,0.05)" 
+      }}
     >
       <Box sx={{ 
         display: "flex",

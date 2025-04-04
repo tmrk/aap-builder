@@ -9,6 +9,7 @@ import {
   Menu,
   MenuItem,
   Badge,
+  useScrollTrigger,
 } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
 import { LanguageContext } from "../context/LanguageContext";
@@ -96,110 +97,130 @@ export default function Header({ onToggleDrawer, onToggleFullScreen }) {
     setCurrentFile(null);
   };
 
+  function ElevationScroll(props) {
+    const { children, window } = props;
+    const trigger = useScrollTrigger({
+      disableHysteresis: true,
+      threshold: 0,
+    });
+  
+    return children
+      ? React.cloneElement(children, {
+          elevation: trigger ? 4 : 0,
+        })
+      : null;
+  }
+
   return (
     <>
-      <AppBar position="sticky" sx={{ backgroundColor: "rgb(14, 105, 46)" }}>
-        <Box sx={{ maxWidth: "md", margin: "0 auto", width: "100%" }}>
-          <Toolbar sx={{ height: "100%", alignItems: "stretch", px: { md: 3, xs: 0 } }}>
-            <Box sx={{ display: "flex", alignItems: "center", flex: 1, px: { md: 0, xs: 2 } }}>
-              {hazardIconUrl && (
-                <img
-                  src={hazardIconUrl}
-                  alt={hazard}
-                  style={{
-                    width: 32,
-                    height: 32,
-                    marginRight: 12,
-                    objectFit: "contain",
-                    cursor: "pointer",
-                  }}
-                  onClick={scrollToTop}
-                />
-              )}
-              <Box>
-                <Typography
-                  variant="h6"
-                  sx={{ color: "#fff", fontWeight: "bold", lineHeight: 1, mt: 0.5 }}
-                >
-                  {t("header.title")}
-                </Typography>
-                <Typography variant="subtitle" sx={{ color: "#fff", mt: 0 }}>
-                  {subLine}
-                </Typography>
+      <ElevationScroll>
+        <AppBar sx={{ 
+          top: 0,
+          zIndex: 1300,
+          backgroundColor: "rgb(14, 105, 46)"
+        }}>
+          <Box sx={{ maxWidth: "md", margin: "0 auto", width: "100%" }}>
+            <Toolbar sx={{ height: "100%", alignItems: "stretch", px: { md: 3, xs: 0 } }}>
+              <Box sx={{ display: "flex", alignItems: "center", flex: 1, px: { md: 0, xs: 2 } }}>
+                {hazardIconUrl && (
+                  <img
+                    src={hazardIconUrl}
+                    alt={hazard}
+                    style={{
+                      width: 32,
+                      height: 32,
+                      marginRight: 12,
+                      objectFit: "contain",
+                      cursor: "pointer",
+                    }}
+                    onClick={scrollToTop}
+                  />
+                )}
+                <Box>
+                  <Typography
+                    variant="h6"
+                    sx={{ color: "#fff", fontWeight: "bold", lineHeight: 1, mt: 0.5 }}
+                  >
+                    {t("header.title")}
+                  </Typography>
+                  <Typography variant="subtitle" sx={{ color: "#fff", mt: 0 }}>
+                    {subLine}
+                  </Typography>
+                </Box>
               </Box>
-            </Box>
 
-            {/*
-            <IconButton color="inherit" onClick={handleDrawerToggle}
-              sx={{ borderRadius: 0, "&:hover": { backgroundColor: "rgba(0,0,0,0.2)" } }}
-            >
-              <SettingsIcon fontSize="large" />
-            </IconButton>
-            */}
-
-            {currentFile ? (
-              <>
-
-                <Tooltip title={t("button.enterFullscreen")}>
-                  <IconButton color="inherit" onClick={onToggleFullScreen}
-                    sx={{ 
-                      borderRadius: 0, "&:hover": { backgroundColor: "rgba(0,0,0,0.2)" },
-                    }}
-                  >
-                    <FullscreenIcon sx={{ fontSize: { md: 35, sx: 15 } }} />
-                  </IconButton>
-                </Tooltip>
-
-                <Tooltip title={t("header.saveAndClose")}>
-                  <IconButton color="inherit" onClick={handleSaveAndClose} 
-                    sx={{ borderRadius: 0, "&:hover": { backgroundColor: "error.main" } }}
-                  >
-                    <CloseIcon sx={{ fontSize: { md: 35, sx: 15 } }} />
-                  </IconButton>
-                </Tooltip>
-
-              </>
-            ) : (
-              <>
-                <IconButton color="inherit" onClick={handleLangMenuOpen}
-                sx={{ 
-                  borderRadius: 0, "&:hover": { backgroundColor: "rgba(0,0,0,0.2)" },
-                  mr: { md: 0, xs: 1 }
-                }}
+              {/*
+              <IconButton color="inherit" onClick={handleDrawerToggle}
+                sx={{ borderRadius: 0, "&:hover": { backgroundColor: "rgba(0,0,0,0.2)" } }}
               >
-                <Badge badgeContent={language.toUpperCase()} color="primary">
-                  <LanguageIcon sx={{ fontSize: { md: 35, sx: 15 } }} />
-                </Badge>
+                <SettingsIcon fontSize="large" />
               </IconButton>
-              <Menu
-                anchorEl={langAnchorEl}
-                open={Boolean(langAnchorEl)}
-                onClose={handleLangMenuClose}
-              >
-                {availableLanguages.map((lang) => (
-                  <MenuItem
-                    key={lang}
-                    onClick={() => {
-                      changeLanguage(lang);
-                      handleLangMenuClose();
-                    }}
-                  >
-                    <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
-                      <img
-                        src={`https://flagcdn.com/20x15/${languageFlags[lang].toLowerCase()}.png`}
-                        alt={lang}
-                        style={{ width: 20, height: 15 }}
-                      />
-                      {getNativeLanguageName(lang)}
-                    </Box>
-                  </MenuItem>
-                ))}
-              </Menu>
-            </>
-            )}
-          </Toolbar>
-        </Box>
-      </AppBar>
+              */}
+
+              {currentFile ? (
+                <>
+
+                  <Tooltip title={t("button.enterFullscreen")}>
+                    <IconButton color="inherit" onClick={onToggleFullScreen}
+                      sx={{ 
+                        borderRadius: 0, "&:hover": { backgroundColor: "rgba(0,0,0,0.2)" },
+                      }}
+                    >
+                      <FullscreenIcon sx={{ fontSize: { md: 35, sx: 15 } }} />
+                    </IconButton>
+                  </Tooltip>
+
+                  <Tooltip title={t("header.saveAndClose")}>
+                    <IconButton color="inherit" onClick={handleSaveAndClose} 
+                      sx={{ borderRadius: 0, "&:hover": { backgroundColor: "error.main" } }}
+                    >
+                      <CloseIcon sx={{ fontSize: { md: 35, sx: 15 } }} />
+                    </IconButton>
+                  </Tooltip>
+
+                </>
+              ) : (
+                <>
+                  <IconButton color="inherit" onClick={handleLangMenuOpen}
+                  sx={{ 
+                    borderRadius: 0, "&:hover": { backgroundColor: "rgba(0,0,0,0.2)" },
+                    mr: { md: 0, xs: 1 }
+                  }}
+                >
+                  <Badge badgeContent={language.toUpperCase()} color="primary">
+                    <LanguageIcon sx={{ fontSize: { md: 35, sx: 15 } }} />
+                  </Badge>
+                </IconButton>
+                <Menu
+                  anchorEl={langAnchorEl}
+                  open={Boolean(langAnchorEl)}
+                  onClose={handleLangMenuClose}
+                >
+                  {availableLanguages.map((lang) => (
+                    <MenuItem
+                      key={lang}
+                      onClick={() => {
+                        changeLanguage(lang);
+                        handleLangMenuClose();
+                      }}
+                    >
+                      <Box sx={{ display: "flex", alignItems: "center", gap: 1 }}>
+                        <img
+                          src={`https://flagcdn.com/20x15/${languageFlags[lang].toLowerCase()}.png`}
+                          alt={lang}
+                          style={{ width: 20, height: 15 }}
+                        />
+                        {getNativeLanguageName(lang)}
+                      </Box>
+                    </MenuItem>
+                  ))}
+                </Menu>
+              </>
+              )}
+            </Toolbar>
+          </Box>
+        </AppBar>
+      </ElevationScroll>
       <SettingsDrawer open={drawerOpen} onClose={handleDrawerToggle} />
     </>
   );
