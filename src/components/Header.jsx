@@ -16,11 +16,7 @@ import { LanguageContext } from "../context/LanguageContext";
 import FullscreenIcon from "@mui/icons-material/Fullscreen";
 import CloseIcon from "@mui/icons-material/Close";
 import LanguageIcon from "@mui/icons-material/Language";
-import CycloneIconUrl from "../assets/Icon_Tropical_Cyclone.svg";
-import DroughtIconUrl from "../assets/Icon_Drought.svg";
-import FloodIconUrl from "../assets/Icon_Flood.svg";
-import HeatwaveIconUrl from "../assets/Icon_Heatwave.svg";
-import DiseaseIconUrl from "../assets/Icon_Disease.svg";
+import { getHazardIcon } from "../utils/hazardIcons";
 import SettingsDrawer from "./SettingsDrawer";
 import useCountries from "../utils/useCountries";
 
@@ -77,27 +73,7 @@ export default function Header({ onToggleFullScreen }) {
       "custodian-organisation"
     ] || "";
   const subLine = [hazard, country, custodian].filter(Boolean).join(", ");
-
-  let hazardIconUrl = null;
-  switch (true) {
-    case /cyclone/i.test(hazard):
-      hazardIconUrl = CycloneIconUrl;
-      break;
-    case /drought/i.test(hazard):
-      hazardIconUrl = DroughtIconUrl;
-      break;
-    case /flood/i.test(hazard):
-      hazardIconUrl = FloodIconUrl;
-      break;
-    case /heatwave?|heat wave/i.test(hazard):
-      hazardIconUrl = HeatwaveIconUrl;
-      break;
-    case /disease/i.test(hazard):
-      hazardIconUrl = DiseaseIconUrl;
-      break;
-    default:
-      break;
-  }
+  const hazardIconUrl = getHazardIcon(hazard)
 
   /* ---------- map ISO-flags to languages ---------- */
   const languageFlags = {

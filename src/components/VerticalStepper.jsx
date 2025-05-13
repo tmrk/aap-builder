@@ -10,7 +10,7 @@ import {
   MobileStepper
 } from "@mui/material";
 import { AAPContext } from "../context/AAPContext";
-import useTemplate from "../utils/useTemplate";  // <-- Renamed import
+import useTemplate from "../utils/useTemplate";
 import { getSectionStatus } from "../utils/validation";
 import SectionContent from "./SectionContent";
 import { exportToDocx } from "../utils/docxExport";
@@ -48,7 +48,7 @@ export default function VerticalStepper() {
   const { currentFile, updateActiveStep } = useContext(AAPContext);
   const { t } = useContext(LanguageContext);
   const currentTemplateId = currentFile ? currentFile.aap_template : null;
-  const { template, loading, error } = useTemplate(currentTemplateId); // <--
+  const { template, loading, error } = useTemplate(currentTemplateId);
 
   // Use the active step from the current file (default to 0)
   const activeStep = currentFile ? currentFile.AAP_ACTIVE_STEP : 0;

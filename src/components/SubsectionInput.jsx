@@ -19,11 +19,7 @@ import ToggleButtonGroup from "@mui/material/ToggleButtonGroup";
 import { AAPContext } from "../context/AAPContext";
 import { LanguageContext } from "../context/LanguageContext";
 import useCountries from "../utils/useCountries";
-import CycloneIconUrl from "../assets/Icon_Tropical_Cyclone.svg";
-import DroughtIconUrl from "../assets/Icon_Drought.svg";
-import FloodIconUrl from "../assets/Icon_Flood.svg";
-import HeatwaveIconUrl from "../assets/Icon_Heatwave.svg";
-import DiseaseIconUrl from "../assets/Icon_Disease.svg";
+import { getHazardIcon } from "../utils/hazardIcons";
 import TriggerMechanismDesigner from "./TriggerMechanismDesigner";
 import ExpandableTextField from "./ExpandableTextField";
 import { useGlobalVisibility } from "../utils/useGlobalVisibility";
@@ -89,19 +85,7 @@ const SubsectionInput = ({ stepId, subsection, isSummary }) => {
             }}
           >
             <img
-              src={
-                opt.toLowerCase().includes("cyclone")
-                  ? CycloneIconUrl
-                  : opt.toLowerCase().includes("drought")
-                  ? DroughtIconUrl
-                  : opt.toLowerCase().includes("flood")
-                  ? FloodIconUrl
-                  : opt.toLowerCase().includes("heat")
-                  ? HeatwaveIconUrl
-                  : opt.toLowerCase().includes("disease")
-                  ? DiseaseIconUrl
-                  : ""
-              }
+              src={getHazardIcon(opt)}
               alt={opt}
               style={{ width: 64, height: 64 }}
             />
