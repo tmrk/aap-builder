@@ -3,7 +3,7 @@ import { Box, Button, Typography } from "@mui/material";
 import { LanguageContext } from "../context/LanguageContext";
 import SettingsIcon from "@mui/icons-material/Settings";
 import { AAPContext } from "../context/AAPContext";
-import LogoAAPBuilder from "../../public/icon.svg";
+import LogoAAPBuilder from "../assets/icon.svg";
 
 
 export default function Footer({ onToggleDrawer, onToggleFullScreen, currentFile }) {
@@ -39,7 +39,7 @@ export default function Footer({ onToggleDrawer, onToggleFullScreen, currentFile
           }}
         />
         <Box sx={{ flex: 1, alignContent: "center" }}>
-          <Typography variant="subtitle2">
+          <Typography variant="subtitle2" color="text.secondary">
             {t("header.title")} © 2025 
           </Typography>
         </Box>

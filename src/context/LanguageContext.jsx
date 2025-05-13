@@ -1,3 +1,4 @@
+// src/context/LanguageContext.jsx
 import React, { createContext, useState, useEffect } from "react";
 import en from "../locales/en.json";
 import fr from "../locales/fr.json";
@@ -10,27 +11,17 @@ import enGB from "date-fns/locale/en-GB";
 import frLocale from "date-fns/locale/fr";
 import ptLocale from "date-fns/locale/pt";
 
+/* -------------------------------------------------------------------------- */
+/*                               CONFIG / DATA                                */
+/* -------------------------------------------------------------------------- */
+
 export const LanguageContext = createContext();
 
-const translations = {
-  en: en,
-  fr: fr,
-  pt: pt,
-  sn: sn,
-  ny: ny,
-  sw: sw,
-  lg: lg,
-};
-
-// List of available language codes (update as needed)
+const translations = { en, fr, pt, sn, ny, sw, lg };
 const availableLanguages = ["en", "fr", "pt", "sn", "ny", "sw", "lg"];
-// Hardcoded BASE_URL for your sub-directory (adjust as needed)
-const BASE_URL = "/aap-builder";
 
 const getDateFnsLocale = (lang) => {
   switch (lang) {
-    case "en":
-      return enGB;
     case "fr":
       return frLocale;
     case "pt":
@@ -40,88 +31,51 @@ const getDateFnsLocale = (lang) => {
   }
 };
 
+/* -------------------------------------------------------------------------- */
+/*                            LANGUAGE PROVIDER                               */
+/* -------------------------------------------------------------------------- */
+
 export const LanguageProvider = ({ children }) => {
   const [language, setLanguage] = useState("en");
 
+  /* -- Initialise from localStorage (no more URL sniffing) ---------------- */
   useEffect(() => {
-    const path = window.location.pathname;
-    let relativePath = path;
-    if (BASE_URL && path.startsWith(BASE_URL)) {
-      relativePath = path.substring(BASE_URL.length) || "/";
-    }
-    // Build regex from availableLanguages
-    const languageRegex = new RegExp(`^\\/(${availableLanguages.join("|")})(\\/|$)`);
-    const match = relativePath.match(languageRegex);
-    if (match) {
-      const urlLang = match[1];
-      // If trailing slash is missing (match[2] is empty), update URL to add it.
-      if (match[2] !== "/") {
-        const newPath = BASE_URL + "/" + urlLang + "/" + relativePath.substring(match[0].length);
-        window.history.replaceState(null, "", newPath);
-      }
-      setLanguage(urlLang);
-      localStorage.setItem("AAP_BUILDER_LANGUAGE", urlLang);
+    const stored = localStorage.getItem("AAP_BUILDER_LANGUAGE");
+    if (stored && availableLanguages.includes(stored)) {
+      setLanguage(stored);
     } else {
-      const storedLang = localStorage.getItem("AAP_BUILDER_LANGUAGE") || language;
-      // Ensure trailing slash after language code.
-      const newPath = BASE_URL + "/" + storedLang + (relativePath.startsWith("/") ? relativePath : "/" + relativePath);
-      window.history.replaceState(null, "", newPath);
-      setLanguage(storedLang);
+      localStorage.setItem("AAP_BUILDER_LANGUAGE", "en");
     }
   }, []);
 
+  /* -- Change language (state + localStorage, no URL rewrite) ------------- */
   const changeLanguage = (lang) => {
+    if (!availableLanguages.includes(lang)) return;
     setLanguage(lang);
     localStorage.setItem("AAP_BUILDER_LANGUAGE", lang);
-    const path = window.location.pathname;
-    let relativePath = path;
-    if (BASE_URL && path.startsWith(BASE_URL)) {
-      relativePath = path.substring(BASE_URL.length) || "/";
-    }
-    const languageRegex = new RegExp(`^\\/(${availableLanguages.join("|")})(\\/|$)`);
-    const newRelativePath = relativePath.replace(languageRegex, "");
-    // Ensure there is a trailing slash after the language code.
-    const newPath = BASE_URL + "/" + lang + (newRelativePath.startsWith("/") ? newRelativePath : "/" + newRelativePath);
-    window.history.replaceState(null, "", newPath);
   };
 
+  /* ----------------------------- i18n helper ----------------------------- */
   const t = (key, replacements = {}) => {
-    const keys = key.split(".");
-    let translation = translations[language];
-    for (const k of keys) {
-      if (translation && translation[k]) {
-        translation = translation[k];
-      } else {
-        translation = null;
-        break;
-      }
-    }
-    if (!translation) {
-      translation = translations["en"];
-      for (const k of keys) {
-        if (translation && translation[k]) {
-          translation = translation[k];
-        } else {
-          translation = null;
-          break;
-        }
-      }
-    }
-    if (translation && typeof translation === "string") {
-      Object.keys(replacements).forEach((repKey) => {
-        translation = translation.replace(`{${repKey}}`, replacements[repKey]);
+    const traverse = (obj, path) =>
+      path.reduce((acc, part) => (acc && acc[part] !== undefined ? acc[part] : undefined), obj);
+
+    let translation = traverse(translations[language], key.split("."))
+      ?? traverse(translations["en"], key.split("."))
+      ?? key;
+
+    if (typeof translation === "string") {
+      Object.entries(replacements).forEach(([k, v]) => {
+        translation = translation.replace(`{${k}}`, v);
       });
-      return translation;
     }
-    return key;
+    return translation;
   };
 
-  const getNativeLanguageName = (code) => {
-    return translations[code]?.language?.native || code;
-  };
+  const getNativeLanguageName = (code) =>
+    translations[code]?.language?.native || code;
 
-  const currentTranslation = translations[language] || translations["en"];
-
+  /* ------------------------------ Context -------------------------------- */
   return (
     <LanguageContext.Provider
       value={{
@@ -130,7 +84,7 @@ export const LanguageProvider = ({ children }) => {
         t,
         availableLanguages,
         getNativeLanguageName,
-        currentTranslation,
+        currentTranslation: translations[language] || translations["en"],
         dateFnsLocale: getDateFnsLocale(language),
       }}
     >

@@ -1,0 +1,321 @@
+{
+    "metadata": {
+      "title": "Modèle de Plan d'Action Anticipé",
+      "version": "2.0.5",
+      "shortName": "WAHAFA AAP 2.0",
+      "language": "fr",
+      "last updated": "2025-05-05",
+      "created by": "WHH"
+    },
+    "template": [
+      {
+        "id": "summary",
+        "title": "Summary",
+        "subsections": [
+          {
+            "id": "hazard",
+            "title": "Aléa",
+            "type": "radio",
+            "options": [
+              "Inondation",
+              "Sécheresse",
+              "Cyclone tropical"
+            ],
+            "required": true
+          },
+          {
+            "id": "country",
+            "title": "Pays",
+            "type": "dropdown",
+            "required": true
+          },
+          {
+            "id": "location",
+            "title": "Location",
+            "type": "text",
+            "placeholder": "p.ex., Sahel, L&rsquo;Oudalan, Gorom-Gorom",
+            "required": true
+          },
+          {
+            "id": "validity-period",
+            "title": "Période de validité",
+            "type": "text",
+            "placeholder": "p.ex., 2023-2024",
+            "required": true
+          },
+          {
+            "id": "custodian-organisation",
+            "title": "Organisation dépositaire",
+            "placeholder": "e.g. WHH",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "impacts-to-be-addressed-by-anticipatory-actions",
+            "title": "Impacts à traiter par des actions anticipatoires",
+            "type": "textarea",
+            "placeholder": "p.ex.\nPerte de récolte (en tant que source d&rsquo;alimentation personnelle et/ou de revenu)\nMortalité du bétail (due au manque de fourrage)\nPerte de salaires journaliers (en raison du manque de main-d&rsquo;œuvre agricole journalière)"
+          },
+          {
+            "id": "anticipatory-actions",
+            "title": "Actions anticipatoires",
+            "type": "textarea",
+            "placeholder": "p.ex.,\nPhase 1 (préparation opérationnelle):\n1. Alertes précoces\n2. Activités de préparation opérationnelle minimale et avancée (voir annexe XXX)\nPhase 2 (actions anticipatoires):\nCash anticipatoire\nVaccination et kits vétérinaires\nFormations agricoles"
+          },
+          {
+            "id": "no-of-households",
+            "title": "Nombre de ménages (et d&rsquo;individus) à atteindre ",
+            "type": "text",
+            "placeholder": "p.ex., 5 000 ménages (XX personnes)"
+          },
+          {
+            "id": "aap-budget",
+            "title": "Budget de l&rsquo;AAP",
+            "type": "text",
+            "placeholder": "p.ex., maximum xxx.xxx EUR",
+            "required": true
+          },
+          {
+            "id": "trigger-model-indicators",
+            "title": "Indicateurs du modèle de déclenchement ou modèle utilisé pour l&rsquo;alerte précoce (et le délai d&rsquo;exécution)",
+            "type": "text",
+            "placeholder": "p.ex., Modèle de sécheresse du WHH basé sur l&rsquo;ARC (délai d&rsquo;exécution 1 mois)"
+          },
+          {
+            "id": "time-frame",
+            "title": "Délai de mise en œuvre des actions anticipatoires",
+            "type": "text",
+            "placeholder": "p.ex., 4 mois (1 mois pour la phase 1 ; 3 mois pour la phase 2)"
+          },
+          {
+            "id": "focal-point",
+            "title": "Point focal pour ce PAA",
+            "type": "text",
+            "placeholder": "p.ex., Chef de programme WHH",
+            "required": true
+          },
+          {
+            "id": "governmental-coordinating-agency",
+            "title": "Agence gouvernementale de coordination",
+            "type": "text",
+            "placeholder": "p.ex., l&rsquo;Autorité nationale de gestion des catastrophes",
+            "required": true
+          },
+          {
+            "id": "last-update",
+            "title": "Dernière mise à jour",
+            "type": "DatePicker",
+            "placeholder": "YYYY-MM-DD",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "introduction",
+        "title": "Vue d&rsquo;ensemble",
+        "subsections": [
+          {
+            "id": "overview",
+            "title": "Overview",
+            "type": "textarea",
+            "characterLimit": 2500,
+            "required": true,
+            "hint": "[1 page maximum] Il s&rsquo;agit d&rsquo;une description d&rsquo;une page maximum de ce PAA, couvrant le contenu du plan et expliquant comment le PAA est aligné sur les stratégies de l&rsquo;organisation ou du gouvernement, les priorités, les plans d&rsquo;urgence pour la réduction des risques de catastrophes (RRC), la RRC existante et l&rsquo;Action Humanitaire Anticipatoire (AHA). <b>Il se peut que vous n&rsquo;ayez pas besoin d&rsquo;ajuster beaucoup de choses dans l&rsquo;exemple de texte ci-dessous, veuillez donc le lire attentivement avant de le compléter. Il est recommandé de finaliser cette page toute à la fin.</b>",
+            "example": "Ce Plan d'Action Anticipatoire (PAA)pour des [aléa(s)] est un guide destiné à [insérer l'(les) organisation(s)] pour la mise en œuvre d'actions anticipatoiresdans [région du pays]. Il contient des informations pertinentes pour comprendre et mettre en œuvre des actions anticipatoires, notamment (1) l'analyse des risques, (2) le modèle de déclenchement, (3) les actions anticipatoires <b>[insérer ici les titres des chapitres une fois qu'ils seront finalisés].</b><br /><br />Ce PAA pour des [aléa] a été élaboré en collaboration avec les communautés, [organisation A] et [organisation B], en veillant à ce que les communications d'alerte précoce soient envoyées et reçues dans les langues locales par des canaux appropriés et que les actions anticipatoires soient menées au niveau local. Les consultations pour cette première [ou x-ième] version ont été organisées en [année du mois-mois]. Le PAA est aligné sur les stratégies organisationnelles relatives à la réduction des risques de catastrophes [ou toute autre politique sur laquelle il peut être aligné] et sur la feuille de route nationale pour les actions anticipatoires [ou toute autre politique nationale pertinente].<br /><br />Le PAA est axé sur des actions anticipatoires dans [nombre] lieux : [insérer les lieux]. étant donné qu'il existe d'autres zones exposées aux [aléas] dans/à/au [pays], il est plausible que les approches de ce PAA puissent également être appliquées à d'autres endroits, sous réserve d'une consultation de la communauté. Actuellement, la méthodologie de déclenchement des [aléas] utilise [source(s)], avec des actions anticipatoiresdéclenchées en deux phases basées sur des prévisions à long terme et à court terme. Les actions anticipatoires se concentrent sur l'atténuation des impacts négatifs sur la sécurité alimentaire, WASH [ajouter/supprimer le cas échéant]<br /><br /><b>Lien avec d'autres PAA – supprimezsi inutile</b><br /><br />Ce Plan d'Action Anticipatoire pour les inondations complète le PAA pour les cyclones, car il est probable que les cyclones tropicaux provoquent de graves inondations, ce qui entraînerait l'activation simultanée de ce PAA pour les inondations et du PAA pour les cyclones. Ils peuvent se déclencher dans des lieux géographiques différents, ce qui permet d'élargir la couverture des actions anticipatoires.<br /><br /><b>Organisations responsables et parties prenantes du PAA</b><ul><li>L'ONG <b>[nom]</b>, créée en [année] et présente [dans tout le pays], est le principal responsable de la mise en œuvre de ce PAA.</li><li>L'ONG internationale<b> [nom]</b>, est le partenaire international de l'ONG<b> [nom]</b>. établie dans le pays en [année], [nom] fournit [soutien fourni] dans le développement et la maintenance de ce PAA.</li><li>L'<b>Agence météorologique nationale, les autorités locales et toute autre partie prenante soutenant ce PAA </b>jouent un rôle essentiel dans le développement et le suivi/la surveillancecontinue des risques émergents de [aléa].</li></ul>"
+          },
+          {
+            "id": "budget",
+            "title": "Budget",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Dans cette section, vous reliez le budget du PAA et donnez un bref aperçu de la portée du budget. Veuillez utiliser le budget du projet WAHAFA comme modèle et contacter l&rsquo;équipe globale de WAHAFA pour obtenir un modèle de budget personnalisé.<br />Le budget doit couvrir deux scénarios potentiels (p.ex., une situation très grave et une situation modérément grave ; ou deux scénarios pour atteindre un nombre différent de ménages) et doit inclure les coûts liés aux activités de préparation et aux actions anticipatoires, y compris (le cas échéant) les coûts de prépositionnement, les coûts de mise en œuvre des actions anticipatoires prioritaires, les coûts MEAL (SERA) (y compris pour une étude de référence, le cas échéant), les coûts de personnel, les coûts administratifs. Dans le budget, veuillez indiquer quelle organisation sera responsable de chaque dépense.",
+            "example": ""
+          },
+          {
+            "id": "aap-validation",
+            "title": "Validation du PAA",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "required": true,
+            "hint": "Décrivez par qui, comment et quand le PAA a été approuvé, officiellement et symboliquement. Décrivez le processus de validation finale du PAA et ses résultats. Si vous disposez de rapports sur le processus, vous pouvez les placer en annexe ou les lier ici, en utilisant les informations les plus appropriées, en particulier : (1) Réunions de feedback communautaire : (1a) Très bref aperçu de la méthodologie, (1b) Feedback reçu, (1c) Explication de la manière dont les résultats ont été réintégrés dans le PAA ; (2) Validation finale : (2a) Bref aperçu de la méthodologie, (2b) Feedback reçu, (2c) Explication de la manière dont les résultats ont été réintégrés dans le PAA.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "risk-analysis",
+        "title": "Analyse des risques",
+        "subsections": [
+          {
+            "id": "hazard-overview-and-target-locations",
+            "title": "Vue d&rsquo;ensemble des risques et localisation ",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": true,
+            "hint": "Cette sous-section doit fournir des informations sur l&rsquo;occurrence de l&rsquo;aléa, en expliquant pourquoi il est important de prendre des actions anticipatoirespour cet aléa. Veuillez fournir des informations sur:<ul><li>La justification de la sélection des aléas et des informations sur les dangers en cascade (secondaires) qui pourraient également être anticipés.</li><li>Le moment où l&rsquo;aléa est le plus susceptible de se produire.</li><li>Si le PAA concerne les <strong>inondations</strong>, veuillez définir le type d&rsquo;inondations (par exemple, fluviales, pluviales, côtières, soudaines). Quelles sont les inondations couvertes par ce PAA ? Comment les inondations sont-elles causées ? (p.ex., par des fortes pluies, cyclones).</li><li>Si le PAA concerne la <strong>sécheresse</strong>, veuillez définir le type de sécheresse (p.ex., météorologique, agricole).</li><li>Si le PAA porte sur les <strong>cyclones tropicaux</strong>, veuillez inclure un tableau de la catégorie d&rsquo;intensité des cyclones tropicaux pour votre pays.</li><li>Envisagez d&rsquo;utiliser des graphiques d&rsquo;informations historiques sur les risques. Si vous avez besoin d&rsquo;aide pour créer des graphiques, veuillez contacter l&rsquo;équipe globale WAHAFA.</li><li>Décrivez comment les communautés ont contribué à identifier les aléas comme étant critiques pour l&rsquo;AHA.</li><li>Veuillez inclure une carte de vos zones cibles et de la manière dont elles ont été identifiées. Si vous avez besoin d&rsquo;aide pour réaliser une carte, contactez l&rsquo;équipe WAHAFA.</li></ul>",
+            "example": ""
+          },
+          {
+            "id": "impact-analysis",
+            "title": "Analyse d&rsquo;impact",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true,
+            "hint": "Cette section fournit des informations sur les aléas historiques, en soulignant les principaux impacts et les éléments exposés (par exemple, les infrastructures clés, les cultures). Veuillez fournir des informations sur :<ul><li>Toute corrélation entre le moment et l&rsquo;évolution de l&rsquo;aléa et les activités de subsistance dans la/les zone(s) cible(s), en utilisant un calendrier de crise à l&rsquo;appui. Un <strong>calendrier saisonnier </strong>peut être utilisé pour démontrer l&rsquo;occurrence de l&rsquo;aléa au cours d&rsquo;une année ou d&rsquo;une saison, le moment des déclenchements, comment et quand il influencerait les activités de subsistance, et la fenêtre d&rsquo;opportunité pour l&rsquo;AHA : <a href=\"https://welthungerhilfe.sharepoint.com/:x:/g/Organisation/eru/ESsFbhJBmepDqpjyP1stEw8B-Wpiv2c9knBYa5kpGEk77w?e=dUHPwl\">Modèle de calendrier de crise WAHAFA - Excel.xlsx </a>ou <a href=\"https://welthungerhilfe.sharepoint.com/:p:/g/Organisation/eru/EVnjBsRHVVdEuepdh6gtAg4B5rD1oiTxx90jC5K5Y6ehGA?e=eau9So\">Modèle de calendrier de crise WAHAFA - Powerpoint.pptx</a></li><li>Tous les groupes de subsistance exposés à l&rsquo;aléa et la manière dont ils pourraient être affectés</li></ul>Remarque : Il peut être utile d&rsquo;examiner les impacts par secteur, afin de faciliter l&rsquo;identification des mesures qui pourraient être prises.<br /><br />Tenez compte des tendances passées et futures de l&rsquo;aléa, et de la manière dont les impacts pourraient varier à l&rsquo;avenir en raison de la crise climatique ou d&rsquo;autres facteurs.",
+            "example": ""
+          },
+          {
+            "id": "vulnerabilities-and-capacities",
+            "title": "Vulnérabilités et capacités",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true,
+            "hint": "Cette section fournit des informations sur les principales vulnérabilités qui font que des groupes ou des communautés spécifiques sont plus vulnérables aux impacts des aléas. La présence de ces informations dans le PAA permet d&rsquo;identifier les principaux risques et de s&rsquo;assurer que les actions sont appropriées. Envisagez d&rsquo;inclure des informations sur :<ul><li>Quelles sont les personnes les plus susceptibles de subir les effets de l&rsquo;aléa ? Où vivent-elles et pourquoi sont-elles vulnérables ?</li><li>Tenir compte des groupes de moyens de subsistance les plus vulnérables et du nombre de personnes potentiellement touchées, ainsi que des biens à risque tels que les récoltes, le bétail et les infrastructures.</li><li>Si les moyens de subsistance et la sécurité alimentaire sont des impacts clés, fournir des informations sur la sécurité alimentaire, y compris les zones les plus sujettes à des résultats négatifs (par exemple, à partir de l&rsquo;IPC / Cadre Harmonisé).</li><li>Quelles sont les capacités des communautés à gérer cet aléa ? Par exemple, les gens ont-ils construit des socles autour de leurs maisons? Ont-ils établi des chaînes de communication ? Comment ces capacités affectent-elles l&rsquo;impact de l&rsquo;aléa ?</li><li>Les éventuels rapports d&rsquo;évaluation peuvent être joints en annexe.</li></ul>",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "trigger-model",
+        "title": "Modèle de déclenchement",
+        "subsections": [
+          {
+            "id": "trigger-statements",
+            "title": "Déclencheurs",
+            "type": "triggerDesigner",
+            "characterLimit": 2000,
+            "required": true,
+            "hint": "Il est probable que vous détailliez cette section (avec des déclarations de déclenchement) à la fin de l&rsquo;évaluation des indicateurs et des systèmes d&rsquo;alerte précoce dans le cadre du développement de votre PAA.<br /><br />Si cela s&rsquo;avère utile, vous pouvez utiliser l&rsquo;outil de cartographie des prévisions pour obtenir une vue d&rsquo;ensemble des indicateurs de prévision et des systèmes d&rsquo;alerte précoce existants. Cela peut vous aider à décider lesquels sont les plus appropriés pour votre objectif (délai, accès à l&rsquo;information, etc.) : <a href=\"https://welthungerhilfe.sharepoint.com/:x:/g/Organisation/eru/ETMcOOnFdbhGllfZrvgiVkIBfRr6Fz8_hwLde03NH0tMYQ?e=XmXjxf\">Outil de cartographie des prévisions WAHAFA - Excel.xlsx</a><br /><br />Cette section fournit des informations sommaires sur le modèle de déclenchement, y compris sur les personnes chargées de surveiller les déclencheurs. Veuillez inclure :<ul><li>Déclaration(s) de déclenchement, y compris la source, le délai et la probabilité ;</li><li>Résumé des indicateurs et des seuils prévisionnels pour chaque phase / emplacement géographique, si les indicateurs et les seuils varient d&rsquo;un endroit à l&rsquo;autre. Pour chaque indicateur, indiquer la source des données, le délai d&rsquo;exécution, la période de suivi/surveillanceet les seuils de déclenchement prédéfinis qui entraîneront des actions anticipatoires.</li><li>Détails de l&rsquo;approche de contrôle utilisée (y compris la fréquence du contrôle, les responsabilités et les méthodes de contrôle de ces systèmes).</li><li>Informations sur la manière dont les déclencheurs ont été établis, y compris des liens vers les rapports de terrain.</li></ul>",
+            "example": ""
+          },
+          {
+            "id": "stop-mechanism",
+            "title": "Mécanisme d&rsquo;arrêt",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Pour tous les déclencheurs de prévisions dont le délai d&rsquo;exécution est supérieur à trois jours, le PAA doit contenir un mécanisme d&rsquo;arrêt. Cela signifie que si une prévision ultérieure, avant le début de la préparation ou des actions anticipatoires, montre que le risque de l&rsquo;aléa a diminué, l&rsquo;activation du PAA sera interrompue afin d&rsquo;éviter le gaspillage de ressources. Il existe également des scénarios dans lesquels les prévisions peuvent changer, par exemple en cas d&rsquo;intensification rapide d&rsquo;un cyclone, et dans lesquels le personnel peut être mis en danger, ce qui nécessite l&rsquo;arrêt des activités. Cette section doit préciser des exemples de scénarios dans lesquels les actions anticipatoires peuvent être interrompues, y compris la personne chargée de donner le signal d&rsquo;arrêt et de le communiquer aux communautés.",
+            "example": ""
+          },
+          {
+            "id": "linkages-with-other-aaps",
+            "title": "Liens avec nos autres PAA (le cas échéant)",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "hint": "Si le PAA est lié à un autre, c&rsquo;est-à-dire qu&rsquo;il pourrait y avoir un déclenchement simultané de deux PAA dans la même zone d&rsquo;intervention, il convient d&rsquo;inclure ici des informations sur le chevauchement. Il s&rsquo;agit notamment de savoir si les méthodes de communication diffèrent et comment les décisions seront prises en ce qui concerne les ressources et la gestion d&rsquo;une éventuelle duplication des actions anticipatoires.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "anticipatory-actions",
+        "title": "Actions anticipatoires",
+        "subsections": [
+          {
+            "id": "identification-and-prioritisation-of-anticipatory-actions",
+            "title": "Identification et hiérarchisation des actions anticipatoires",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Décrivez brièvement le processus d&rsquo;identification des actions anticipatoires, en donnant un bref aperçu des méthodes ou critères utilisés pour sélectionner les actions, et en abordant la manière dont les actions ont été sélectionnées en utilisant une approche centrée sur les personnes / l&rsquo;engagement communautaire (il est possible d&rsquo;utiliser des informations appropriées du rapport d&rsquo;identification et de hiérarchisation des actions anticipatoires, s&rsquo;il est disponible, le lier ou l&rsquo;ajouter en tant qu&rsquo;annexe). Décrivez les actions anticipatoires prioritaires et les principaux impacts qu&rsquo;elles devraient prévenir. Il peut s&rsquo;agir des éléments suivants (1) les impacts des aléas identifiés et classés par ordre de priorité ; (2) les stratégies d&rsquo;adaptation négatives des populations touchées ; (3) les actions anticipatoiresidentifiées et classées par ordre de priorité."
+          },
+          {
+            "id": "aa-and-their-theories-of-change",
+            "title": "Les actions anticipatoires et leurs théories du changement",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "hint": "Veuillez dresser la liste de chaque action anticipatoire prioritaire et élaborer une théorie du changement pour chacune d&rsquo;entre elles. Vous pouvez utiliser un modèle/graphique ou simplement rédiger un paragraphe explicatif. Cette section doit expliquer sous quelles hypothèses l&rsquo;activité vise à prévenir ou à réduire un impact humanitaire ou un mécanisme d&rsquo;adaptation identifié et classé par ordre de priorité.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "operationalisation",
+        "title": "Opérationnalisation",
+        "subsections": [
+          {
+            "id": "trigger-monitoring-guidelines",
+            "title": "Lignes directrices pour lesuivi des déclencheurs",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true,
+            "hint": "Cette section doit préciser qui prend quelles mesures pendant le suivi/la surveillance du modèle de déclenchement. Cette section ne concernepasle suivi de la mise en œuvre des activités.<ul><li>Définissez les circonstances dans lesquelles vous visez à fairedes exercices de vérification sur le terrain du déclenchement et/ou des activités de recherche de consensus (incluant les parties prenantes concernées, en particulier les populations touchées) seraient menés, ainsi que les situations dans lesquelles l&rsquo;inaction est justifiée.</li><li>Définissezles paramètres selon lesquels nous mettrions en œuvre une approche progressive pour mettre en œuvre des actions anticipatoires basées sur le niveau de confiance dans les prévisions, entre autres facteurs.</li><li>Décrivez les mécanismes et canaux de communication permettant de transmettre et de communiquer des informations sur les déclencheurs et d&rsquo;émettre des alertes rapides à l&rsquo;intention des parties prenantes concernées.</li><li>Décrivez la manière dont les zones d&rsquo;intervention seront identifiées, y compris la manière dont les informations sur les prévisions seront combinées avec les informations sur la vulnérabilité et l&rsquo;exposition.</li></ul>",
+            "example": ""
+          },
+          {
+            "id": "organisational-preparedness",
+            "title": "Préparation opérationnelle et organisationelle",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Cette section doit résumer les tâches essentielles et les parties prenantes responsables de la préparation opérationnelle de votre organisation à la mise en œuvre d&rsquo;actions anticipatoires quand vos seuils déclenchement sont atteints. En d&rsquo;autres termes, la section doit expliquer ce que vous devrez faire à l&rsquo;avance pour être réellement « prêt » à mettre en œuvre des actions anticipatoires si le seuil de déclenchement est atteint.Entre autres, cela dépend des processus et des modes de travail de votre organisation et de votre niveau d&rsquo;être « préparéaux catastrophes ».Il peut être judicieux d&rsquo;organiser ces « activités de préparation opérationnelle et organisationnelle » en deux phases : les activités minimalesde préparation opérationnelle et les activités de préparation avancée. Par exemple, au début de la saison, lorsqu&rsquo;une prévision à long terme suggère que votre PAA pourrait être déclenché, vous devriez mettre en place des activités minimales de préparation opérationnelle. Il peut s&rsquo;agir d&rsquo;une révision des règles de logistique et d&rsquo;approvisionnement adaptées au contexte d&rsquo;anticipation, de protocoles d&rsquo;accord avec les prestataires de services, etc. Dans cette première phase pour des activités « minimales » de préparation opérationnelle, vous pouvez faire le point sur les protocoles d&rsquo;accord existants. Dans la deuxième phase pour des activités « avancées », vous pouvez signer des protocoles d&rsquo;accord avec des prestataires de services. Vous trouverez d&rsquo;autres idées de tâches à accomplir dans les annexes XXX et XXX.",
+            "example": ""
+          },
+          {
+            "id": "anticipatory-action-implementation-process",
+            "title": "Mise en œuvre des actions anticipatoires étape par étape",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Décrivez le processus étape par étape ou dans un cadre logique du jour 1 au jour X de la mise en œuvre des actions anticipatoires sélectionnées. Incluez toutes les tâches de soutien nécessaires pour chacune des étapes et les responsabilités respectives. Chaque tâche doit indiquer le poste et les coordonnées de la personne responsable. Pour chaque action, indiquez à quel niveau elle se déroulera (bureau pays, région, communauté). Ce document doit être mis à jour au moins une fois par an et après chaque déclenchement.",
+            "example": ""
+          },
+          {
+            "id": "selection-strategy",
+            "title": "Stratégie de ciblage des populations à risque",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "hint": "Fournissez un bref résumé de la population cible (justification, nombre d&rsquo;individus, localisation, etc.) et de la méthode et des indicateurs utilisés (par exemple, marqueurs de vulnérabilité, critères géographiques, critères de faisabilité, critères au niveau du ménage). Le cas échéant : Décrivez les bases de données des systèmes de protection sociale ou d&rsquo;autres mécanismes gouvernementaux et indiquez comment les ménages ciblés sont sélectionnés.",
+            "example": ""
+          },
+          {
+            "id": "implementation-meal",
+            "title": "Mise en œuvre MEAL",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Dans cette section, vous expliquez comment vous contrôlerez et évaluerez la mise en œuvre des actions anticipatoires une fois le PAA est déclenché. Si vous avez des activités ou des cadres liés à la responsabilité et/ou à l&rsquo;apprentissage, vous pouvez également les décrire ici. Au cours de la phase Build, vous passerez en revue vos canevas de suivi et d&rsquo;évaluation existants et, si nécessaire, les adapterez à un contexte d&rsquo;Action Humanitaire Anticipatoire. Veuillez ajouter les canevas à l&rsquo;annexe et en donner un aperçu dans cette section.<br /><br />Outils utiles : Il peut être utile d&rsquo;adapter ou de créer les canevas suivants :<ul><li><strong>Canevas de suivi du PAA </strong>: Ce canevas vous permet de suivre la mise en œuvre du projet AA (Fuel) une fois que le PAA est déclenché. Le canevas comprend des détails sur les activités de suivi et les responsabilités. Vous trouverez un modèle et un exemple à l&rsquo;annexe 6.1 et ici : <a href=\"https://welthungerhilfe.sharepoint.com/:w:/g/Organisation/eru/Ef1a2VGUNgpAmWRBOn2ESiYB7819HN198tu4eeiFCUcCTw?e=EN499m\">WAHAFA Suivi du PAA_canevas fr.docx</a></li><li><strong>Canevas d&rsquo;évaluation du déclencheur </strong>: Ce canevasvous permet d&rsquo;évaluer l&rsquo;efficacité et l&rsquo;adéquation de votre modèle de déclenchement (après une activation ou une non-activation). Le canevascomprend des détails sur les activités et les responsabilités en matière d&rsquo;évaluation et vise à répondre à des questions telles que « Le modèle s&rsquo;est-il déclenché au bon moment ? Avons-nous fixé les bons seuils ? Les informations étaient-elles précises et publiées au bon moment ? » Vous trouverez un modèle/exemple ici :<a href=\"https://welthungerhilfe.sharepoint.com/:w:/g/Organisation/eru/EazFViVmI-pLj_SMjCYnbU0BGCNzFUO04Rzcp-_3AzUKnQ?e=T81OIQ\">WAHAFA Évaluation du déclencheur_Guide et canevas fr.docx</a>(Veuillez noter que vous devez l&rsquo;adapter à votre aléa et à votre contexte).</li><li><strong>Enquêtes de référence, de suivi post-distribution et de fin de projet </strong>: Ces enquêtes vous permettent d&rsquo;évaluer l&rsquo;impact de vos activités. Vous pouvez utiliser les outils standard de votre organisation ou demander un modèle à l&rsquo;équipe WAHAFA.</li></ul><br /><br />Autres ressources :<ul><li>Chapitre sur le suivi et l&rsquo;évaluation dans le manuel de la Croix-Rouge et du Croissant-Rouge sur la FbF<a href=\"https://manual.forecast-based-financing.org/en/chapter/design-me-plan/\">: </a><a href=\"https://manual.forecast-based-financing.org/en/chapter/design-me-plan/\">https://manual.forecast-based-financing.org/en/chapter/design-me-plan/</a></li></ul>",
+            "example": ""
+          },
+          {
+            "id": "financial-flow-process",
+            "title": "Processus de flux financiers",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Pour les organisations du PAA de la WAHAFA, le financement pour soutenir l&rsquo;activation du PAA peut être obtenu dans le cadre de la composante Fuel de la WAHAFA (actuellement disponible jusqu&rsquo;à la fin avril 2026). Veuillez insérer des informations sur le processus d&rsquo;accès à ce financement, y compris le processus allant de la demande formelle à la WAHAFA jusqu&rsquo;à la réception des fonds sur les comptes des organisationsresponsables du PAA. Précisez aussi s&rsquo;il existe d&rsquo;autres mécanismes de financement (d&rsquo;autres organisations)qui seront utilisés pour financer les actions anticipatoires, les contributions attendues et la manière dont elles compléteraient le financement existant dans le cadre de la WAHAFA.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "annexes",
+        "title": "Annexes",
+        "subsections": [
+          {
+            "id": "aap-monitoring-form",
+            "title": "Canevas de suivi du PAA",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "hint": "Tous les outils MEAL(SERA) qui seront utilisés pendant la mise en œuvre de ce PAA (la phase Fuel) peuvent déjà être préparés. Vous pouvez utiliser les outils de suivi et d&rsquo;évaluation que vous utilisez pour d&rsquo;autres projets ou utiliser/adapter le tableau proposé ci-dessous. Un exemple et le modèle sont sauvegardés ici :<a href=\"https://welthungerhilfe.sharepoint.com/:w:/g/Organisation/eru/Ef1a2VGUNgpAmWRBOn2ESiYB7819HN198tu4eeiFCUcCTw?e=EN499m\">WAHAFA Suivi du PAA_canevas fr.docx</a>"
+          },
+          {
+            "id": "checklist-minimum-readiness-activities",
+            "title": "Check list : Activités minimales de préparation opérationnelle (phase 1)",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "hint": "Vous pouvez utiliser les listes de contrôle ci-dessous si cela s&rsquo;avère utile. Ajoutez ou supprimez les différentes étapes si nécessaire."
+          },
+          {
+            "id": "checklist-advanced-readiness-activities",
+            "title": "Check list : Activités avancées de préparation opérationnelle (phase 1 ou 2)",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "hint": "Vous pouvez utiliser les listes de contrôle ci-dessous si cela s&rsquo;avère utile. Ajoutez ou supprimez les différentes étapes si nécessaire."
+          }
+        ]
+      }
+    ]
+  }
+  

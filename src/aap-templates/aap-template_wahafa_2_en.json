@@ -1,0 +1,319 @@
+{
+    "metadata": {
+      "title": "Anticipatory Action Plan Template",
+      "version": "2.0.5",
+      "shortName": "WAHAFA AAP 2.0",
+      "language": "en",
+      "last updated": "2025-04-17",
+      "created by": "WHH"
+    },
+    "template": [
+      {
+        "id": "summary",
+        "title": "Summary",
+        "subsections": [
+          {
+            "id": "hazard",
+            "title": "Hazard",
+            "type": "radio",
+            "options": [
+              "Flood",
+              "Drought",
+              "Tropical cyclone"
+            ],
+            "required": true
+          },
+          {
+            "id": "country",
+            "title": "Country",
+            "type": "dropdown",
+            "required": true
+          },
+          {
+            "id": "location",
+            "title": "Location",
+            "type": "text",
+            "placeholder": "e.g. Chimanimani, ward xxx, community xxx",
+            "required": true
+          },
+          {
+            "id": "validity-period",
+            "title": "Validity period",
+            "type": "text",
+            "placeholder": "e.g. 2023–2024",
+            "required": true
+          },
+          {
+            "id": "custodian-organisation",
+            "title": "Custodian organisation",
+            "placeholder": "e.g. WHH",
+            "type": "text",
+            "required": true
+          },
+          {
+            "id": "impacts-to-be-addressed-by-anticipatory-actions",
+            "title": "Impacts to be addressed by anticipatory actions",
+            "type": "textarea",
+            "placeholder": "e.g.\nLoss of harvest (as source of personal food intake and/or income)\nMortality of livestock (due to lack of fodder)\nLoss of daily wages (due to lack of agricultural daily labour)"
+          },
+          {
+            "id": "anticipatory-actions",
+            "title": "Anticipatory actions",
+            "type": "textarea",
+            "placeholder": "e.g. \nPhase 1:\n1. Early warnings\n2. Minimum and advanced readiness activities (see annex XXX)\nPhase 2:\nAnticipatory cash\nVaccination and veterinary kits\nAgricultural trainings"
+          },
+          {
+            "id": "no-of-households",
+            "title": "No. of households (and individuals) to be reached",
+            "type": "text",
+            "placeholder": "e.g. 5,000 households (XX people)"
+          },
+          {
+            "id": "aap-budget",
+            "title": "AAP budget",
+            "type": "text",
+            "placeholder": "e.g. maximum xxx,xxx EUR",
+            "required": true
+          },
+          {
+            "id": "trigger-model-indicators",
+            "title": "Trigger model indicators or model used for early warning (and lead time)",
+            "type": "text",
+            "placeholder": "e.g. WHH Drought Model based on ARC (lead-time 1 month)"
+          },
+          {
+            "id": "time-frame",
+            "title": "Time frame of implementation of anticipatory actions",
+            "type": "text",
+            "placeholder": "e.g. 4 months (1 month Phase 1; 3 months Phase 2)"
+          },
+          {
+            "id": "focal-point",
+            "title": "Focal point for this AAP",
+            "type": "text",
+            "placeholder": "e.g. Head of Program WHH",
+            "required": true
+          },
+          {
+            "id": "governmental-coordinating-agency",
+            "title": "Governmental coordinating agency",
+            "type": "text",
+            "placeholder": "e.g. National Disaster Management Authority",
+            "required": true
+          },
+          {
+            "id": "last-update",
+            "title": "Last update",
+            "type": "DatePicker",
+            "placeholder": "YYYY-MM-DD",
+            "required": true
+          }
+        ]
+      },
+      {
+        "id": "introduction",
+        "title": "Introduction",
+        "subsections": [
+          {
+            "id": "overview",
+            "title": "Overview",
+            "type": "textarea",
+            "characterLimit": 2500,
+            "required": true,
+            "hint": "[Maximum 1 page] This is maximum 1-page description of this AAP, covering the contents of the plan and explaining how the AAP is aligned with the organizational or government strategies, priorities, contingency plans for DRR, existing DRR and AHA. <b>You may find that you do not need to adjust much within the example text below, so please read carefully before completing. It is also helpful to finalise this page at the end.</b>",
+            "example": "This [hazard(s)] AAP is a guide for [insert organization(s)] to implement anticipatory actions in [region in country]. It containsrelevant information to understand and implement anticipatory actions including (1) Risk Analysis, (2) Trigger model, (3) Anticipatory actions <b>[insert chapter headers once finalized here].</b><br /><br />This [Hazard] AAP was developed in collaboration with communities, [organization A] and [organization B], ensuring that early warning communications are sentand received in local languages via appropriate channels and anticipatory actions are locally-led.Consultations for this first [or x-th] version were organized in [year from month-month].It is aligned with organizational strategies relating to Disaster Risk Reduction [or whatever policies it may be aligned to] and the National Roadmap for Anticipatory Action [or whatever national policies may be relevant]. <br /><br />The AAP is focussed on anticipatory actions in [number] locations: [insert locations]. As there are other [hazard]-prone areas with [country], it is plausible the approaches within this AAP could also be applied in other locations, pending community consultation. Currently, the [hazard] trigger methodology utilises [source(s)], with [hazard] anticipatory actions triggered in two phases based on longer and shorter-term forecasts. Anticipatory actions are focussed on mitigating adverse impacts on food security, WASH [add / delete as appropriate].<br /><br /><b>Delete as appropriate</b><br /><br />This Flood AAP complements the Cyclone AAP, as it is likely tropical cyclones could cause severe flooding, seeing activation of both this Flood AAP and the Cyclone AAP at the same time. They may trigger in different geographic locations, allowing wider coverage of anticipatory actions.<br /><br /><b>AAP Custodians and Stakeholders</b></p><ul><li>Anticipatory Action NGO, established in [year] and present across the country,is the main implementer of this [Hazard] AAP.</li><li><b>Anticipatory Action INGO</b>, is the international partner of <b>Anticipatory Action NGO</b>. Established in the country in [year], INGO provides [support provided] in development and maintenance of this AAP.</li></ul>Crucial to the development and ongoing monitoring of emerging [hazard] risks are the <b>National Meteorological Agency, Local government department and any other stakeholder supporting this AAP</b>."
+          },
+          {
+            "id": "budget",
+            "title": "Budget",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "In this section, you link the AAP budget and give a short overview on the scope of the budget. Please use the WAHAFA project budget as a template and contact the global WAHAFA team for a personalized budget template. The budget should cover two potential scenarios (e.g. highly severe and moderately severe situation; reaching different number of households) and should include the costs linked to readiness activities and anticipatory actions, including (where relevant) pre-positioning costs, implementation costs for the prioritized anticipatory actions, MEAL costs (including for a baseline study, where necessary), staff costs, administrative costs. In the budget, please indicate which of the organizations will be responsible for each expenditure. If helpful, you can use the budget summary table below and fill it in in the very end.",
+            "example": ""
+          },
+          {
+            "id": "aap-validation",
+            "title": "AAP validation",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "required": true,
+            "hint": "Describe by whom, how and when the AAP was endorsed, formally and symbolically. Describe the AAP final validation process, and results. If you have reports from the process, you can put them in an annex or link them here, using the most suitable information, especially from: (1) Community Feedback Meetings: (1a) Very brief overview methodology, (1b) Feedback received, (1c) Explanation how results were fed back in AAP; (2) Final Validation: (2a) Brief overview methodology, (2b) Feedback received, (2c) Explanation how results were fed back in AAP.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "risk-analysis",
+        "title": "Risk analysis",
+        "subsections": [
+          {
+            "id": "hazard-overview-and-target-locations",
+            "title": "Hazard overview and target locations",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "required": true,
+            "hint": "This sub-section should provide information on the hazard occurrence, rationalizing why this hazard is important to take anticipatory action for. Please provide information on:<ul><li>The rationale for the selection of the hazards and information on any cascading hazards that could also be expected.</li><li>The time when the hazards is most likely to occur.</li><li>If the AAP is about <b>floods</b>, please define the type of floods (e.g. river, coastal, flash). Which floods are covered by this AAP? How are floods caused? (e.g. heavy rainfall, cyclones).</li><li>If the AAP is about <b>drought</b>, please define the type of drought (e.g. meteorological, agricultural).</li><li>If the AAP is about <b>tropical cyclones</b>, please include a table of the tropical cyclone intensity category for your country.</li><li>Consider using graphs of historical hazard information. If you need any assistance with creating figures such as these, please contact the WAHAFA team.</li><li>Describe how communities helped identify the hazards as being critical for AA.</li><li>Please include a map of your target areas and how they were identified. If you need assistance making a map, contact the WAHAFA team.</li></ul>",
+            "example": ""
+          },
+          {
+            "id": "impact-analysis",
+            "title": "Impact analysis",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true,
+            "hint": "This section provides information on historic hazard events, outlining the main impacts and exposed elements (e.g. key infrastructure, crops). Please provide information on:<ul><li>Any correlation between timing and evolution of the hazard and livelihood activities in the target area(s) using a crisis timeline to support. A <b>seasonal calendar</b> can be used to demonstrate hazard occurrence over the period of a year or season, the timing of triggers, how and when it would influence livelihood activities, and the window of opportunity for AHA: <a href=\"https://welthungerhilfe.sharepoint.com/:x:/g/Organisation/eru/ESsFbhJBmepDqpjyP1stEw8B-Wpiv2c9knBYa5kpGEk77w?e=dUHPwl\">WAHAFA Template Crisis Calendar - Excel.xlsx</a> or <a href=\"https://welthungerhilfe.sharepoint.com/:p:/g/Organisation/eru/EVnjBsRHVVdEuepdh6gtAg4B5rD1oiTxx90jC5K5Y6ehGA?e=eau9So\">WAHAFA Template Crisis Calendar - Powerpoint.pptx</a></li><li>Any livelihood groups exposed to the hazard and how they could be impacted;</li></ul>Note: It can be helpful to consider the impacts by sector, to aid later identifying actions that could be taken.<br /><br />Take into account past and future trends of the hazard, and how impacts could vary in the future due to climate change or other factors.",
+            "example": ""
+          },
+          {
+            "id": "vulnerabilities-and-capacities",
+            "title": "Vulnerabilities and capacities",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true,
+            "hint": "This section provides information on any key vulnerabilities that mean specific groups or communities are more vulnerable to the hazard impacts. Having this information in the AAP helps identify the main risks and ensures that actions are appropriate. Consider including information on:<ul><li>Who are most likely to experience the impacts of the hazard? Where do they live and why are they vulnerable?</li><li>Consider livelihood groups that are most vulnerable and numbers of potentially affected individuals, and at-risk assets such as crops, livestock, and infrastructure.</li><li>If livelihoods and food security are key impacts, provide information on food security, including areas more prone to adverse outcomes (e.g. from IPC).</li><li>What capacities do communities have in managing this hazard? e.g. have people constructed plinths around their homes? Have they established communication chains? How do these capacities affect the impact of the hazard?</li><li>Any assessment reports can be included in an annex.</li></ul>",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "trigger-model",
+        "title": "Trigger model",
+        "subsections": [
+          {
+            "id": "trigger-statements",
+            "title": "Trigger statements",
+            "type": "triggerDesigner",
+            "characterLimit": 2000,
+            "required": true,
+            "hint": "NOTE THAT YOU ARE LIKELY TO DETAIL THIS SECTION (TRIGGER STATEMENTS) AT THE END OF ASSESSING INDICATORS AND EARLY WARNING SYSTEMS AS PART OF YOUR AAP DEVELOPMENT.<br /><br />If helpful, you can use the Forecast Mapping Tool to get an overview of existing forecast indicators and early warning systems. This may help you decide which ones are most appropriate for your purpose (lead time, access to information, etc.): <a href=\"https://welthungerhilfe.sharepoint.com/:x:/g/Organisation/eru/ETMcOOnFdbhGllfZrvgiVkIBfRr6Fz8_hwLde03NH0tMYQ?e=XmXjxf\">WAHAFA Forecast Mapping Tool - Excel.xlsx</a><br /><br />This section will provide summary information on the Trigger Model, including who is responsible for monitoring the triggers. Please include:<ul><li>Trigger statement(s) including the source, lead time and probability;</li><li>Summary information of the forecast indicators and thresholds for each phase / geographic location, if the indicators and thresholds vary geographically. For each indicator, insert the data source, lead time, monitoring period, and the predefined trigger thresholds that will prompt anticipatory actions.</li><li>Details of the monitoring approach used (including the frequency of monitoring, responsibilities, and methods for monitoring these systems).</li><li>Information on how the triggers have been established, including links to any field reports.</li></ul>",
+            "example": ""
+          },
+          {
+            "id": "stop-mechanism",
+            "title": "Stop mechanism",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "For all forecast triggers with a lead time of more than 3 days, the AAP should contain a stop mechanism. This means that if a later forecast, prior to the commencement of readiness or anticipatory actions, shows that the hazard risk has reduced, the activation of the AAP will be stopped to avoid use of resources. There are also scenarios where a forecast could change, for example rapid intensification of a cyclone, where staff could be put in danger, requiring activities to be halted. This section should specify example scenarios of when anticipatory activities could be stopped, including who is responsible for giving the signal to stop and communicating this with communities.",
+            "example": ""
+          },
+          {
+            "id": "linkages-with-other-aaps",
+            "title": "Linkages with our other AAPs (if applicable)",
+            "type": "textarea",
+            "characterLimit": 2000,
+            "hint": "If the AAP is linked with another, i.e. there could be a trigger of two AAPs in the same intervention area at the same time, include information on the overlap here. This includes whether communication methods differ and how decisions will be taken over resources and management of potential duplication of anticipatory actions.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "anticipatory-actions",
+        "title": "Anticipatory actions",
+        "subsections": [
+          {
+            "id": "identification-and-prioritisation-of-anticipatory-actions",
+            "title": "Identification & prioritisation of anticipatory actions",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Briefly describe the process of anticipatory action identification, giving a brief overview of methods or criteria used to select actions, and touching on how actions were selected using a people centred /community engagement approach (it is possible to use suitable information from Anticipatory Action Identification and Prioritization Report, if available, link or add as annex). Outline prioritised anticipatory actions and which main hazard impacts they are addressing. This can include: (1) Identified and prioritized hazard impacts; (2) Negative coping strategies of affected populations; (3) Identified and prioritized anticipatory actions."
+          },
+          {
+            "id": "aa-and-their-theories-of-change",
+            "title": "Anticipatory actions and their theories of change",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "hint": "Please list each prioritized anticipatory action and develop a Theory of Change for each of them. You can either use a model/chart for this or simply write an explanatory paragraph. This section should explain under which assumptions which activity aims to prevent or reduce an identified and prioritized humanitarian impact or coping mechanism.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "operationalisation",
+        "title": "Operationalisation",
+        "subsections": [
+          {
+            "id": "trigger-monitoring-guidelines",
+            "title": "Trigger monitoring guidelines",
+            "type": "textarea",
+            "characterLimit": 4000,
+            "required": true,
+            "hint": "This section should specify who takes what actions during to monitor the trigger model. This section is not about monitoring the implementation of activities.<ul><li>Define under which circumstances ground-truthing and consensus-building exercises (including relevant stakeholders, in particular affected populations) would be conducted, as well as those situations where inaction is warranted.</li><li>Define the parameters under which we would implement a phased approach to implement anticipatory actions based on the level of confidence in the forecast, among other factors.</li><li>Describe communication mechanisms and channels for forwarding and communicating trigger information and issuing early warnings to relevant stakeholders.</li><li>Describe how intervention areas will be identified, including a description of how forecast information will be combined with vulnerability and exposure information.</li></ul>",
+            "example": ""
+          },
+          {
+            "id": "organisational-preparedness",
+            "title": "Organisational preparedness / readiness",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "This section should summarize critical tasks and stakeholders responsible for getting your organization ready to implement anticipatory actions in case your trigger threshold is reached. In other words, it should explain what you will have to do in advance to actually be &ldquo;ready&rdquo; to implement anticipatory actions should the trigger threshold be reached. Amongst other, this depends on your organizations&rsquo; way of working and how &ldquo;disaster ready&rdquo; you already are. It might make sense to organize these &ldquo;organizational readiness activities&rdquo; in two phases &ndash; the minimum and advanced readiness activities. For example, in the beginning of the season when a longer-term forecast suggests that your AAP might be triggered, you should set up minimum operational and organizational readiness activities. These can include overhauled logistics and procurement rules tailored for anticipatory work, MoUs with service providers, etc. In this first &ldquo;minimum&rdquo; phase, you can take stock of existing MoUs. The second &ldquo;advanced&rdquo; phase, you can sign MoUs with service providers. You can find more ideas of tasks that would usually arise in annexes XXX and XXX.",
+            "example": ""
+          },
+          {
+            "id": "anticipatory-action-implementation-process",
+            "title": "Anticipatory actions implementation step by step",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "Describe the process step by step or in a log frame from day 1 to day X of the implementation of the selected anticipatory actions. Include all support tasks necessary for each of the steps and respective responsibilities. Each task should indicate the position and contact information of the person responsible. For each action, include at which level it will take place (head office, regional, community). This document should be updated at least annually and after every trigger.",
+            "example": ""
+          },
+          {
+            "id": "selection-strategy",
+            "title": "Selection strategy for population(s) at risk",
+            "type": "textarea",
+            "characterLimit": 1000,
+            "hint": "Provide a short summary of the target population (rationale, number of individuals, location, etc.) and used method and indicators (e.g. vulnerability markers, geographical criteria, feasibility criteria, household level criteria). If applicable: Describe databases of Social Protection systems or other government mechanisms and indicate how targeted households are selected.",
+            "example": ""
+          },
+          {
+            "id": "implementation-meal",
+            "title": "Implementation MEAL",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "In this section, you explain how you will monitor and evaluate the implementation of anticipatory actions once the AAP is triggered. If you have any accountability and/or learning related activities or frameworks, these can also be described here. During the Build phase, you will go through your existing monitoring and evaluation forms and, if necessary, adapt them to an Anticipatory Humanitarian Action context. Please add the forms to the annex and list an overview in this section.<br /><br />Useful tools: It might be helpful to adapt or create the following forms:<ul><li><b>AAP monitoring form</b>: With this form, you will monitor the implementation of the AA (Fuel) project once the AAP is triggered. The form includes details about monitoring activities and responsibilities. You can find a template and an example in Annex 6.1 and here: <a href=\"https://welthungerhilfe.sharepoint.com/:w:/g/Organisation/eru/ETFumiNkifdMv5eiZWc6K3oBu76EKSyO77OzC_9J-IYIYg?e=J4jzDA\">WAHAFA AAP monitoring form_Template.docx</a></li><li><b>Trigger evaluation form</b>: With this form, you will evaluate the efficiency, effectiveness, and adequacy of your trigger model (after an activation or non-activation). The form includes details about evaluation activities and responsibilities and aims to answer questions such as &ldquo;Did the model trigger at the right moment? Did we set the right thresholds? Was the information accurate and timely?&rdquo;. You can find a template/an example here: <a href=\"https://welthungerhilfe.sharepoint.com/:w:/r/Organisation/eru/Shared%20Documents/14%20Anticipatory%20Humanitarian%20Action/WAHAFA/5_MEAL/Implementation_MEAL/Drafts%20Feb%202025/WAHAFA%20Trigger%20Evaluation_Guideline%20and%20Template.docx?d=w5e3bf09b65a544b4bee90bc380bf0f89&amp;csf=1&amp;web=1&amp;e=bAJ4tg\">WAHAFA Trigger Evaluation Guideline and Template.docx</a>. (Please note that you need to adapt it to your hazard and context)</li><li><b>Baseline, Post-Distribution Monitoring and Endline surveys</b>: With these surveys, you want to evaluate your activities&rsquo; impacts. You can use your organization&rsquo;s standard tools for this or ask the WAHAFA team for a template.</li></ul>Other resources:<ul><li>M&amp;E Chapter in the Red Cross Red Crescent FbF Manual: <a href=\"https://manual.forecast-based-financing.org/en/chapter/design-me-plan/\">https://manual.forecast-based-financing.org/en/chapter/design-me-plan/</a></li></ul>",
+            "example": ""
+          },
+          {
+            "id": "financial-flow-process",
+            "title": "Financial flow process",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "required": true,
+            "hint": "For WAHAFA AAP Custodians, funding to support an AAP activation can be accessed under the WAHAFA Fuel component (currently available until end of April 2026). Please insert information on the process of how this funding can be accessed, including the process from formal application to WAHAFA until funds are received in AAP Custodian accounts. Outline if there are any other funding mechanisms that will be used to fund anticipatory actions (from other organizations), expected contributions and how it would complement existing funding under WAHAFA.",
+            "example": ""
+          }
+        ]
+      },
+      {
+        "id": "annexes",
+        "title": "Annexes",
+        "subsections": [
+          {
+            "id": "aap-monitoring-form",
+            "title": "AAP Monitoring Form",
+            "type": "textarea",
+            "characterLimit": 3000,
+            "hint": "All MEAL tools which will be used during the implementation of this AAP (the Fuel phase) can already be prepared. You can use the monitoring and evaluation tools you are using for other projects or use / adapt the table suggested below. An example and the template are saved here: <a href=\"https://welthungerhilfe.sharepoint.com/:w:/r/Organisation/eru/Shared%20Documents/14%20Anticipatory%20Humanitarian%20Action/WAHAFA/5_MEAL/Implementation_MEAL/Drafts%20Feb%202025/WAHAFA%20AAP%20monitoring%20form_Template.docx?d=w239a6e3189644cf7bf97a265673a2b7a&amp;csf=1&amp;web=1&amp;e=UjmSgu\">WAHAFA AAP monitoring form_Template.docx</a>"
+          },
+          {
+            "id": "checklist-minimum-readiness-activities",
+            "title": "Checklist: Minimum Readiness Activities (Phase 1)",
+            "type": "textarea",
+            "characterLimit": 3000
+          },
+          {
+            "id": "checklist-advanced-readiness-activities",
+            "title": "Checklist: Advanced Readiness Activities (Phase 1 or 2)",
+            "type": "textarea",
+            "characterLimit": 3000
+          }
+        ]
+      }
+    ]
+  }
+  

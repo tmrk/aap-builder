@@ -40,6 +40,7 @@ export const AAPProvider = ({ children }) => {
         setCurrentFile(file);
       }
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [store.AAP_FILES]);
 
   // Persist the store whenever it changes
@@ -66,7 +67,6 @@ export const AAPProvider = ({ children }) => {
       return { ...prevStore, AAP_FILES: updatedFiles };
     });
   }, []);
-  
 
   const updateField = useCallback((sectionId, subsectionId, questionId, value) => {
     setCurrentFile((prev) => {
@@ -74,10 +74,10 @@ export const AAPProvider = ({ children }) => {
       const updatedData = {
         ...prev.AAP_BUILDER_DATA,
         [sectionId]: {
-          ...prev.AAP_BUILDER_DATA[sectionId],
+          ...(prev.AAP_BUILDER_DATA[sectionId] || {}),
           [subsectionId]: {
             ...((prev.AAP_BUILDER_DATA[sectionId] &&
-                prev.AAP_BUILDER_DATA[sectionId][subsectionId]) ||
+              prev.AAP_BUILDER_DATA[sectionId][subsectionId]) ||
               {}),
             [questionId]: value,
           },
@@ -110,11 +110,16 @@ export const AAPProvider = ({ children }) => {
     });
   }, [updateCurrentFile]);
 
-  const createNewFile = useCallback((templateId) => {
-    const id = "aap_" + Date.now() + "_" + Math.floor(Math.random() * 1000);
+  /**
+   * Create a new AAP file.
+   * @param {string} templateUrl - The URL of the template this file is based on.
+   */
+  const createNewFile = useCallback((templateUrl, templateShortName) => {
+    const id = `aap_${Date.now()}_${Math.floor(Math.random() * 1000)}`;
     const newFile = {
       id,
       last_updated: new Date().toISOString(),
+      aap_template_shortName: templateShortName,
       AAP_BUILDER_DATA: {},
       AAP_ACTIVE_STEP: 0,
       AAP_BUILDER_SETTINGS: {
@@ -125,7 +130,8 @@ export const AAPProvider = ({ children }) => {
         examplesVisibility: {},
         alwaysDisplayAllExamples: false,
       },
-      aap_template: templateId,
+      // Store the template reference as its URL instead of an ID.
+      aap_template: templateUrl,
     };
     setStore((prevStore) => ({
       ...prevStore,
@@ -161,12 +167,12 @@ export const AAPProvider = ({ children }) => {
       const duplicate = prevStore.AAP_FILES.some((file) => file.id === importedFile.id);
       if (duplicate) {
         // Append a unique suffix to ensure a unique id
-        importedFile.id = importedFile.id + "_" + Date.now();
+        importedFile.id = `${importedFile.id}_${Date.now()}`;
       }
       return { ...prevStore, AAP_FILES: [...prevStore.AAP_FILES, importedFile] };
     });
     setCurrentFile(importedFile);
-  }, []);  
+  }, []);
 
   const contextValue = {
     store,

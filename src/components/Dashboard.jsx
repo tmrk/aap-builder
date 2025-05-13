@@ -23,49 +23,47 @@ import CreateIcon from "@mui/icons-material/Create";
 import DeleteIcon from "@mui/icons-material/Delete";
 import DownloadIcon from "@mui/icons-material/Download";
 import FileOpenIcon from "@mui/icons-material/FileOpen";
-import DescriptionIcon from '@mui/icons-material/Description';
+import DescriptionIcon from "@mui/icons-material/Description";
 import LinkIcon from "@mui/icons-material/Link";
 import UploadFileIcon from "@mui/icons-material/UploadFile";
 import { AAPContext } from "../context/AAPContext";
 import TemplateSelector from "./TemplateSelector";
 import { LanguageContext } from "../context/LanguageContext";
-import { exportAAPFile, importAAPFile } from "../utils/exportImport";
+import { exportAAPFile } from "../utils/exportImport";
 import useCountries from "../utils/useCountries";
 
-const formatDateTime = (dateStr) => {
-  const date = new Date(dateStr);
-  const yyyy = date.getFullYear();
-  const mm = String(date.getMonth() + 1).padStart(2, "0");
-  const dd = String(date.getDate()).padStart(2, "0");
-  const HH = String(date.getHours()).padStart(2, "0");
-  const MM = String(date.getMinutes()).padStart(2, "0");
-  const ss = String(date.getSeconds()).padStart(2, "0");
-  return `${yyyy}-${mm}-${dd} ${HH}:${MM}:${ss}`;
+// Format an ISO date‑string into "YYYY‑MM‑DD HH:MM:SS" (local)
+const formatDateTime = (iso) => {
+  const d = new Date(iso);
+  const pad = (n) => String(n).padStart(2, "0");
+  return `${d.getFullYear()}-${pad(d.getMonth() + 1)}-${pad(d.getDate())} ${pad(
+    d.getHours()
+  )}:${pad(d.getMinutes())}:${pad(d.getSeconds())}`;
 };
 
 export default function Dashboard() {
   const { store, loadFileById, deleteFile, importFile } = useContext(AAPContext);
   const { t } = useContext(LanguageContext);
   const countries = useCountries();
-  const [activeInterface, setActiveInterface] = useState(null); // null, 'import', or 'template'
+
+  // local UI state
+  const [activeInterface, setActiveInterface] = useState(null); // "import" | "template" | null
   const [importUrl, setImportUrl] = useState("");
   const [fileToDelete, setFileToDelete] = useState(null);
 
-  const toggleInterface = (type) => {
-    setActiveInterface(activeInterface === type ? null : type);
-  };
+  const toggleInterface = (type) => setActiveInterface(activeInterface === type ? null : type);
 
+  /* ---------------- import handlers ---------------- */
   const handleImportFile = async (e) => {
     const file = e.target.files[0];
-    if (file) {
-      try {
-        const text = await file.text();
-        const importedData = JSON.parse(text);
-        importFile(importedData);
-        setActiveInterface(null); // Close interface after successful import
-      } catch (error) {
-        console.error("Error importing file", error);
-      }
+    if (!file) return;
+    try {
+      const text = await file.text();
+      const json = JSON.parse(text);
+      importFile(json);
+      setActiveInterface(null);
+    } catch (err) {
+      console.error("Error importing local AAP", err);
     }
   };
 
@@ -73,25 +71,22 @@ export default function Dashboard() {
     if (!importUrl) return;
     try {
       const resp = await fetch(importUrl);
-      if (!resp.ok) {
-        throw new Error(`Network error: ${resp.status}`);
-      }
-      const importedData = await resp.json();
-      importFile(importedData);
+      if (!resp.ok) throw new Error(`Network error: ${resp.status}`);
+      const json = await resp.json();
+      importFile(json);
       setImportUrl("");
-      setActiveInterface(null); // Close interface after successful import
-    } catch (error) {
-      console.error("Error importing file from URL", error);
+      setActiveInterface(null);
+    } catch (err) {
+      console.error("Error importing AAP from URL", err);
     }
   };
 
+  /* ---------------- render ---------------- */
   return (
     <Box sx={{ mt: 3 }}>
-      <Alert severity="info"
-        sx={{ mb: 3, py: 2, borderRadius: 1, fontSize: "1.1rem" }}>
-        <AlertTitle sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>
-          {t("dashboard.welcome")}
-        </AlertTitle>
+      {/* Welcome */}
+      <Alert severity="info" sx={{ mb: 3, py: 2, borderRadius: 1, fontSize: "1.1rem" }}>
+        <AlertTitle sx={{ fontWeight: "bold", fontSize: "1.2rem" }}>{t("dashboard.welcome")}</AlertTitle>
         {t("dashboard.intro")}
       </Alert>
 
@@ -142,7 +137,6 @@ export default function Dashboard() {
           {t("dashboard.newAAP")}
         </Button>
       </Box>
-
       {/* Import Interface */}
       <Collapse in={activeInterface === 'import'} timeout={500}>
         <Box
@@ -257,101 +251,103 @@ export default function Dashboard() {
         </Box>
       </Collapse>
 
-      {/* Saved Files Section */}
-
-      {store.AAP_FILES && store.AAP_FILES.length > 0 && (
-        <>
-        <Box sx={{ mt: 2, border: "1px solid #ccc", p: 2, borderRadius: 2, backgroundColor: "rgba(255,255,255,0.5)" }}>
+      {/* --- saved files --- */}
+      {store.AAP_FILES?.length > 0 && (
+        <Box sx={{ mt: 2, p: 2, border: "1px solid #ccc", borderRadius: 2, backgroundColor: "rgba(255,255,255,0.5)" }}>
           <Typography variant="h5" fontWeight="bold" textAlign="center">
             {t("dashboard.savedAAPfiles")}
           </Typography>
-          <Divider sx={{ mt: 2 }} />
+          <Divider sx={{ mt: 2, mb: 1 }} />
           <List>
             {[...store.AAP_FILES]
               .sort((a, b) => new Date(b.last_updated) - new Date(a.last_updated))
               .map((file) => {
-                const templateUsed = store.AAP_TEMPLATES.find(template => template.id === file.aap_template);
-                const templateName = templateUsed ? (templateUsed.metadata?.name || templateUsed.name) : t("dashboard.unknownTemplate");
+                const templateUsed = (store.AAP_TEMPLATES || []).find(
+                  (tpl) => tpl.metadata?.url === file.aap_template || tpl.id === file.aap_template
+                );
+                const templateName = templateUsed
+                  ? templateUsed.metadata?.name || templateUsed.name
+                  : t("dashboard.unknownTemplate");
+
+                const templateShort =
+                  file.aap_template_shortName || templateUsed?.metadata?.shortName || "";
+
+                const hazard = file.AAP_BUILDER_DATA?.summary?.hazard?.hazard || t("dashboard.unspecifiedHazard");
+                const countryCode = file.AAP_BUILDER_DATA?.summary?.country?.country || "";
+                const countryName =
+                  countries.find((c) => c.alpha2 === countryCode)?.name || t("dashboard.unspecifiedCountry");
+                const custodian =
+                  file.AAP_BUILDER_DATA?.summary?.["custodian-organisation"]?.["custodian-organisation"] ||
+                  t("dashboard.unspecifiedCustodian");
+
+                const primaryText = `${hazard} - ${countryName} - ${custodian} (${file.last_updated.slice(0, 10)})`;
+                const secondaryText = `${t("dashboard.templateUsed")}: ${
+                  templateShort ? templateShort : templateName
+                } | ${t("dashboard.lastEdited")}: ${formatDateTime(file.last_updated)}`;
 
                 return (
-                <Box key={file.id} sx={{ display: "flex", alignItems: "center" }}>
-                  <ListItemButton variant="outlined" onClick={() => loadFileById(file.id)} sx={{ flex: 1, borderRadius: 1 }}>
-                    <DescriptionIcon sx={{ mr: 2 }} />
-                    <ListItemText
-                      primary={`
-                        ${file.AAP_BUILDER_DATA?.summary?.hazard?.hazard || t("dashboard.unspecifiedHazard")} - 
-                        ${countries.find(c => c.alpha2 === (file.AAP_BUILDER_DATA?.summary?.country?.country || ""))?.name || t("dashboard.unspecifiedCountry")} - 
-                        ${file.AAP_BUILDER_DATA?.summary?.["custodian-organisation"]?.["custodian-organisation"] || t("dashboard.unspecifiedCustodian")} 
-                        (${file.last_updated.slice(0, 10)})
-                      `}
-                      secondary={
-                        t("dashboard.templateUsed") + ": " + templateName +
-                        " | " +
-                        t("dashboard.lastEdited") + ": " + formatDateTime(file.last_updated)
-                      }                      
-                    />
-                    <Tooltip title={t("dashboard.fileDownload")}>
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          exportAAPFile(file);
-                        }}
-                        sx={{ "&:hover": { color: "primary.main" } }}
-                      >
-                        <DownloadIcon />
-                      </IconButton>
-                    </Tooltip>
-                    <Tooltip title={t("dashboard.fileDelete")}>
-                      <IconButton
-                        onClick={(e) => {
-                          e.stopPropagation();
-                          setFileToDelete(file);
-                        }}
-                        sx={{ "&:hover": { color: "error.main" } }}
-                      >
-                        <DeleteIcon />
-                      </IconButton>
-                    </Tooltip>
-                  </ListItemButton>
-                </Box>
-              )}
-            )}
+                  <Box key={file.id} sx={{ display: "flex", alignItems: "center" }}>
+                    <ListItemButton
+                      onClick={() => loadFileById(file.id)}
+                      sx={{ flex: 1, borderRadius: 1, pr: 0 }}
+                    >
+                      <DescriptionIcon sx={{ mr: 2 }} />
+                      <ListItemText primary={primaryText} secondary={secondaryText} />
+                      {/* download */}
+                      <Tooltip title={t("dashboard.fileDownload") || "Download"}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            exportAAPFile(file);
+                          }}
+                          sx={{ mr: 1, "&:hover": { color: "primary.main" } }}
+                        >
+                          <DownloadIcon />
+                        </IconButton>
+                      </Tooltip>
+                      {/* delete */}
+                      <Tooltip title={t("dashboard.fileDelete") || "Delete"}>
+                        <IconButton
+                          onClick={(e) => {
+                            e.stopPropagation();
+                            setFileToDelete(file);
+                          }}
+                          sx={{ mr: 1, "&:hover": { color: "error.main" } }}
+                        >
+                          <DeleteIcon />
+                        </IconButton>
+                      </Tooltip>
+                    </ListItemButton>
+                  </Box>
+                );
+              })}
           </List>
-          {fileToDelete && (
-            <Dialog
-              open={Boolean(fileToDelete)}
-              onClose={() => setFileToDelete(null)}
-            >
-              <DialogTitle>
-                {t("dashboard.confirmDeleteTitle")}
-              </DialogTitle>
-              <DialogContent>
-                <Typography>
-                  {t("dashboard.confirmDeleteMessage")}
-                </Typography>
-              </DialogContent>
-              <DialogActions>
-                <Button onClick={() => setFileToDelete(null)}>
-                  {t("dashboard.cancel")}
-                </Button>
-                <Button
-                  onClick={() => {
-                    deleteFile(fileToDelete.id);
-                    setFileToDelete(null);
-                  }}
-                  color="error"
-                >
-                  {t("dashboard.confirm")}
-                </Button>
-              </DialogActions>
-            </Dialog>
-          )}
-        <Alert severity="warning" sx={{ borderRadius: 1 }}>
-          {t("dashboard.localFilesWarning")}
-        </Alert>
-        </Box>
 
-        </>
+          {/* confirm delete dialog */}
+          <Dialog open={Boolean(fileToDelete)} onClose={() => setFileToDelete(null)}>
+            <DialogTitle>{t("dashboard.confirmDeleteTitle")}</DialogTitle>
+            <DialogContent>
+              <Typography>{t("dashboard.confirmDeleteMessage")}</Typography>
+            </DialogContent>
+            <DialogActions>
+              <Button onClick={() => setFileToDelete(null)}>{t("dashboard.cancel")}</Button>
+              <Button
+                color="error"
+                onClick={() => {
+                  deleteFile(fileToDelete.id);
+                  setFileToDelete(null);
+                }}
+              >
+                {t("dashboard.confirm")}
+              </Button>
+            </DialogActions>
+          </Dialog>
+
+          {/* local files warning */}
+          <Alert severity="warning" sx={{ mt: 2, borderRadius: 1 }}>
+            {t("dashboard.localFilesWarning")}
+          </Alert>
+        </Box>
       )}
     </Box>
   );

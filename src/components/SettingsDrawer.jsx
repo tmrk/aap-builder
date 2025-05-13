@@ -20,7 +20,7 @@ import { AAPContext } from "../context/AAPContext";
 export default function SettingsDrawer({ open, onClose }) {
   const { language, changeLanguage, t, availableLanguages, getNativeLanguageName } = useContext(LanguageContext);
   const { currentFile, updateFileSettings } = useContext(AAPContext);
-  
+
   const settings = currentFile
     ? currentFile.AAP_BUILDER_SETTINGS
     : {
@@ -48,9 +48,8 @@ export default function SettingsDrawer({ open, onClose }) {
       open={open}
       onClose={onClose}
       variant="temporary"
-      ModalProps={{
-        keepMounted: true,
-      }}
+      /* keepMounted removed so drawer’s children unmount when closed,
+         preventing hidden Popper anchors from triggering MUI errors */
     >
       <Box sx={{ width: 300, p: 2 }}>
         <Box sx={{ display: "flex", alignItems: "center", justifyContent: "space-between" }}>
@@ -141,9 +140,7 @@ export default function SettingsDrawer({ open, onClose }) {
               .sort((a, b) => {
                 const nameA = getNativeLanguageName(a).toUpperCase();
                 const nameB = getNativeLanguageName(b).toUpperCase();
-                if (nameA < nameB) return -1;
-                if (nameA > nameB) return 1;
-                return 0;
+                return nameA < nameB ? -1 : nameA > nameB ? 1 : 0;
               })
               .map((langCode) => (
                 <MenuItem key={langCode} value={langCode}>
@@ -152,7 +149,6 @@ export default function SettingsDrawer({ open, onClose }) {
               ))}
           </Select>
         </FormControl>
-
       </Box>
     </Drawer>
   );
